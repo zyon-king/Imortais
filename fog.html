@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Névoa Misteriosa</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden; /* Esconde barras de rolagem */
+            background-color: #000; /* Fundo preto */
+            position: relative; /* Para posicionar as nuvens */
+            height: 100vh; /* Altura total da viewport */
+            width: 100vw; /* Largura total da viewport */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            color: #fff;
+            font-size: 2em;
+            text-shadow: 2px 2px 5px rgba(0,0,0,0.7);
+        }
+
+        .fog-cloud {
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.1); /* Nuvem translúcida */
+            border-radius: 50%;
+            filter: blur(10px); /* Efeito de névoa */
+            animation: moveFog linear infinite;
+            pointer-events: none; /* Ignora cliques na nuvem */
+            opacity: 0; /* Começa invisível */
+        }
+
+        @keyframes moveFog {
+            0% {
+                transform: translateX(-100vw) translateY(calc(var(--random-y) * 1vh)) scale(var(--random-scale));
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.5;
+            }
+            90% {
+                opacity: 0.5;
+            }
+            100% {
+                transform: translateX(100vw) translateY(calc(var(--random-y) * 1vh)) scale(var(--random-scale));
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Bem-vindo à Névoa</h1>
+
+    <script>
+        const body = document.body;
+        const numClouds = 100; // Número de nuvens
+        const minSize = 80; // Tamanho mínimo da nuvem em pixels
+        const maxSize = 250; // Tamanho máximo da nuvem em pixels
+        const minDuration = 10; // Duração mínima da animação em segundos
+        const maxDuration = 30; // Duração máxima da animação em segundos
+
+        f-unction createFogCloud() {
+            const cloud = document.createElement('div');
+            cloud.classList.add('fog-cloud');
+
+            const size = Math.random() * (maxSize - minSize) + minSize;
+            cloud.style.width = `${size}px`;
+            cloud.style.height = `${size}px`;
+
+            const startY = Math.random() * 100; // Posição Y inicial aleatória
+            cloud.style.top = `${startY}vh`;
+
+            const duration = Math.random() * (maxDuration - minDuration) + minDuration;
+            cloud.style.animationDuration = `${duration}s`;
+
+            // Variáveis CSS para a animação
+            cloud.style.setProperty('--random-y', Math.random() * 20 - 10); // Pequena variação vertical
+            cloud.style.setProperty('--random-scale', Math.random() * 0.5 + 0.5); // Variação de escala
+
+            body.appendChild(cloud);
+
+            // Remove a nuvem após a animação para otimização
+            cloud.addEventListener('animationend', () => {
+                cloud.remove();
+                createFogCloud(); // Cria uma nova nuvem para manter o loop
+            });
+        }
+
+        // Cria as nuvens iniciais
+        for (let i = 0; i < numClouds; i++) {
+            createFogCloud();
+        }
+    </script>
+</body>
+</html>
