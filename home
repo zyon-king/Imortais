@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Echoes of Europa: A Classical Darkness</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lora:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-background: radial-gradient(circle at center, #1a4065, #0a0d29, #1a4065);
+            --color-text: #b0a0b0; /* Muted silver */
+            --color-primary-accent: #0a0d29; /* Even darker for header */
+            --color-secondary-accent: #7a6e5a;
+            --color-border: #1a1a1a;
+            --color-link: #b5a793;
+            --color-link-hover: #e0d0bc;
+        }
+        /* Aplique este estilo ao elemento de texto onde você quer o gradiente */
+        .gradient-text {
+            background: linear-gradient(to bottom, #618685, #b2ad7f, #618685);
+            /* Explicação:
+             * #f0f0f0: Um cinza muito claro/quase branco para o brilho superior.
+             * #c0c0c0: Um cinza médio para a transição.
+             * #808080: Um cinza escuro para a parte inferior/sombra.
+             */
+
+            /* RECORTA o fundo para que apareça apenas dentro do texto */
+            -webkit-background-clip: text; /* Para compatibilidade com navegadores baseados em WebKit (Chrome, Safari) */
+            background-clip: text;
+
+            /* Torna o texto transparente para que o fundo apareça através dele */
+            color: transparent;
+
+            /* Opcional: Garante que o texto tenha um bom peso para o efeito ser visível */
+            font-weight: bold;
+        }
+        
+        body {
+            font-family: 'Times New Roman', serif;
+            background-color: black;
+            color: var(--color-text);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        header {
+            background-image: radial-gradient(circle at center, #0a0d29, #1a4065, #0a0d29);
+            color: var(--color-text);
+            padding: 1.5em 0;
+            text-align: center;
+            border-bottom: 2px solid var(--color-secondary-accent);
+        }
+
+        header h1 {
+            font-family: 'Georgia', serif;
+            font-size: 3em;
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        header p {
+            font-family: 'Georgia', serif;
+            font-size: 1.5em;
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        nav {
+            background-color: var(--color-primary-accent);
+            padding: 0.8em 0;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(97, 134, 133, 0.3);
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        nav ul li {
+            margin: 0 1.5em;
+        }
+
+        nav ul li a {
+            color: var(--color-link);
+            text-decoration: none;
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            transition: color 0.3s ease;
+        }
+
+        nav ul li a:hover {
+            color: var(--color-link-hover);
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 2em auto;
+            padding: 0 1.5em;
+        }
+
+        section {
+            background-image: var(--color-background);
+            border-radius: 8px;
+            padding: 2em;
+            margin-bottom: 2em;
+            box-shadow: 0 0 5px rgba(97, 134, 133, 0.9);
+        }
+
+        section h2 {
+            font-family: 'Cinzel', serif;
+            color: var(--color-secondary-accent);
+            border-bottom: 1px solid var(--color-primary-accent);
+            padding-bottom: 0.5em;
+            margin-bottom: 1em;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        article {
+            margin-bottom: 1.5em;
+            padding-bottom: 1.5em;
+            border-bottom: 1px dashed var(--color-border);
+        }
+
+        article:last-child {
+            border-bottom: none;
+        }
+
+        article h3 {
+            font-family: 'Cinzel', serif;
+            color: var(--color-link);
+            margin-top: 0;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5em;
+            margin-top: 1.5em;
+        }
+
+        .gallery-item {
+            background-color: var(--color-border);
+            border: 1px solid var(--color-primary-accent);
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .gallery-item figcaption {
+            padding: 0.8em;
+            color: var(--color-text);
+            font-size: 0.9em;
+            text-align: center;
+        }
+
+        footer {
+            background-color: var(--color-primary-accent);
+            color: var(--color-text);
+            text-align: center;
+            padding: 0.5em 0;
+            margin-top: 1em;
+            border-top: 2px solid var(--color-secondary-accent);
+        }
+
+        footer p {
+            margin: 0;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1 class="gradient-text">Echoes of Europa</h1>
+        <p class="gradient-text" id="">Aquino Moraes </p>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="#history">History</a></li>
+            <li><a href="#architecture">Architecture</a></li>
+            <li><a href="#legends">Legends</a></li>
+            <li><a href="#artifacts">Artifacts</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+
+        <section id="architecture">
+            <h2>Stonework of the Ages</h2>
+            <p>The very stones speak of a bygone era. From the stoic grandeur of Roman ruins to the gothic spires piercing the perpetually grey skies, European architecture is a testament to human ambition and reverence for the enduring. These structures stand as silent sentinels, holding countless untold stories within their cold embrace.</p>
+            <div class="gallery">
+                <figure class="gallery-item">
+                    <img src="https://via.placeholder.com/280x200/3a3a3a/b0b0b0?text=Roman+Ruins" alt="Roman Ruins">
+                    <figcaption>Silent remnants of imperial might.</figcaption>
+                </figure>
+                <figure class="gallery-item">
+                    <img src="https://via.placeholder.com/280x200/3a3a3a/b0b0b0?text=Gothic+Cathedral" alt="Gothic Cathedral">
+                    <figcaption>Soaring arches towards the heavens.</figcaption>
+                </figure>
+                <figure class="gallery-item">
+                    <img src="https://via.placeholder.com/280x200/3a3a3a/b0b0b0?text=Medieval+Castle" alt="Medieval Castle">
+                    <figcaption>Fortresses guarding ancient secrets.</figcaption>
+                </figure>
+            </div>
+        </section>
+        
+        <section id="history">
+            <h2>Ancient Chronicles</h2>
+            <article>
+                <h3>The Fall of Empires</h3>
+                <p>Whispers from forgotten ages tell of empires grand and vast, their stones now crumbling under the weight of time. From the rise of legions to the silent decay of once-proud cities, the history of classical Europe is a tapestry woven with threads of triumph and tragedy, illuminated by the dim light of antiquity.</p>
+            </article>
+            <article>
+                <h3>Mysteries of the Medieval Era</h3>
+                <p>As dusk fell upon the ancient world, a new epoch dawned, shrouded in mist and superstition. The medieval period, with its towering cathedrals and shadowed castles, became a crucible for faith and fear, where knights and scholars navigated a world both brutal and beautiful.</p>
+            </article>
+        </section>
+
+        <section id="legends">
+            <h2>Whispers of Old</h2>
+            <p>Legends echo through the valleys and over the mountains, tales of heroes and monsters, of arcane rituals and forbidden knowledge. These narratives, passed down through generations, form the ethereal backbone of classical Europe, mingling history with myth in an intoxicating blend.</p>
+            <ul>
+                <li>The chilling saga of **Vlad Dracula**, a figure steeped in both historical truth and vampiric folklore.</li>
+                <li>The spectral riders of the **Wild Hunt**, galloping across moonlit skies, heralding omens.</li>
+                <li>The cryptic prophecies of the **Delphic Oracle**, guiding kings and confounding philosophers.</li>
+            </ul>
+        </section>
+
+        <section id="artifacts">
+            <h2>Relics of a Lost Time</h2>
+            <p>Dust-laden tomes, weathered scrolls, and ancient trinkets whisper tales of their original owners and the lives they once lived. Each artifact is a fragment of a larger mosaic, offering a fleeting glimpse into the minds and hands of those who shaped the dark classical age.</p>
+            <p>Explore the forgotten tools of alchemists, the worn hilts of legendary swords, and the intricate jewelry of vanished nobility, all imbued with the lingering essence of a profound past.</p>
+        </section>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Echoes of Europa. All rights reserved. Journey into the past.</p>
+    </footer>
+</body>
+</html>
