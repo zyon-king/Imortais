@@ -80,7 +80,7 @@
         
         #container-media p, h1, h2 {
     		color: white;
-        }  
+        }
 
         /* Título (h1) */
         h1 {
@@ -101,6 +101,41 @@
             line-height: 1.6;
             color: var(--color-text);
         }
+        
+        #container-media {
+            position: relative; /* Já está no seu código, mas é crucial */
+            width: 100%;
+            min-height: 100vh; /* Ou height: 100vh; se preferir */
+            overflow: hidden;
+            /* Adicione estas linhas para a camada preta */
+            z-index: 1; /* Garante que o conteúdo textual e outros elementos fiquem acima da camada */
+        }
+
+        #container-media::before {
+            content: ""; /* Essencial para pseudo-elementos */
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: black; /* Cor preta */
+            opacity: 0.9; /* Transparência (0.0 a 1.0) - ajuste este valor */
+            z-index: -1; /* Coloca a camada acima do vídeo, mas abaixo do conteúdo principal */
+        }
+
+        #container-media video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            z-index: -100; /* Garante que o vídeo fique atrás de todo o conteúdo */
+            transform: translate(-50%, -50%); /* Centraliza o vídeo */
+            object-fit: cover; /* Garante que o vídeo preencha o container, cortando se necessário */
+        }
+
         /* Estilo para os botões */
         .btn {
             background-color: #0a0d29;
@@ -189,19 +224,6 @@
             will-change: transform;
         }
 
-        #video-background {
-            position: absolute; /* Fixa o vídeo na viewport */
-            right: 0;
-            bottom: 0;
-            min-width: 100%;
-            min-height: 100%;
-            width: auto;
-            height: auto;
-            z-index: -100; /* Garante que o vídeo fique atrás de todo o conteúdo */
-            background-size: cover; /* Faz com que o vídeo cubra toda a área */
-            filter: brightness(60%); /* Opcional: escurece o vídeo para o texto ficar mais legível */
-        }
-
     </style>
 </head>
 <body>
@@ -213,8 +235,11 @@
             <div class="text" id="text-start">
                 <h1 class="gradient-text">Imortais Completos</h1>
                 <h2 class="gradient-text">O Recomeço</h2>
-                <p>O ano era 1889. Não se tratava apenas de escolhas imprevisíveis, mas de profecias seladas com consequências inimagináveis. Venha mergulhar de cabeça nesta jornada, onde dois irmãos, cujo anseio por poder e respeito os conduz por um caminho sombrio sem volta, repleto de dilemas morais. A atmosfera hipnotizante de Paris, a cidade das luzes, torna-se pano de fundo para a trama desenrolar-se em meio a um contexto de dualidade, onde a luta entre a luz e as trevas se torna iminente. Tudo isso entrelaçado por uma narrativa cativante e repleta de reviravoltas. Prepare-se, porque batalhas épicas estão prestes a começar.
-            <div class="button-row">
+                <p>Não se tratava apenas de escolhas imprevisíveis, mas de profecias seladas com consequências inimagináveis. Venha mergulhar de cabeça nesta jornada, onde dois irmãos, cujo anseio por poder e respeito os conduz por um caminho sombrio sem volta, repleto de dilemas morais. O ano era 1889, e a atmosfera hipnotizante de Paris, a cidade das luzes, torna-se pano de fundo para a trama desenrolar-se em meio a um contexto de dualidade, onde a luta entre a luz e as trevas se torna iminente. Tudo isso entrelaçado por uma narrativa cativante e repleta de reviravoltas. Prepare-se, porque batalhas épicas estão prestes a começar.
+            
+        </div>
+        
+        	<div class="button-row">
                 <button class="btn">Botão Único</button>
             </div>
 
@@ -224,30 +249,35 @@
             </div>
             
             </div>
-        </div>
     </div>
     
     <div class="container" id="container-media">
 
+    <video autoplay loop muted playsinline>
+        <source src="
+
     <video autoplay muted loop id="video-background">
-        <source src="https://github.com/zyon-king/Imortais/raw/refs/heads/main/candles.mp4" type="video/mp4">
-    	</video>
+        <source src="https://github.com/zyon-king/Imortais/raw/refs/heads/main/candles.mp4" type="video/mp4" type="video/mp4">
+        Seu navegador não suporta vídeos HTML5.
+    </video>
     
         <div class="content">  
             <div class="text">
                 <h1>"</h1>
                 <h2>Dualidade e Conflito</h2>
-                <p>A dualidade entre a luz e as trevas, o conflito moral e a busca por poder são elementos centrais que permeiam toda a narrativa, gerando uma atmosfera densa e envolvente.</p>
+                <p>"Eles são gêmeos é verdade e se amam com tal 
+ Até que o poder os consuma no final."
+</p>
             </div>
             <div class="text">
                 <h1>"</h1>
                 <h2>Profecias e Reviravoltas</h2>
-                <p>As profecias seladas e as reviravoltas inesperadas acrescentam camadas de complexidade à trama, mantendo os leitores imersos em um enredo repleto de surpresas e desdobramentos fascinantes.</p>
+                <p>Para cumprir a profecia eles renascerão mais poderosos. E com uma sede... que somente o poder pode saciar.</p>
             </div>
             <div class="text">
                 <h1>"</h1>
-                <h2>Dualidade e Conflito</h2>
-                <p>As épicas batalhas travadas, impulsionadas pela evolução dos personagens, prometem envolver os leitores em confrontos épicos e emocionantes, evidenciando a busca por poder e a luta pela sobrevivência.</p>
+                <h2>Épicas Batalhas</h2>
+                <p>Para cumprir a profecia eles renascerão mais poderosos. E com uma sede... que somente o poder pode saciar.</p>
             </div>
         </div>
     </div>
