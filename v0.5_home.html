@@ -39,6 +39,7 @@
 
         /* Definindo o container principal */
         .container {
+            background-image: var(--color-primary-accent);
             width: 100%;
             display: flex;
             justify-content: center;
@@ -114,29 +115,8 @@
           background-color: black; /* Define a cor da linha */
           margin: 20px auto; /* Centraliza a linha horizontalmente e adiciona margem */
         }
-        
-        #container-media {
-            position: relative; /* Já está no seu código, mas é crucial */
-            width: 100%;
-            min-height: 100vh; /* Ou height: 100vh; se preferir */
-            overflow: hidden;
-            /* Adicione estas linhas para a camada preta */
-            z-index: 1; /* Garante que o conteúdo textual e outros elementos fiquem acima da camada */
-        }
 
-        #container-media::before {
-            content: ""; /* Essencial para pseudo-elementos */
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: white; /* Cor preta */
-            opacity: 0.9; /* Transparência (0.0 a 1.0) - ajuste este valor */
-            z-index: -1; /* Coloca a camada acima do vídeo, mas abaixo do conteúdo principal */
-        }
-
-        #container-media video {
+        #container-video video {
             position: absolute;
             top: 50%;
             left: 50%;
@@ -147,6 +127,27 @@
             z-index: -100; /* Garante que o vídeo fique atrás de todo o conteúdo */
             transform: translate(-50%, -50%); /* Centraliza o vídeo */
             object-fit: cover; /* Garante que o vídeo preencha o container, cortando se necessário */
+        }
+        
+        #container-video {
+            position: relative; /* Já está no seu código, mas é crucial */
+            width: 100%;
+            min-height: 100vh; /* Ou height: 100vh; se preferir */
+            overflow: hidden;
+            /* Adicione estas linhas para a camada preta */
+            z-index: 1; /* Garante que o conteúdo textual e outros elementos fiquem acima da camada */
+        }
+
+        #container-video::before {
+            content: ""; /* Essencial para pseudo-elementos */
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: black; /* Cor preta */
+            opacity: 0.4; /* Transparência (0.0 a 1.0) - ajuste este valor */
+            z-index: -1; /* Coloca a camada acima do vídeo, mas abaixo do conteúdo principal */
         }
 
         /* Estilo para os botões */
@@ -264,7 +265,7 @@
             </div>
     </div>
     
-    <div class="container" id="container-media">
+    <div class="container" id="container-video">
 
     <video autoplay muted loop playsinline id="video-background">
         <source src="https://github.com/zyon-king/Imortais/raw/refs/heads/main/candles.mp4" type="video/mp4">
@@ -310,6 +311,19 @@
             </div>
             
         </div>
+    </div>
+
+    <div class="container" id="container-sinopse">
+        <div class="content">
+        
+            <div class="text" id="text-start">
+                <h1 class="gradient-text">Imortais Completos</h1>
+                <h2 class="gradient-text">O Recomeço</h2>
+                <p>Não se tratava apenas de escolhas imprevisíveis, mas de profecias seladas com consequências inimagináveis. Venha mergulhar de cabeça nesta jornada, onde dois irmãos, cujo anseio por poder e respeito os conduz por um caminho sombrio sem volta, repleto de dilemas morais. O ano era 1889, e a atmosfera hipnotizante de Paris, a cidade das luzes, torna-se pano de fundo para a trama desenrolar-se em meio a um contexto de dualidade, onde a luta entre a luz e as trevas se torna iminente. Tudo isso entrelaçado por uma narrativa cativante e repleta de reviravoltas. Prepare-se, porque batalhas épicas estão prestes a começar.<p>            
+        	</div>
+            
+        </div>
+        
     </div>
 
     <script>
