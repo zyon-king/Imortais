@@ -45,7 +45,7 @@
             justify-content: center;
             align-items: center;
             position: relative;
-            z-index: 1; /* Garante que o conteúdo fique abaixo do fog-overlay se ele for muito opaco */
+            z-index: -1; /* Garante que o conteúdo fique abaixo do fog-overlay se ele for muito opaco */
         }
 
         /* Container para o conteúdo (imagem e texto) */
@@ -58,6 +58,7 @@
             width: 100%;
             max-width: 1200px; /* Limita a largura para telas grandes */
             padding: 20px;
+            z-index: -1; /* Garante que o conteúdo fique abaixo do fog-overlay se ele for muito opaco */
         }
 
         /* Imagem */
@@ -217,32 +218,38 @@
             }
         }
 
-        /* Estilos da Neblina (Cobertura total da tela) */
-        #fog-overlay {
-            position: fixed; /* Fixa o elemento na viewport */
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden; /* Garante que a neblina não saia dos limites da viewport */
-            z-index: 999; /* Alto z-index para garantir que fique acima de quase tudo */
-            pointer-events: none; /* Permite interagir com o conteúdo abaixo */
+        /* Container Pequeno (frente) - Este é o container das nuvens */
+        .container-small {
+            width: 100%; /* Ocupa 100% do container-wrapper, não do body */
+            height: 100%; /* Ocupa 100% do container-wrapper, não do body */
+            position: absolute; /* Deve ser absoluto dentro do container-wrapper */
+            top: 0; /* Alinhar com o container-wrapper */
+            left: 0; /* Alinhar com o container-wrapper */
+            z-index: 1; /* Para ficar por cima dos outros containers */
+            background: transparent; /* Certifique-se de que o fundo não bloqueie as nuvens */
         }
 
         .cloud {
             position: absolute;
-            border-radius: 50%;
-            filter: blur(10px);
-            background: white;
-            background-size: cover;
-            will-change: transform;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; /* Forma mais parecida com uma nuvem */
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3); /* Um leve brilho nas nuvens */
+            background: radial-gradient(circle at center, blue 0%, black 70%); /* Gradiente das nuvens */
+            opacity: 0.1;
+            animation: floatCloud linear infinite;
+            filter: blur(50px); /* Blur effect */
+        }
+
+        @keyframes floatCloud {
+            0% { transform: translateX(-100); opacity: 0; } /* Alterado de 0.8 para 0 */
+            20% { opacity: 0.8; } /* Adicionado para uma transição suave de entrada */
+            50% { opacity: 1; }
+            80% { opacity: 0.8; } /* Adicionado para uma transição suave de saída */
+            100% { transform: translateX(calc(100vw + 400px)); opacity: 0; } /* Alterado de 0.8 para 0 */
         }
 
     </style>
 </head>
 <body>
-    <div id="fog-overlay"></div>
-
     <div class="container" id="container-start">
         <div class="content">           
             <img src="https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcQBS3CQXupdyvstNW6e3CuDJp-McDfUxVYBIsMT2kH5VYomuGubsiWbLC1S24gujTO8lkzRFUggGLKU5Ze1F0BHo61foXKJv71UPWXUB6irgDk7yrVv7PnHhw" alt="Imagem" class="image">
@@ -323,10 +330,41 @@
         	</div>
             
         </div>
-        
+    
+        <div class="container container-small" id="fog-container"></div>
     </div>
 
-    <script>
+        <script>
+        const numberOfClouds = 30; // Você pode mudar este número de nuvens para este container
+        const cloudContainer = document.getElementById('fog-container'); // Seleciona pelo ID
+
+        if (cloudContainer) { // Garante que o container foi encontrado
+            for (let i = 0; i < numberOfClouds; i++) {
+                const cloud = document.createElement('div');
+                cloud.classList.add('cloud');
+
+                // Randomize cloud size
+                const size = Math.floor(Math.random() * (150 - 50 + 1)) + 50; // Nuvens menores para caber no container
+                cloud.style.width = size + 'px';
+                cloud.style.height = (size * 0.6) + 'px';
+
+                // Randomize cloud position relative to the 'fog-container'
+                const containerWidth = cloudContainer.clientWidth;
+                const containerHeight = cloudContainer.clientHeight;
+                const posX = Math.floor(Math.random() * (containerWidth - size));
+                const posY = Math.floor(Math.random() * (containerHeight - (size * 0.6)));
+                cloud.style.left = -size + 'px';
+                cloud.style.top = posY + 'px';
+
+                // Randomize animation duration and delay
+                cloud.style.animationDuration = (Math.random() * (40 - 20) + 10) + 's'; // Animação um pouco mais rápida
+                cloud.style.animationDelay = (Math.random() * 5) + 's';
+
+                cloudContainer.appendChild(cloud);
+            }
+        } else {
+            console.error("Container with ID 'fog-container' not found.");
+        }
     </script>
 </body>
 </html>
