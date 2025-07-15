@@ -9,20 +9,26 @@
         :root {
             --color-background: linear-gradient(45deg, rgba(0, 19, 89, 1) 0%, rgba(2, 10, 41, 1) 17%, rgba(0, 19, 89, 1) 40%, rgba(2, 10, 41, 1) 60%, rgba(0, 19, 89, 1) 80%, rgba(2, 10, 41, 1) 100%);
             --color-text: #000000; /* Muted silver */
-            --color-primary-accent: linear-gradient(45deg,rgba(255, 255, 255, 1) 0%, rgba(222, 224, 252, 1) 34%, rgba(255, 255, 255, 1) 64%, rgba(222, 224, 252, 1) 100%); /* Even darker for header */
+            --color-primary-accent: linear-gradient(
+                45deg,
+                hsl(0deg 0% 0%) 0%,
+                hsl(240deg 10% 8%) 8%,
+                hsl(240deg 21% 14%) 17%,
+                hsl(240deg 35% 18%) 25%,
+                hsl(240deg 21% 41%) 33%,
+                hsl(240deg 21% 68%) 42%,
+                hsl(0deg 0% 100%) 50%,
+                hsl(240deg 21% 68%) 58%,
+                hsl(240deg 21% 41%) 67%,
+                hsl(240deg 35% 18%) 75%,
+                hsl(240deg 21% 14%) 83%,
+                hsl(240deg 10% 8%) 92%,
+                hsl(0deg 0% 0%) 100%
+              );
             --color-secondary-accent: #7f8c8d;
             --color-border: #1a1a1a;
-            --color-link: #b5a793;
-            --color-link-hover: #e0d0bc;
-        }
-        /* Aplique este estilo ao elemento de texto onde você quer o gradiente */
-        .gradient-text {
-            text-align: center;background: #06008C;
-            background: repeating-linear-gradient(to top, #06008C 39%, #000000 50%, #06008C 65%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-weight: bold;
-            font-family: 'Cinzel', serif;
+            --color-link: #523914;
+            --color-link-hover: #D2DEFF;
         }
         /* Resetando alguns estilos padrões */
         * {
@@ -39,7 +45,7 @@
 
         /* Definindo o container principal */
         .container {
-            background-image: var(--color-primary-accent);
+            background-image: white;
             width: 100%;
             display: flex;
             justify-content: center;
@@ -72,14 +78,11 @@
         /* Texto */
         .text {
             /*background-image: url('https://raw.githubusercontent.com/zyon-king/Imortais/refs/heads/main/bricks.jpg');*/
+            color: var(--color-link);
             width: 48%;
             min-height: 100%;
             text-align: justify;
             padding: 1.5rem;
-        }
-        
-        #container-start{
-            background-image: var(--color-primary-accent);
         }
         
         #container-media h1,
@@ -93,20 +96,20 @@
         h1 {
             font-size: 2.5rem;
             margin-bottom: 10px;
+            text-align: center;
         }
 
         /* Subtítulo (h2) */
         h2 {
             font-size: 1.5rem;
             margin-bottom: 20px;
-            color: #555; /* Cor mais suave para o subtítulo */
+            text-align: center;
         }
 
         /* Parágrafo */
         p {
             font-size: 1.2rem;
             line-height: 1.6;
-            color: var(--color-text);
         }
         
         hr {
@@ -140,7 +143,7 @@
         }
         
         #container-sinopse {
-            background-image: radial-gradient(circle at center, blue 0%, black 70%);
+            background-image: radial-gradient(circle at center, #0000F5 0%, black 85%);
         }
         
         #container-sinopse h1,
@@ -232,7 +235,7 @@
             position: absolute;
             border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; /* Forma mais parecida com uma nuvem */
             box-shadow: 0 0 15px rgba(255, 255, 255, 0.3); /* Um leve brilho nas nuvens */
-            background: radial-gradient(circle at center, blue 0%, black 70%); /* Gradiente das nuvens */
+            background: radial-gradient(circle at center, black 0%, black 90%); /* Gradiente das nuvens */
             opacity: 0.1;
             animation: floatCloud linear infinite;
             filter: blur(50px); /* Blur effect */
@@ -253,8 +256,8 @@
         <div class="content">           
             <img src="https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcQBS3CQXupdyvstNW6e3CuDJp-McDfUxVYBIsMT2kH5VYomuGubsiWbLC1S24gujTO8lkzRFUggGLKU5Ze1F0BHo61foXKJv71UPWXUB6irgDk7yrVv7PnHhw" alt="Imagem" class="image">
             <div class="text" id="text-start">
-                <h1 class="gradient-text">Imortais Completos</h1>
-                <h2 class="gradient-text">O Recomeço</h2>
+                <h1>Imortais Completos</h1>
+                <h2>O Recomeço</h2>
                 <p>Não se tratava apenas de escolhas imprevisíveis, mas de profecias seladas com consequências inimagináveis. Venha mergulhar de cabeça nesta jornada, onde dois irmãos, cujo anseio por poder e respeito os conduz por um caminho sombrio sem volta, repleto de dilemas morais. O ano era 1889, e a atmosfera hipnotizante de Paris, a cidade das luzes, torna-se pano de fundo para a trama desenrolar-se em meio a um contexto de dualidade, onde a luta entre a luz e as trevas se torna iminente. Tudo isso entrelaçado por uma narrativa cativante e repleta de reviravoltas. Prepare-se, porque batalhas épicas estão prestes a começar.
             
         </div>
