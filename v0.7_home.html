@@ -80,6 +80,7 @@
             color: var(--color-link);
             width: 48%;
             min-height: 100%;
+            justify-content: center;
             text-align: justify;
             padding: 1.5rem;
         }
@@ -121,12 +122,17 @@
           margin: 20px auto; /* Centraliza a linha horizontalmente e adiciona margem */
         }
 
+        br {
+          text-indent: 2em; /* ou use px, %, rem, etc. */
+          font-size: 1rem;
+        }
+
         #container-video iframe {
             position: absolute;
             top: 50%;
             left: 50%;
-            min-width: 100%;
-            max-height: 100%;
+            min-width: auto;
+            min-height: 100%;
             width: auto;
             height: 50vh;
             z-index: -100; /* Garante que o vídeo fique atrás de todo o conteúdo */
@@ -135,9 +141,10 @@
         }
         
         #container-video {
+            background-image:  linear-gradient(135deg, #1e5799 0%,#000000 30%,#000000 30%,#1e5799 50%,#000000 70%,#1e5799 100%);
             position: relative; /* Já está no seu código, mas é crucial */
             width: 100%;
-            height: 50vh; /* Ou height: 100vh; se preferir */
+            padding-top: 56.25%; /* 16:9 = 9/16 = 0.5625 = 56.25% */
             overflow: hidden;
             /* Adicione estas linhas para a camada preta */
             z-index: 1; /* Garante que o conteúdo textual e outros elementos fiquem acima da camada */
@@ -155,19 +162,86 @@
 
         /* Estilo para os botões */
         .btn {
-            background-color: #0a0d29;
-            color: #fff;
-            border: none;
+            background-color: white;
+            color: 0b3d61;
+			border: 3px solid #6f4330;
             padding: 10px 20px;
             font-size: 1rem;
+            text-decoration:none;
             cursor: pointer;
-            border-radius: 5px;
+            border-radius: 20px;
             transition: background-color 0.3s ease;
             margin: 10px;
+  			white-space: nowrap;
+        }
+        .btn:hover {
+            background-color: #e9eaff;
+          	transform: scale(1.03);
         }
 
-        .btn:hover {
-            background-color: #7f8c8d;
+        .btn:active {
+          transform: scale(0.98); /* Faz parecer que o botão afundou */
+          box-shadow: inset 0 2px 4px rgba(0,0,0,0.2); /* Sombra interna */
+        }
+        .button-89 {
+          --b: 3px;   /* espessura da borda */
+          --s: .45em; /* tamanho do canto */
+          --color: #0a0d29;
+
+          padding: calc( .8em + var(--s)) calc(1.5em + var(--s));
+          color: var(--color);
+          --_p: var(--s);
+          background:
+            conic-gradient(from 90deg at var(--b) var(--b),#0000 90deg,var(--color) 0)
+            var(--_p) var(--_p)/calc(100% - var(--b) - 2*var(--_p)) calc(100% - var(--b) - 2*var(--_p));
+          transition: .3s linear, color 0s, background-color 0s;
+          outline: var(--b) solid #0000;
+          outline-offset: .6em;
+          font-size: 16px;
+          font-family: sans-serif;
+
+          border: 0;
+          cursor: pointer;
+
+          user-select: none;
+          -webkit-user-select: none;
+          touch-action: manipulation;
+        }
+
+        .button-89:hover,
+        .button-89:focus-visible {
+          --_p: 10px;
+          	outline-offset: .01em;
+            background-color: #e9eaff;
+          	transform: scale(1.03);
+        }
+
+        .button-89:active {
+          --_p: 0px;
+          	outline-offset: .05em;
+          transform: scale(0.96); /* Faz parecer que o botão afundou */
+          box-shadow: inset 0 2px 4px rgba(0,0,0,0.2); /* Sombra interna */
+        }
+        
+        .floating-buttons-container {
+          position: fixed;
+          top: 1px;
+          right: -1px;
+          display: flex;
+          flex-direction: column;
+          gap: 12px; /* espaçamento entre os botões */
+          z-index: 999;
+        }
+
+        .floating-button img {
+          width: 4em;
+          height: 3.8em;
+          cursor: pointer;
+          transition: transform 0.2s;
+        }
+
+        .floating-button img:hover {
+          transform: scale(1.1); /* efeito de zoom ao passar o mouse */
         }
 
         /* Estilo para telas pequenas (mobile) */
@@ -177,12 +251,12 @@
             }
 
             .image {
-                width: 80%; /* A imagem ocupa 80% da largura no mobile */
+                width: 100%; /* A imagem ocupa 80% da largura no mobile */
                 margin: 0 auto 20px;
             }
 
             .text {
-                width: 80%;
+                width: 100%;
                 margin: 0 auto;
             }
 
@@ -195,12 +269,19 @@
             }
 
             p {
+            	text-indent: 2em; /* ou use px, %, rem, etc. */
+                font-size: 1rem;
+            }
+
+            br {
+            	text-indent: 2em; /* ou use px, %, rem, etc. */
                 font-size: 1rem;
             }
         }
         
         table {
           text-align: center;
+          margin: 0 auto; /* Add this line */
         }
         
         /* --- Specific CSS for Read More feature --- */
@@ -262,18 +343,19 @@
             <div class="text" id="text-start">
                 <h1>Imortais Completos</h1>
                 <h2>O Recomeço</h2>
-                <p>Não se tratava apenas de escolhas imprevisíveis, mas de profecias seladas com consequências inimagináveis. Venha mergulhar de cabeça nesta jornada, onde dois irmãos, cujo anseio por poder e respeito os conduz por um caminho sombrio sem volta, repleto de dilemas morais. O ano era 1889, e a atmosfera hipnotizante de Paris, a cidade das luzes, torna-se pano de fundo para a trama desenrolar-se em meio a um contexto de dualidade, onde a luta entre a luz e as trevas se torna iminente. Tudo isso entrelaçado por uma narrativa cativante e repleta de reviravoltas. Prepare-se, porque batalhas épicas estão prestes a começar.            
+                <p>O ano era 1889, e a atmosfera hipnotizante de Paris, a cidade das luzes, torna-se pano de fundo para a trama desenrolar-se em meio a um contexto de dualidade, onde a luta entre a luz e as trevas se torna iminente.</p>
+                <p>Não se tratava apenas de escolhas imprevisíveis, mas de profecias seladas com consequências inimagináveis. Venha mergulhar de cabeça nesta jornada, onde dois irmãos, cujo anseio por poder e respeito os conduz por um caminho sombrio sem volta, repleto de dilemas morais.</p>
+                <p>Tudo isso entrelaçado por uma narrativa cativante e repleta de reviravoltas. Então prepare-se, porque batalhas épicas estão prestes a começar.</p>
+                <table>
+                  <tr>
+                    <td colspan="2"><button class="button-89" role="button">Saiba Mais</button></td>
+                  </tr>
+                  <tr>
+                    <td><button class="btn">Emcomendar</button></td>
+                    <td><button class="btn">Comprar Agora</button></td>
+                  </tr>
+                </table>
             </div>
-        
-            <table>
-              <tr>
-                <td colspan="2"><button class="btn">Saiba mais</button></td>
-              </tr>
-              <tr>
-                <td><button class="btn">Emcomendar</button></td>
-                <td><button class="btn">Comprar Agora</button></td>
-              </tr>
-            </table>
             
         </div>
     </div>
@@ -349,7 +431,14 @@ Outro ponto que merece destaque é a relação entre os irmãos. Embora unidos p
         </div>
         <div class="container container-small" id="fog-container"></div>
     </div>
-
+    <div class="floating-buttons-container">
+    <div class="floating-button">
+        <img src="https://static.wixstatic.com/media/ce6c69_f2fe9ae3fe2d445696e7d067be71e604~mv2.png" alt="Instagram">
+      </div>
+      <div class="floating-button">
+        <img src="https://raw.githubusercontent.com/zyon-king/Imortais/refs/heads/main/botao-comprar.png" alt="Button 2">
+      </div>
+    </div>  
         <script>
         const numberOfClouds = 30; // Você pode mudar este número de nuvens para este container
         const cloudContainer = document.getElementById('fog-container'); // Seleciona pelo ID
