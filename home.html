@@ -125,7 +125,7 @@
             position: absolute;
             top: 50%;
             left: 50%;
-            min-width: 100%;
+            min-width: auto;
             max-height: 100%;
             width: auto;
             height: 50vh;
@@ -135,9 +135,10 @@
         }
         
         #container-video {
+            background-image:  linear-gradient(135deg, #1e5799 0%,#000000 30%,#000000 30%,#1e5799 50%,#000000 70%,#1e5799 100%);
             position: relative; /* Já está no seu código, mas é crucial */
             width: 100%;
-            height: 50vh; /* Ou height: 100vh; se preferir */
+            padding-top: 56.25%; /* 16:9 = 9/16 = 0.5625 = 56.25% */
             overflow: hidden;
             /* Adicione estas linhas para a camada preta */
             z-index: 1; /* Garante que o conteúdo textual e outros elementos fiquem acima da camada */
