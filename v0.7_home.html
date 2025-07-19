@@ -51,7 +51,6 @@
             justify-content: center;
             align-items: center;
             position: relative;
-            z-index: -1; /* Garante que o conteúdo fique abaixo do fog-overlay se ele for muito opaco */
         }
 
         /* Container para o conteúdo (imagem e texto) */
@@ -149,7 +148,6 @@
         #container-sinopse h2,
         #container-sinopse p {
             color: var(--color-link-hover);
-            text-align: center;
         }
 
         /* Estilo para os botões */
@@ -200,6 +198,27 @@
         
         table {
           text-align: center;
+        }
+        
+        /* --- Specific CSS for Read More feature --- */
+        .more-text {
+          display: none; /* This hides the content initially */
+        }
+
+        .read-more-btn {
+          background: none; /* No background */
+          border: none; /* No border */
+          color: #007bff; /* Blue text color for the link */
+          cursor: pointer;
+          font-size: inherit; /* Inherit font size from parent */
+          padding: 0;
+          text-decoration: underline; /* Underline the text */
+          /* Remove outline on focus for better aesthetics */
+          outline: none;
+        }
+
+        .read-more-btn:hover {
+          color: #0056b3; /* Darker blue on hover */
         }
 
         /* Container Pequeno (frente) - Este é o container das nuvens */
@@ -284,7 +303,7 @@
             
             <div class="text" style="background-color: #ecf1f9">
                 <h2>꧁Batalhas Épicas꧂</h2>
-                <h3>Para cumprir a profecia eles renascerão mais poderosos. E com uma sede... que somente o poder pode saciar.</h3>
+                <h3>Dois jovens irmãos que lutam para ascender ao poder e se tornarem os imortais mais poderosos de todos os tempos.</h3>
                 <hr>
             </div>
             
@@ -294,14 +313,36 @@
     <div class="container" id="container-sinopse">
         <div class="content">
         
-            <div class="text" id="text-start">
+            <div class="text" id="text-sinopse">
                 <h1>Imortais Completos</h1>
                 <h2>O Recomeço</h2>
-                <p>Não se tratava apenas de escolhas imprevisíveis, mas de profecias seladas com consequências inimagináveis. Venha mergulhar de cabeça nesta jornada, onde dois irmãos, cujo anseio por poder e respeito os conduz por um caminho sombrio sem volta, repleto de dilemas morais. O ano era 1889, e a atmosfera hipnotizante de Paris, a cidade das luzes, torna-se pano de fundo para a trama desenrolar-se em meio a um contexto de dualidade, onde a luta entre a luz e as trevas se torna iminente. Tudo isso entrelaçado por uma narrativa cativante e repleta de reviravoltas. Prepare-se, porque batalhas épicas estão prestes a começar.<p>            
+                <p>
+                    "Imortais Completos – O Recomeço", escrito por Alexandre Lamim em parceria com Celonice A. Lamim, é uma envolvente obra de fantasia que mergulha o leitor em um universo sombrio, elegante e absolutamente viciante, onde vampiros, lobisomens e profecias entrelaçam-se numa trama cheia de reviravoltas, ação e emoção.<br><br>
+
+A narrativa inicia com uma cena dramática e arrebatadora, que já entrega o tom intenso da história: um guerreiro ferido, ajoelhado, testemunha a perda irreparável de alguém amado. A dor e o sentimento de vingança que o dominam reverberam ao longo de toda a obra. A partir daí, o leitor é conduzido ao século XIX, em meio às vielas escuras de uma Paris em
+                <span class="more-text" id="hidden-synopsis">
+                     transformação, para acompanhar a jornada dos irmãos Vincent e Victor Fourier — jovens da aristocracia francesa, desajustados com as normas sociais e desejosos de algo maior: respeito, poder e liberdade.<br><br>
+
+A escrita de Lamim é vívida, cinematográfica. Cada cenário é meticulosamente descrito, transportando o leitor para mansões suntuosas, tavernas misteriosas e becos perigosos. Os personagens, especialmente os irmãos gêmeos, são complexos, com motivações profundas e muitas vezes conflitantes. A transformação em vampiros marca não apenas uma mudança física, mas uma verdadeira quebra de paradigmas em suas personalidades e destinos.<br><br>
+
+Um dos grandes trunfos da obra é a construção do universo mitológico. As regras entre os clãs, os rituais de batismo, o papel dos padrinhos, o conselho de anciões, a presença ameaçadora dos lobisomens e a figura lendária do Conde Drácula — tudo é costurado com habilidade e coerência. Além disso, o livro insere profecias enigmáticas e jornadas de autoconhecimento que dão à trama um caráter épico e ao mesmo tempo intimista.<br><br>
+
+Outro ponto que merece destaque é a relação entre os irmãos. Embora unidos pelo sangue, Vincent e Victor seguem caminhos distintos dentro do novo mundo em que são inseridos. A oposição entre os dois, com um buscando poder absoluto e o outro ansiando por respeito e equilíbrio, instiga o leitor e cria um dinamismo narrativo cativante.<br><br>
+
+"Imortais Completos – O Recomeço" não é apenas uma história de vampiros — é uma saga sobre identidade, escolhas e transformação. A mistura entre fantasia, drama, ação e uma pitada de crítica social garante à obra um lugar de destaque dentro da literatura fantástica nacional. Com capítulos bem estruturados, ritmo envolvente e personagens marcantes, o livro conquista tanto fãs do gênero quanto leitores em busca de uma aventura arrebatadora e inesquecível.
+                </span>
+                <button class="read-more-btn" id="read-more-btn">Leia Mais</button>
+            	</p>         
         	</div>
+        
+            <table>
+              <tr>
+                <td><button class="btn">Emcomendar</button></td>
+                <td><button class="btn">Comprar Agora</button></td>
+              </tr>
+            </table>
             
         </div>
-    
         <div class="container container-small" id="fog-container"></div>
     </div>
 
@@ -336,6 +377,26 @@
         } else {
             console.error("Container with ID 'fog-container' not found.");
         }
+        
+        function initializeReadMore() {
+          const readMoreBtn = document.getElementById('read-more-btn');
+          const hiddenSynopsis = document.getElementById('hidden-synopsis');
+
+          if (readMoreBtn && hiddenSynopsis) {
+            readMoreBtn.addEventListener('click', function() {
+              if (hiddenSynopsis.style.display === 'none' || hiddenSynopsis.style.display === '') {
+                hiddenSynopsis.style.display = 'inline'; // Or 'block' if you want it on a new line
+                readMoreBtn.textContent = 'Mostrar Menos'; // Change button text
+              } else {
+                hiddenSynopsis.style.display = 'none';
+                readMoreBtn.textContent = 'Leia Mais'; // Change button text back
+              }
+            });
+          }
+        }
+        
+        // Call the function once the DOM is fully loaded
+		document.addEventListener('DOMContentLoaded', initializeReadMore);
     </script>
 </body>
 </html>
