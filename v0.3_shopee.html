@@ -57,17 +57,16 @@
         .overlay-content {
             background-color: #f0f2f5;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            width: 90vw; /* 80% of viewport width */
-            max-width: 450px; /* Maximum width to prevent it from getting too large */
-            height: 100%; /* Occupies 100% of the overlay height */
-            box-sizing: border-box; /* Ensures padding and border are included in width/height */
+            width: 90vw;
+            max-width: 450px;
+            height: 100%;
+            box-sizing: border-box;
             position: relative;
-            padding-bottom: 70px; /* Add space for fixed footer if needed */
-            overflow-y: auto; /* Enable scrolling for content if it overflows */
-
-            /* Transition for the slide effect */
-            transform: translateX(100%); /* Starts off-screen, to the right */
-            transition: transform 0.4s ease-out; /* Speed and type of transition */
+            overflow-y: auto;
+            transform: translateX(100%);
+            transition: transform 0.4s ease-out;
+            display: flex;
+            flex-direction: column;
         }
 
         .overlay.active .overlay-content {
@@ -311,7 +310,75 @@
 
         .checkout-item-block > div {
             margin-bottom: 5px;
+        }        
+
+        /* Bottom Section (Sticky Footer) */        
+        .no-selection {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #f0f0f0;
         }
+        
+        .bottom-section {
+            position: sticky;
+            bottom: 0;
+            background-color: white;
+            border-top: 1px solid #eee;
+            padding: 15px;
+            display: column;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.05);
+            margin-top: auto;
+            flex-shrink: 0;
+        }
+
+        .select-all {
+            display: flex;
+            align-items: center;
+        }
+
+        .select-all-checkbox {
+            margin-right: 8px;
+            transform: scale(1.2);
+        }
+
+        .select-all-text {
+            font-size: 0.95em;
+            color: #333;
+        }
+
+        .total-section {
+            display: flex;
+            align-items: center;
+        }
+
+        .total-price {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #ee4d2d;
+            margin-right: 15px;
+        }
+
+        .continue-btn {
+            background-color: #ee4d2d;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 3px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .continue-btn:disabled {
+            background-color: #f5a08e; /* Lighter red when disabled */
+            cursor: not-allowed;
+        }
+
 
         /* Responsive adjustments for product-item layout */
         @media (max-width: 600px) {
@@ -403,21 +470,25 @@
                         Digite aqui --> Entrega rápida, por favor!
                     </div>
                 </div>
+                
             </div>
             
             <div class="bottom-section">
-	            <div class="no-selection">
-            		<div class="selection-icon"></div>
-            		<div class="selection-text">Nenhum item selecionado (?)</div>
+            	
+                <div class="no-selection">
+					Nenhum item selecionado ('')
             	</div>
-            	<div class="select-all">
-                	<input type="checkbox" class="select-all-checkbox">
-                	<span class="select-all-text">Tudo</span>
+               	        
+            	<div class="total-section"> 
+               	   	<input type="checkbox" class="select-all-checkbox">
+               	   	<span class="select-all-text">Tudo</span>
+               	    
+            		<div class="total-price" id="cart-total-price">R$0,00</div>
+            		<button class="continue-btn" disabled onclick="showCheckout()">
+               	    	Continuar (0)
+               	    </button>                          
             	</div>
-                <div class="total-section">
-                	<div class="total-price" id="cart-total-price">R$0,00</div>
-                	<button class="continue-btn" disabled onclick="showCheckout()">Continuar (0)</button>
-                </div>
+                
            </div>
            
         </div><!-Content-->
