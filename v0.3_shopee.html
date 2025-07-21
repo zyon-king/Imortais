@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Carrinho de Compras - Shopee Inspired</title>
+    <title>Sliding Overlay</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -17,105 +17,83 @@
             box-sizing: border-box;
         }
 
-        /* Add to Cart Button */
-        .add-to-cart-btn {
-            background-color: #ee4d2d; /* Shopee's primary orange */
-            color: white;
+        .open-overlay-button {
             padding: 15px 30px;
+            font-size: 18px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
             border: none;
             border-radius: 5px;
-            font-size: 1.1em;
-            cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            transition: background-color 0.3s ease, transform 0.2s ease;
+            transition: background-color 0.3s ease;
         }
 
-        .add-to-cart-btn:hover {
-            background-color: #d84323;
-            transform: translateY(-2px);
+        .open-overlay-button:hover {
+            background-color: #0056b3;
         }
 
-        /* Overlay for the Modal */
+        /* Overlay Styles */
         .overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: none; /* Hidden by default */
-            justify-content: flex-end; /* Align cart modal to the right */
+            background-color: rgba(0, 0, 0, 0.5); /* Transparent dark background for overlay */
+            display: flex;
+            justify-content: flex-end; /* Align content to the right */
             align-items: center;
             z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
         }
 
         .overlay.active {
-            display: flex; /* Show when active */
+            opacity: 1;
+            visibility: visible;
         }
 
-        /* Cart Modal Container */
-        .cart-modal-container {
-            width: 100%;
-            max-width: 420px; /* Typical width for a side modal */
-            height: 100%;
-            position: relative; /* Needed for absolute positioning of inner modals */
-            overflow: hidden; /* Hide overflowing content during transitions */
-        }
-
-        /* Cart Modal (Step 1) */
-        .cart-modal {
-            background-color: #f0f2f5; /* Light gray background for the modal */
-            width: 100%;
-            height: 100%;
-            position: absolute; /* Allows side-by-side positioning with checkout */
-            top: 0;
-            left: 0;
-            display: flex;
-            flex-direction: column;
-            transform: translateX(0); /* Start on-screen */
-            transition: transform 0.3s ease-out;
-            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.2);
-            overflow-y: auto; /* Enable scrolling for content */
-        }
-
-        /* Checkout Modal (Step 2) */
-        .checkout-modal {
+        .overlay-content {
             background-color: #f0f2f5;
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            top: 0;
-            left: 0; /* Initially off-screen to the right */
-            display: flex;
-            flex-direction: column;
-            transform: translateX(100%); /* Start off-screen to the right */
-            transition: transform 0.3s ease-out;
-            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.2);
-            overflow-y: auto;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            width: 90vw; /* 80% of viewport width */
+            max-width: 450px; /* Maximum width to prevent it from getting too large */
+            height: 100%; /* Occupies 100% of the overlay height */
+            box-sizing: border-box; /* Ensures padding and border are included in width/height */
+            position: relative;
+            padding-bottom: 70px; /* Add space for fixed footer if needed */
+            overflow-y: auto; /* Enable scrolling for content if it overflows */
+
+            /* Transition for the slide effect */
+            transform: translateX(100%); /* Starts off-screen, to the right */
+            transition: transform 0.4s ease-out; /* Speed and type of transition */
         }
 
-        /* Active state for modal transition */
-        .overlay.active .cart-modal {
-            transform: translateX(0); /* Ensure cart modal slides in */
+        .overlay.active .overlay-content {
+            transform: translateX(0); /* Slides to the normal position (0) */
         }
 
-        .overlay.checkout-active .cart-modal {
-            transform: translateX(-100%); /* Slide cart modal out to the left */
+        .overlay-content h2 {
+            margin-top: 0;
+            color: #333;
         }
 
-        .overlay.checkout-active .checkout-modal {
-            transform: translateX(0); /* Slide checkout modal in from the right */
+        .overlay-content p {
+            color: #555;
+            line-height: 1.6;
         }
 
         /* Cart Header */
         .cart-header {
             display: flex;
             align-items: center;
-            padding: 15px;
+            padding: 10px;
+            width: 100%;
             background-color: white;
             border-bottom: 1px solid #eee;
             position: sticky;
-            top: 0;
+            top: 0; /* Make it sticky at the top of the overlay-content */
             z-index: 10;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
         }
@@ -123,37 +101,28 @@
         .cart-header .back-btn {
             background: none;
             border: none;
-            font-size: 1.8em;
+            font-size: 2.4em;
             margin-right: 15px;
             cursor: pointer;
             color: #555;
             padding: 0;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .back-btn:hover {
+            scale: 1.1;
+        }
+
+        .back-btn:active {
+            scale: 1.0;
         }
 
         .cart-header .cart-title {
+            text-align: center;
             font-size: 1.2em;
             font-weight: bold;
             flex-grow: 1;
             color: #333;
-        }
-
-        .cart-header .edit-btn {
-            background: none;
-            border: none;
-            color: #007bff;
-            font-size: 0.9em;
-            cursor: pointer;
-            margin-right: 15px;
-        }
-
-        .cart-header .notification-icon {
-            background-color: #ee4d2d;
-            color: white;
-            border-radius: 50%;
-            padding: 3px 8px;
-            font-size: 0.8em;
-            font-weight: bold;
-            line-height: 1;
         }
 
         /* Store Section */
@@ -180,7 +149,6 @@
         .store-icon {
             width: 20px;
             height: 20px;
-            background-color: #ccc; /* Placeholder for a store icon */
             border-radius: 50%;
             margin-right: 8px;
         }
@@ -200,7 +168,7 @@
             border-bottom: 1px solid #f9f9f9;
         }
 
-        .product-item:last-child {
+        .product-item:last-of-type { /* Changed to last-of-type to target the last product item in its parent */
             border-bottom: none; /* No border for the last item */
             margin-bottom: 0;
             padding-bottom: 0;
@@ -212,54 +180,80 @@
             transform: scale(1.2);
         }
 
+        .product-image-placeholder {
+            flex-shrink: 0; /* Prevent image from shrinking */
+            width: 80px; /* Adjust as needed */
+            height: 80px; /* Adjust as needed */
+            margin-right: 15px;
+        }
+
+        .product-image-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
         .product-info {
             flex-grow: 1;
-            margin-right: 10px;
+            display: flex;
+            flex-direction: column; /* Changed to column to stack elements */
+            justify-content: space-between;
+        }
+
+        /* Group for Title and Quantity */
+        .title-and-quantity {
+            display: flex;
+            align-items: center; /* Align items vertically */
+            justify-content: space-between; /* Push quantity to the right */
+            margin-bottom: 5px; /* Space between title/qty and prices */
+            flex-wrap: wrap; /* Allow wrapping on small screens */
         }
 
         .product-title {
             font-size: 0.95em;
             color: #333;
-            margin-bottom: 5px;
-            display: flex;
-            align-items: center;
+            font-weight: bold; /* Make title bold */
+            margin-bottom: 0; /* Remove bottom margin from title directly */
+            flex-grow: 1; /* Allow title to take available space */
+            margin-right: 10px; /* Space between title and quantity */
         }
 
-        .product-variant {
-            font-size: 0.85em;
-            color: #777;
-            margin-bottom: 5px;
+        /* Price Group */
+        .price-group {
+            display: flex; /* Allow current and old price to be side by side */
+            align-items: baseline; /* Align prices at their baseline */
+            margin-top: 5px; /* Space above prices */
         }
 
         .product-price {
             font-size: 1.1em;
             font-weight: bold;
             color: #ee4d2d;
-            display: flex;
-            align-items: center;
+            margin-right: 8px; /* Space between current and old price */
         }
 
         .product-old-price {
             font-size: 0.8em;
             color: #999;
             text-decoration: line-through;
-            margin-left: 8px;
         }
 
         /* Quantity Controls */
         .quantity-controls {
             display: flex;
-            align-items: center;
             border: 1px solid #ddd;
+            align-items: center;
             border-radius: 3px;
+            flex-shrink: 0; /* Prevent quantity controls from shrinking */
         }
 
         .quantity-btn {
             background-color: #f5f5f5;
             border: none;
-            padding: 8px 12px;
+            padding: 6px 10px; /* Adjusted padding for smaller size */
             cursor: pointer;
-            font-size: 1.1em;
+            font-size: 1em; /* Adjusted font size */
             color: #555;
             transition: background-color 0.2s;
         }
@@ -269,13 +263,14 @@
         }
 
         .quantity-input {
-            width: 40px;
+            width: 30px; /* Adjusted width for smaller size */
             text-align: center;
             border: none;
             outline: none;
-            font-size: 1em;
+            font-size: 0.9em; /* Adjusted font size */
             color: #333;
             background-color: white;
+            padding: 6px 0; /* Adjusted padding */
         }
 
         /* Flag and Badges */
@@ -301,703 +296,165 @@
             white-space: nowrap; /* Prevent wrapping */
         }
 
-        /* Promo Section */
-        .promo-section {
-            background-color: white;
-            margin-top: 10px;
-            padding: 15px;
-            display: flex;
-            align-items: center;
-            color: #333;
-            font-size: 0.9em;
-        }
-
-        .truck-icon {
-            width: 24px;
-            height: 24px;
-            background-color: #ccc; /* Placeholder for truck icon */
-            border-radius: 50%;
-            margin-right: 10px;
-        }
-
-        .promo-text {
-            flex-grow: 1;
-        }
-
-        .arrow-right {
-            font-weight: bold;
-            font-size: 1.2em;
-            color: #777;
-        }
-
-        /* Separator Section */
-        .separator-section {
-            display: flex;
-            align-items: center;
-            padding: 15px;
-            background-color: #f0f2f5; /* Background to separate */
-            font-size: 0.9em;
-            color: #777;
-            border-bottom: 1px dashed #ddd;
-            border-top: 1px dashed #ddd;
-            margin-top: 10px;
-        }
-
-        .separator-icon {
-            width: 18px;
-            height: 18px;
-            background-color: #ccc; /* Placeholder */
-            border-radius: 50%;
-            margin-right: 10px;
-        }
-
-        .separator-text {
-            flex-grow: 1;
-        }
-
-        .clear-btn {
-            background: none;
-            border: none;
-            color: #007bff;
-            font-size: 0.9em;
-            cursor: pointer;
-        }
-
-        /* Voucher Section */
-        .voucher-section {
-            background-color: white;
-            margin-top: 10px;
-            padding: 15px;
-        }
-
-        .voucher-item {
-            display: flex;
-            align-items: center;
-            font-size: 0.95em;
-            color: #333;
-        }
-
-        .voucher-icon {
-            font-size: 1.5em;
-            margin-right: 10px;
-        }
-
-        .voucher-text {
-            flex-grow: 1;
-            font-weight: bold;
-        }
-
-        .voucher-input {
-            color: #ee4d2d;
-            font-weight: bold;
-        }
-
-        /* No Selection */
-        .no-selection {
-            display: flex;
-            align-items: center;
-            padding: 15px;
-            background-color: white;
-            margin-top: 10px;
-            font-size: 0.9em;
-            color: #777;
-        }
-
-        .selection-icon {
-            width: 20px;
-            height: 20px;
-            background-color: #ccc; /* Placeholder */
-            border-radius: 50%;
-            margin-right: 10px;
-        }
-
-        /* Bottom Section (Sticky Footer) */
-        .bottom-section {
-            position: sticky;
-            bottom: 0;
-            background-color: white;
-            border-top: 1px solid #eee;
-            padding: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 10;
-            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.05);
-            margin-top: auto; /* Push to the bottom */
-        }
-
-        .select-all {
-            display: flex;
-            align-items: center;
-        }
-
-        .select-all-checkbox {
-            margin-right: 8px;
-            transform: scale(1.2);
-        }
-
-        .select-all-text {
-            font-size: 0.95em;
-            color: #333;
-        }
-
-        .total-section {
-            display: flex;
-            align-items: center;
-        }
-
-        .total-price {
-            font-size: 1.3em;
-            font-weight: bold;
-            color: #ee4d2d;
-            margin-right: 15px;
-        }
-
-        .continue-btn {
-            background-color: #ee4d2d;
-            color: white;
-            padding: 12px 25px;
-            border: none;
-            border-radius: 3px;
-            font-size: 1em;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .continue-btn:disabled {
-            background-color: #f5a08e; /* Lighter red when disabled */
-            cursor: not-allowed;
-        }
-
-        /* Placeholder for Product Images (Cooler Fan Led Azul) */
-        .product-item .product-image-placeholder-1 {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, #0066ff, #004db3);
-            border-radius: 50%;
-            margin-right: 12px;
-            position: relative;
-            flex-shrink: 0; /* Prevent shrinking */
-        }
-        .product-item .product-image-placeholder-1 div:nth-child(1) {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 30px;
-            height: 30px;
-            background: white;
-            border-radius: 50%;
-        }
-        .product-item .product-image-placeholder-1 div:nth-child(2) {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            width: 8px;
-            height: 8px;
-            background: black;
-            border-radius: 50%;
-        }
-        .product-item .product-image-placeholder-1 div:nth-child(3) {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            width: 8px;
-            height: 8px;
-            background: black;
-            border-radius: 50%;
-        }
-        .product-item .product-image-placeholder-1 div:nth-child(4) {
-            position: absolute;
-            bottom: 10px;
-            left: 15px;
-            width: 8px;
-            height: 8px;
-            background: black;
-            border-radius: 50%;
-        }
-        .product-item .product-image-placeholder-1 div:nth-child(5) {
-            position: absolute;
-            bottom: 10px;
-            right: 15px;
-            width: 8px;
-            height: 8px;
-            background: black;
-            border-radius: 50%;
-        }
-
-        /* Placeholder for Product Images (Suporte Ajustável) */
-        .product-item .product-image-placeholder-2 {
-            width: 80px;
-            height: 80px;
-            background-color: black;
-            border-radius: 8px;
-            margin-right: 12px;
-            position: relative;
-            flex-shrink: 0; /* Prevent shrinking */
-        }
-        .product-item .product-image-placeholder-2 div:nth-child(1) {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 6px;
-            height: 40px;
-            background: white;
-            border-radius: 3px;
-        }
-
-        /* Checkout Section Styling */
-        .checkout-section {
-            background-color: white;
-            margin-top: 10px;
-            padding: 15px;
-            border-radius: 0;
-            color: #333;
-            font-size: 0.95em;
-        }
-
-        .checkout-section h3 {
-            margin-top: 0;
-            margin-bottom: 15px;
-            color: #333;
-            font-size: 1.1em;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 10px;
-        }
-
-        .checkout-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid #f9f9f9;
-        }
-
+        /* Message to seller block */
         .checkout-item-block {
-            padding: 10px 0;
-            border-bottom: 1px solid #f9f9f9;
-        }
-        .checkout-item-block:last-child {
-            border-bottom: none;
-        }
-
-        .checkout-item:last-child {
-            border-bottom: none;
+            margin-top: 15px; /* Space above the message block */
+            padding: 10px;
+            border: 1px dashed #ccc;
+            border-radius: 5px;
+            background-color: #fff;
+            width: 100%; /* Ensures it takes full width */
+            box-sizing: border-box;
         }
 
-        .checkout-item-title {
-            font-weight: bold;
+        .checkout-item-block > div {
+            margin-bottom: 5px;
         }
 
-        .checkout-item-value {
-            color: #555;
-            text-align: right; /* Align value to the right */
-        }
-        .checkout-item-value span {
-            display: block; /* Make each line a block for better spacing */
-            font-size: 0.9em;
-        }
-
-        .checkout-item-action {
-            color: #007bff;
-            cursor: pointer;
-            font-size: 0.85em;
-        }
-
-        .checkout-total {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-top: 15px;
-            font-size: 1.1em;
-            font-weight: bold;
-            color: #ee4d2d;
-            border-top: 1px solid #eee;
-            margin-top: 15px;
-        }
-
-        /* Responsive Adjustments */
+        /* Responsive adjustments for product-item layout */
         @media (max-width: 600px) {
-            .cart-modal-container {
-                max-width: 100%; /* Full width on small screens */
-            }
-
-            .cart-header .edit-btn {
-                margin-right: 10px;
-            }
-
             .product-item {
-                flex-wrap: wrap; /* Allow product items to wrap */
-                justify-content: center;
+                flex-direction: column;
+                align-items: center;
                 text-align: center;
-            }
-
-            .product-checkbox {
-                margin-top: 0;
-                margin-bottom: 10px;
-            }
-
-            .product-image-placeholder-1,
-            .product-image-placeholder-2 {
-                margin-right: 0;
-                margin-bottom: 10px;
             }
 
             .product-info {
+                align-items: center;
+                margin-top: 15px;
+                width: 100%; /* Ensure product info takes full width when stacked */
+            }
+
+            .product-checkbox {
+                margin-bottom: 10px;
+            }
+
+            .title-and-quantity {
+                flex-direction: column; /* Stack title and quantity vertically */
+                align-items: center;
                 width: 100%;
-                text-align: center;
+            }
+
+            .product-title {
                 margin-right: 0;
+                margin-bottom: 5px;
             }
 
             .quantity-controls {
-                margin-top: 10px;
-                width: 100%;
-                justify-content: center;
+                margin-top: 5px; /* Add space between stacked title and quantity */
             }
 
-            .bottom-section {
-                flex-direction: column;
-                padding: 10px;
-            }
-
-            .total-section {
-                width: 100%;
-                justify-content: space-between;
-                margin-top: 10px;
-            }
-
-            .continue-btn {
-                width: 100%;
-                margin-top: 10px;
+            .price-group {
+                justify-content: center; /* Center prices when stacked */
             }
         }
     </style>
 </head>
 <body>
 
-    <button class="add-to-cart-btn" onclick="openCart()">Adicionar ao Carrinho</button>
+    <button class="open-overlay-button" id="openOverlay">Open Overlay</button>
 
-    <div class="overlay" id="overlay" onclick="closeCart()">
-        <div class="cart-modal-container">
-            <div class="cart-modal" id="cartModal" onclick="event.stopPropagation()">
-                <div class="cart-header">
-                    <button class="back-btn" onclick="closeCart()">←</button>
-                    <span class="cart-title">Carrinho</span>
-                    <button class="edit-btn">Editar</button>
-                    <div class="notification-icon">1</div>
-                </div>
+    <div class="overlay" id="myOverlay">
+        <div class="overlay-content">
 
-                <div class="store-section">
-                    <div class="store-header">
-                        <input type="checkbox" class="store-checkbox">
-                        <div class="store-icon"></div>
-                        <span class="store-name">THREE HOUSE1</span>
-                        <button class="edit-btn">Editar</button>
-                    </div>
-
-                    <div class="product-item">
-                        <input type="checkbox" class="product-checkbox" checked>
-                        <div class="product-image-placeholder-1">
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                        </div>
-                        <div class="product-info">
-                            <div class="product-title">Cooler Fan Led Azul 120mm Ventoin... <div class="brazil-flag"></div></div>
-                            <div class="product-price">R$17,50 <span class="product-old-price">R$38,99</span></div>
-                        </div>
-                        <div class="quantity-controls">
-                            <button class="quantity-btn">−</button>
-                            <input type="text" class="quantity-input" value="2" readonly>
-                            <button class="quantity-btn">+</button>
-                        </div>
-                    </div>
-                    <div class="checkout-item-block">
-                        <div style="font-size: 0.9em; color: #777;">Mensagem para o vendedor:</div>
-                        <div style="font-size: 0.95em; color: #333; margin-top: 5px;">Digite aqui ></div>
-                    </div>
-                </div>
-
-                <div class="promo-section">
-                    <div class="truck-icon"></div>
-                    <div class="promo-text">50% off no frete com cupom (limitado a R$10,00) para pedidos acima de R$59,00</div>
-                    <span class="arrow-right">›</span>
-                </div>
-
-                <div class="separator-section">
-                    <div class="separator-icon"></div>
-                    <div class="separator-text">Separamos os itens que talvez você não precise.</div>
-                    <button class="clear-btn">Limpar</button>
-                </div>
-
-                <div class="store-section">
-                    <div class="store-header">
-                        <input type="checkbox" class="store-checkbox">
-                        <div class="store-icon"></div>
-                        <span class="store-name" style="color: white; background: #ee4d2d; padding: 2px 6px; border-radius: 4px; font-size: 12px; margin-right: 8px;">Indicado</span>
-                        <span class="store-name">MM MEGA</span>
-                        <button class="edit-btn">Editar</button>
-                    </div>
-
-                    <div class="product-item">
-                        <input type="checkbox" class="product-checkbox">
-                        <div class="product-image-placeholder-2">
-                            <div></div>
-                        </div>
-                        <div class="product-info">
-                            <div class="product-title">Suporte Ajustável Vertical Para Plac...</div>
-                            <div class="product-variant">1 Branco ▽</div>
-                            <div style="margin: 8px 0;">
-                                <span class="brazil-flag"></span>
-                                <span class="free-shipping-badge">FRETE GRÁTIS acima de R$10</span>
-                            </div>
-                            <div class="product-price">R$14,09 <span class="product-old-price">R$27,90</span></div>
-                        </div>
-                        <div class="quantity-controls">
-                            <button class="quantity-btn">−</button>
-                            <input type="text" class="quantity-input" value="1" readonly>
-                            <button class="quantity-btn">+</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="promo-section">
-                    <div class="truck-icon"></div>
-                    <div class="promo-text">Frete grátis em fretes até R$20,00 para pedidos acima de R$10,00</div>
-                    <span class="arrow-right">›</span>
-                </div>
-
-                <div class="voucher-section">
-                    <div class="voucher-item">
-                        <div class="voucher-icon">🎫</div>
-                        <div class="voucher-text">Cupom Shopee</div>
-                        <div class="voucher-input" id="cart-voucher-text">Selecione ou insira o código ></div>
-                    </div>
-                </div>
-
-                <div class="no-selection">
-                    <div class="selection-icon"></div>
-                    <div class="selection-text">Nenhum item selecionado (?)</div>
-                </div>
-
-                <div class="bottom-section">
-                    <div class="select-all">
-                        <input type="checkbox" class="select-all-checkbox">
-                        <span class="select-all-text">Tudo</span>
-                    </div>
-                    <div class="total-section">
-                        <div class="total-price" id="cart-total-price">R$0,00</div>
-                        <button class="continue-btn" disabled onclick="showCheckout()">Continuar (0)</button>
-                    </div>
-                </div>
+            <div class="cart-header">
+                <button class="back-btn" id="back-btn">←</button>
+                <span class="cart-title">🛒 Carrinho</span>
             </div>
 
-            <div class="checkout-modal" id="checkoutModal">
-                <div class="cart-header">
-                    <button class="back-btn" onclick="showCart()">←</button>
-                    <span class="cart-title">Revisar Pedido</span>
-                    </div>
-
-                <div class="checkout-section">
-                    <h3>Endereço de Entrega</h3>
-                    <div class="checkout-item-block">
-                        <div class="checkout-item-title" id="checkout-address-name">Cleiton Ferreira S Fontanari (+55) 11 96535-8872</div>
-                        <div class="checkout-item-value" style="text-align: left;">
-                            <span id="checkout-address-line1">Rua José Colão Sama, 161, °°°Campainha°°° Casa 5</span>
-                            <span id="checkout-address-line2">Carapicuíba, São Paulo, 06317220</span>
-                        </div>
-                    </div>
-                    <div class="checkout-item-block" style="border-bottom: none;">
-                        <div class="checkout-item-title">CPF</div>
-                        <div class="checkout-item-value" id="checkout-cpf">384.948.578-19</div>
-                    </div>
-                    <div class="checkout-item" style="margin-top: 10px;">
-                        <div class="checkout-item-title">Opção de Envio</div>
-                        <div class="checkout-item-value">
-                            <span>Entrega Padrão</span>
-                            <span id="checkout-shipping-estimated">Receba até 28 de jul</span>
-                        </div>
-                        <span class="checkout-item-action">Ver Mais ></span>
-                    </div>
+            <div class="store-section">
+                <div class="store-header">
+                    <input type="checkbox" class="store-checkbox">
+                    <div class="store-icon">🧛</div>
+                    <span class="store-name">LOJA IMORTAIS COMPLETOS</span>
+                    <button class="edit-btn">Editar</button>
                 </div>
-
-                <div class="checkout-section">
-                    <h3>Itens Selecionados</h3>
-                    <div class="checkout-item-block">
-                        <div class="checkout-item-title">THREE HOUSE1</div>
-                        <div class="checkout-item" style="border-bottom: none; padding-top: 5px;">
-                            <div style="flex-grow: 1;">
-                                <div style="font-size: 0.95em; color: #333; margin-bottom: 5px;">Cooler Fan Led Azul 120mm Ventoinha Para G...</div>
-                                <div style="font-size: 0.85em; color: #777;">x2</div>
+                <div class="product-item">
+                    <input type="checkbox" class="product-checkbox" checked>
+                    <div class="product-image-placeholder">
+                        <img src="https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcQBS3CQXupdyvstNW6e3CuDJp-McDfUxVYBIsMT2kH5VYomuGubsiWbLC1S24gujTO8lkzRFUggGLKU5Ze1F0BHo61foXKJv71UPWXUB6irgDk7yrVv7PnHhw" alt="Livro: Imortais Completos" class="image">
+                    </div>
+                    <div class="product-info">
+                        <div class="title-and-quantity">
+                            <div class="product-title">
+                                Livro: Imortais Completos - O Recomeco
                             </div>
-                            <div class="product-price">R$17,50 <span class="product-old-price">R$38,99</span></div>
+                            <div class="price-group">
+                                <div class="product-price">
+                                    R$17,50
+                                </div>
+                                <span class="product-old-price">
+                                    R$38,99
+                                </span>
+                            </div>
+                            <div class="quantity-controls">
+                                <button class="quantity-btn">−</button>
+                                <input type="text" class="quantity-input" value="2" readonly>
+                                <button class="quantity-btn">+</button>
+                            </div>
                         </div>
                     </div>
-                    </div>
-
-                <div class="checkout-section">
-                    <h3>Detalhes do Pagamento</h3>
-                    <div class="checkout-item">
-                        <div class="checkout-item-title">Total de <span id="checkout-total-items-summary">1</span> itens</div>
-                        <div class="checkout-item-value" id="checkout-subtotal">R$35,00</div>
-                    </div>
-                    <div class="checkout-item">
-                        <div class="checkout-item-title">Total do Frete</div>
-                        <div class="checkout-item-value" id="checkout-shipping">R$8,39</div>
-                    </div>
-                    <div class="checkout-item">
-                        <div class="checkout-item-title">Cupom Shopee</div>
-                        <div class="checkout-item-value" id="checkout-coupon">Selecione ou insira o código ></div>
-                    </div>
-                    <div class="checkout-item" style="border-bottom: none;">
-                        <div class="checkout-item-title">Usar minhas <span id="checkout-moedas">12</span> Moedas Shopee</div>
-                        <div class="checkout-item-value"></div>
-                    </div>
-                    <div class="checkout-total">
-                        <span>Total do Pedido</span>
-                        <span id="checkout-final-total">R$43,39</span>
-                    </div>
                 </div>
-
-                <div class="bottom-section">
-                    <button class="continue-btn" style="width: 100%;" onclick="alert('Pedido Finalizado!')">FAZER PEDIDO</button>
+                <div class="checkout-item-block">
+                    <div style="font-size: 0.9em; color: #777;">Mensagem para o vendedor:</div>
+                    <div style="font-size: 0.95em; color: #333; margin-top: 5px;">
+                        Digite aqui --> Entrega rápida, por favor!
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+<script>
+        const openOverlayBtn = document.getElementById('openOverlay');
+        const myOverlay = document.getElementById('myOverlay');
+        const backOverlayBtn = document.getElementById('back-btn');
 
-    <script>
-        function openCart() {
-            document.getElementById('overlay').classList.add('active');
-            document.body.style.overflow = 'hidden';
-            document.getElementById('overlay').classList.remove('checkout-active');
-        }
+        openOverlayBtn.addEventListener('click', () => {
+            myOverlay.classList.add('active');
+        });
 
-        function closeCart() {
-            document.getElementById('overlay').classList.remove('active');
-            document.getElementById('overlay').classList.remove('checkout-active');
-            document.body.style.overflow = '';
-        }
+        // Close overlay when clicking outside the content
+        myOverlay.addEventListener('click', (event) => {
+            if (event.target === myOverlay) {
+                myOverlay.classList.remove('active');
+            }
+        });
 
-        function showCheckout() {
-            document.getElementById('overlay').classList.add('checkout-active');
-            updateCheckoutSummary(); // Atualiza os dados no checkout antes de mostrar
-        }
+        // Close overlay when clicking the 'x' button
+        backOverlayBtn.addEventListener('click', () => {
+            myOverlay.classList.remove('active');
+        });
 
-        function showCart() {
-            document.getElementById('overlay').classList.remove('checkout-active');
-        }
+        // Optional: Close overlay with the ESC key
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && myOverlay.classList.contains('active')) {
+                myOverlay.classList.remove('active');
+            }
+        });
 
+        // JavaScript for quantity buttons
         document.addEventListener('DOMContentLoaded', () => {
-            const selectAllCheckbox = document.querySelector('.select-all-checkbox');
-            const productCheckboxes = document.querySelectorAll('.product-checkbox');
-            const storeCheckboxes = document.querySelectorAll('.store-checkbox');
-            const continueButton = document.querySelector('.continue-btn');
-            const cartTotalDisplay = document.getElementById('cart-total-price');
             const quantityInputs = document.querySelectorAll('.quantity-input');
-            const quantityBtns = document.querySelectorAll('.quantity-btn');
 
-            // Hardcoded values from your provided data
-            const product1Price = 17.50;
-            const product1OldPrice = 38.99;
-            const product1Quantity = 2;
-            const shippingCost = 8.39; // Fixed shipping for this example
-            const shopeeCoins = 12; // Your moedas shopee
+            quantityInputs.forEach(input => {
+                const parent = input.closest('.quantity-controls');
+                const minusBtn = parent.querySelector('.quantity-btn:first-child');
+                const plusBtn = parent.querySelector('.quantity-btn:last-child');
 
-            let currentTotal = 0;
-            let currentItems = 0;
-
-            function updateCartSummary() {
-                let totalItemsSelected = 0;
-                let totalPrice = 0;
-
-                // For simplicity, we'll calculate based on the first product as per your data
-                // In a real scenario, this would iterate through all checked products
-                const product1Checked = productCheckboxes[0].checked; // Assuming Cooler Fan is the first product
-
-                if (product1Checked) {
-                    totalItemsSelected = product1Quantity;
-                    totalPrice = product1Price * product1Quantity;
-                }
-
-                currentTotal = totalPrice; // Subtotal only for items
-                currentItems = totalItemsSelected;
-
-                continueButton.textContent = `Continuar (${totalItemsSelected})`;
-                continueButton.disabled = totalItemsSelected === 0;
-                cartTotalDisplay.textContent = `R$${totalPrice.toFixed(2).replace('.', ',')}`;
-
-                document.querySelector('.notification-icon').textContent = totalItemsSelected;
-            }
-
-            function updateCheckoutSummary() {
-                // Address and CPF are static from your input
-                document.getElementById('checkout-address-name').textContent = "Cleiton Ferreira S Fontanari (+55) 11 96535-8872";
-                document.getElementById('checkout-address-line1').textContent = "Rua José Colão Sama, 161, °°°Campainha°°° Casa 5";
-                document.getElementById('checkout-address-line2').textContent = "Carapicuíba, São Paulo, 06317220";
-                document.getElementById('checkout-cpf').textContent = "384.948.578-19";
-                document.getElementById('checkout-shipping-estimated').textContent = "Receba até 28 de jul";
-
-                // Item summary
-                document.getElementById('checkout-total-items-summary').textContent = currentItems;
-
-                // Price details
-                document.getElementById('checkout-subtotal').textContent = `R$${currentTotal.toFixed(2).replace('.', ',')}`;
-                document.getElementById('checkout-shipping').textContent = `R$${shippingCost.toFixed(2).replace('.', ',')}`;
-                document.getElementById('checkout-coupon').textContent = "Selecione ou insira o código >"; // As per your data
-                document.getElementById('checkout-moedas').textContent = shopeeCoins; // Display moedas
-
-                const finalTotal = currentTotal + shippingCost; // No coupon discount for now, based on your data R$43,39
-                document.getElementById('checkout-final-total').textContent = `R$${finalTotal.toFixed(2).replace('.', ',')}`;
-            }
-
-            selectAllCheckbox.addEventListener('change', (event) => {
-                productCheckboxes.forEach(checkbox => {
-                    checkbox.checked = event.target.checked;
-                });
-                storeCheckboxes.forEach(checkbox => {
-                    checkbox.checked = event.target.checked;
-                });
-                updateCartSummary();
-            });
-
-            productCheckboxes.forEach(checkbox => {
-                checkbox.addEventListener('change', () => {
-                    if (!checkbox.checked) {
-                        selectAllCheckbox.checked = false;
-                    } else {
-                        const allChecked = Array.from(productCheckboxes).every(cb => cb.checked);
-                        selectAllCheckbox.checked = allChecked;
-                    }
-                    updateCartSummary();
-                });
-            });
-
-            quantityBtns.forEach(button => {
-                button.addEventListener('click', () => {
-                    const input = button.parentElement.querySelector('.quantity-input');
-                    let currentValue = parseInt(input.value);
-                    if (button.textContent === '+') {
-                        currentValue++;
-                    } else if (button.textContent === '−' && currentValue > 1) {
-                        currentValue--;
-                    }
-                    input.value = currentValue;
-                    if (input.closest('.product-item').querySelector('.product-checkbox').checked) {
-                           updateCartSummary();
+                minusBtn.addEventListener('click', () => {
+                    let value = parseInt(input.value);
+                    if (value > 1) {
+                        input.value = value - 1;
                     }
                 });
+
+                plusBtn.addEventListener('click', () => {
+                    let value = parseInt(input.value);
+                    input.value = value + 1;
+                });
             });
-
-            // Set initial quantity for Cooler Fan
-            document.querySelector('.product-item:first-of-type .quantity-input').value = product1Quantity;
-
-            // Initial update
-            updateCartSummary();
         });
     </script>
+
 </body>
 </html>
