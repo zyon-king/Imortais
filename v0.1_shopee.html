@@ -3,250 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shopee Cart Overlay</title>
+    <title>Carrinho de Compras - Shopee Clone</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        * {
+        body {
+            font-family: 'Roboto', sans-serif;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
+            background-color: #f0f0f0;
+            overflow-x: hidden; /* Evita rolagem horizontal indesejada */
         }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background-color: #f5f5f5;
-            height: 100vh;
+        .container {
+            max-width: 375px; /* Largura típica de um celular */
+            margin: 0 auto;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            min-height: 100vh;
+            position: relative; /* Para posicionar os overlays */
+        }
+
+        header {
             display: flex;
-            justify-content: center;
             align-items: center;
-        }
-
-        .add-to-cart-btn {
-            background-color: #ee4d2d;
-            color: white;
-            border: none;
-            padding: 15px 40px;
-            font-size: 18px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: background-color 0.3s;
-        }
-
-        .add-to-cart-btn:hover {
-            background-color: #d73211;
-        }
-
-        .overlay {
-            display: none;
-            position: fixed;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            background-color: #fff;
+            position: sticky;
             top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
+            z-index: 100;
         }
 
-        .cart-modal {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background-color: #f5f5f5;
-            border-radius: 16px 16px 0 0;
-            max-height: 90vh;
-            overflow-y: auto;
-            animation: slideUp 0.3s ease-out;
-        }
-
-        @keyframes slideUp {
-            from {
-                transform: translateY(100%);
-            }
-            to {
-                transform: translateY(0);
-            }
-        }
-
-        .cart-header {
-            background-color: white;
-            padding: 16px;
-            border-bottom: 1px solid #e5e5e5;
-            display: flex;
-            align-items: center;
-            position: relative;
-        }
-
-        .back-btn {
+        header .back-arrow {
             font-size: 24px;
-            color: #ee4d2d;
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 0;
-            margin-right: 12px;
+            margin-right: 15px;
+            color: #333;
         }
 
-        .cart-title {
+        header h1 {
             font-size: 18px;
-            font-weight: 600;
-            color: #222;
-            flex: 1;
+            font-weight: 500;
+            margin: 0;
+            flex-grow: 1;
         }
 
-        .edit-btn {
-            color: #666;
-            font-size: 16px;
-            background: none;
-            border: none;
-            cursor: pointer;
-        }
-
-        .notification-icon {
-            width: 20px;
-            height: 20px;
-            background-color: #ee4d2d;
-            border-radius: 50%;
-            color: white;
-            font-size: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-left: 8px;
-        }
-
-        .store-section {
-            background-color: white;
-            margin: 8px 0;
-            padding: 16px;
-        }
-
-        .store-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 16px;
-        }
-
-        .store-checkbox {
-            width: 20px;
-            height: 20px;
-            margin-right: 12px;
-            accent-color: #ee4d2d;
-        }
-
-        .store-icon {
-            width: 24px;
-            height: 16px;
-            background-color: #666;
-            border-radius: 2px;
-            margin-right: 8px;
-        }
-
-        .store-name {
-            font-weight: 600;
-            color: #222;
-            flex: 1;
-        }
-
-        .product-item {
-            display: flex;
-            align-items: center;
-            padding: 16px 0;
-            border-bottom: 1px solid #f0f0f0;
-        }
-
-        .product-item:last-child {
-            border-bottom: none;
-        }
-
-        .product-checkbox {
-            width: 20px;
-            height: 20px;
-            margin-right: 12px;
-            accent-color: #ee4d2d;
-        }
-
-        .product-image {
-            width: 80px;
-            height: 80px;
-            border-radius: 8px;
-            margin-right: 12px;
-            object-fit: cover;
-        }
-
-        .product-info {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .product-title {
-            font-size: 14px;
-            color: #222;
-            line-height: 1.4;
-            margin-bottom: 8px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-        }
-
-        .product-variant {
-            font-size: 12px;
-            color: #666;
-            margin-bottom: 8px;
-        }
-
-        .product-price {
+        header .edit-button {
             color: #ee4d2d;
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 4px;
+            font-size: 14px;
+            font-weight: 500;
         }
 
-        .product-old-price {
-            color: #999;
+        .section {
+            padding: 15px;
+            border-bottom: 8px solid #f0f0f0; /* Espaçamento entre seções */
+        }
+
+        .item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .item:last-child {
+            margin-bottom: 0;
+        }
+
+        .item input[type="checkbox"] {
+            margin-right: 10px;
+            width: 20px;
+            height: 20px;
+            accent-color: #ee4d2d; /* Cor do checkbox */
+        }
+
+        .item img {
+            width: 70px;
+            height: 70px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+
+        .item-details {
+            flex-grow: 1;
+        }
+
+        .item-details .shop-name {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .item-details .product-name {
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 5px;
+        }
+
+        .item-details .price {
+            display: flex;
+            align-items: baseline;
+        }
+
+        .item-details .current-price {
+            font-size: 16px;
+            font-weight: 700;
+            color: #ee4d2d;
+            margin-right: 5px;
+        }
+
+        .item-details .old-price {
             font-size: 12px;
+            color: #999;
             text-decoration: line-through;
         }
 
-        .brazil-flag {
-            width: 16px;
-            height: 12px;
-            background: linear-gradient(to bottom, #009c3b 33%, #ffdf00 33% 66%, #009c3b 66%);
-            border-radius: 2px;
-            margin-left: 8px;
-            position: relative;
-        }
-
-        .brazil-flag::before {
-            content: '';
-            position: absolute;
-            width: 8px;
-            height: 8px;
-            background-color: #002776;
-            border-radius: 50%;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-
-        .quantity-controls {
+        .quantity-control {
             display: flex;
             align-items: center;
-            margin-left: 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            overflow: hidden;
         }
 
         .quantity-btn {
-            width: 32px;
-            height: 32px;
-            border: 1px solid #ddd;
-            background: white;
-            font-size: 18px;
+            background-color: #f0f0f0;
+            border: none;
+            padding: 5px 10px;
+            font-size: 16px;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            color: #555;
         }
 
         .quantity-input {
@@ -257,854 +143,805 @@
             border-left: none;
             border-right: none;
             font-size: 14px;
+            box-sizing: border-box; /* Include padding and border in the element's total width and height */
         }
 
-        .promo-section {
-            background-color: #e8f5e8;
-            margin: 8px 16px;
-            padding: 12px;
-            border-radius: 8px;
+
+        .shipping-promo {
             display: flex;
             align-items: center;
-        }
-
-        .truck-icon {
-            width: 24px;
-            height: 24px;
-            background-color: #4CAF50;
+            background-color: #fffaf0;
+            padding: 10px;
             border-radius: 4px;
-            margin-right: 12px;
-        }
-
-        .promo-text {
-            font-size: 14px;
-            color: #333;
-            flex: 1;
-        }
-
-        .arrow-right {
-            font-size: 18px;
-            color: #999;
-        }
-
-        .separator-section {
-            background-color: white;
-            margin: 8px 16px;
-            padding: 12px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-        }
-
-        .separator-icon {
-            width: 24px;
-            height: 24px;
-            background-color: #ff6b35;
-            border-radius: 50%;
-            margin-right: 12px;
-        }
-
-        .separator-text {
-            font-size: 14px;
-            color: #333;
-            flex: 1;
-        }
-
-        .clear-btn {
+            margin-top: 15px;
             color: #ee4d2d;
-            font-size: 14px;
-            background: none;
-            border: 1px solid #ee4d2d;
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
+            font-size: 13px;
         }
 
-        .voucher-section {
-            background-color: white;
-            margin: 8px 0;
-            padding: 16px;
-        }
-
-        .voucher-item {
-            display: flex;
-            align-items: center;
-            padding: 12px 0;
-        }
-
-        .voucher-icon {
-            width: 32px;
-            height: 32px;
-            background-color: #ee4d2d;
-            border-radius: 50%;
-            margin-right: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 16px;
-        }
-
-        .voucher-text {
-            flex: 1;
-            font-size: 14px;
-            color: #333;
-        }
-
-        .voucher-input {
-            color: #999;
-            font-size: 14px;
-        }
-
-        .no-selection {
-            background-color: white;
-            margin: 8px 0;
-            padding: 16px;
-            display: flex;
-            align-items: center;
-        }
-
-        .selection-icon {
-            width: 32px;
-            height: 32px;
-            background-color: #f0f0f0;
-            border-radius: 50%;
-            margin-right: 12px;
-        }
-
-        .selection-text {
-            font-size: 14px;
-            color: #666;
-        }
-
-        .bottom-section {
-            position: sticky;
-            bottom: 0;
-            background-color: white;
-            padding: 16px;
-            border-top: 1px solid #e5e5e5;
-        }
-
-        .select-all {
-            display: flex;
-            align-items: center;
-            margin-bottom: 16px;
-        }
-
-        .select-all-checkbox {
+        .shipping-promo img {
             width: 20px;
             height: 20px;
-            margin-right: 12px;
-            accent-color: #ee4d2d;
+            margin-right: 10px;
         }
 
-        .select-all-text {
-            font-size: 14px;
-            color: #222;
-            flex: 1;
+        .shipping-promo.blue {
+            background-color: #e0f2f7; /* Light blue for "frete grátis" */
+            color: #007bff; /* Blue text */
         }
 
-        .total-section {
+        .info-message {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-        }
-
-        .total-price {
-            font-size: 20px;
-            font-weight: 600;
+            background-color: #ffe0e0;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 15px;
             color: #ee4d2d;
+            font-size: 13px;
         }
 
-        .continue-btn {
-            background-color: #ee4d2d;
-            color: white;
+        .info-message img {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+
+        .info-message button {
+            background: none;
             border: none;
-            padding: 12px 24px;
-            border-radius: 20px;
-            font-size: 16px;
-            font-weight: 600;
+            color: #ee4d2d;
+            font-weight: 500;
             cursor: pointer;
-            min-width: 140px;
-        }
-
-        .continue-btn:disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
-        }
-
-        .free-shipping-badge {
-            background-color: #4CAF50;
-            color: white;
-            font-size: 10px;
-            padding: 2px 6px;
-            border-radius: 2px;
-            margin-left: 8px;
-        }
-
-        /* Checkout Page Styles */
-        .checkout-page {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #f5f5f5;
-            z-index: 1001;
-            overflow-y: auto;
-        }
-
-        .checkout-header {
-            background-color: white;
-            padding: 16px;
-            border-bottom: 1px solid #e5e5e5;
-            display: flex;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .checkout-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: #222;
-            flex: 1;
-            text-align: center;
-            margin-left: -40px;
-        }
-
-        .checkout-content {
-            padding-bottom: 100px;
-        }
-
-        .address-section {
-            background-color: white;
-            margin: 8px 0;
-            padding: 16px;
-        }
-
-        .address-icon {
-            color: #ee4d2d;
-            margin-right: 12px;
-            font-size: 16px;
-        }
-
-        .address-info {
-            margin-left: 28px;
-        }
-
-        .customer-name {
-            font-weight: 600;
-            color: #222;
-            margin-bottom: 4px;
-        }
-
-        .phone-number {
-            color: #666;
-            font-size: 14px;
-            margin-bottom: 8px;
-        }
-
-        .address-text {
-            color: #333;
-            font-size: 14px;
-            line-height: 1.4;
-        }
-
-        .cpf-section {
-            background-color: #f8f8f8;
-            padding: 12px 16px;
-            border-top: 1px solid #e5e5e5;
-            border-bottom: 1px solid #e5e5e5;
-        }
-
-        .cpf-text {
-            font-size: 14px;
-            color: #666;
-            display: flex;
-            align-items: center;
-        }
-
-        .cpf-icon {
-            width: 16px;
-            height: 16px;
-            background-color: #ee4d2d;
-            border-radius: 2px;
-            margin-right: 8px;
-        }
-
-        .store-product-section {
-            background-color: white;
-            margin: 8px 0;
-            padding: 16px;
-        }
-
-        .store-product-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 16px;
-        }
-
-        .store-product-icon {
-            width: 24px;
-            height: 16px;
-            background-color: #666;
-            border-radius: 2px;
-            margin-right: 8px;
-        }
-
-        .checkout-product-item {
-            display: flex;
-            align-items: flex-start;
-            margin-bottom: 16px;
-        }
-
-        .checkout-product-image {
-            width: 60px;
-            height: 60px;
-            border-radius: 8px;
-            margin-right: 12px;
-        }
-
-        .checkout-product-info {
-            flex: 1;
-        }
-
-        .checkout-product-title {
-            font-size: 14px;
-            color: #222;
-            line-height: 1.4;
-            margin-bottom: 4px;
-        }
-
-        .checkout-product-price {
-            color: #ee4d2d;
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .checkout-product-old-price {
-            color: #999;
-            font-size: 12px;
-            text-decoration: line-through;
-            margin-left: 8px;
-        }
-
-        .quantity-badge {
-            background-color: #f0f0f0;
-            color: #666;
-            font-size: 12px;
-            padding: 2px 6px;
-            border-radius: 10px;
             margin-left: auto;
         }
 
-        .message-section {
+        .footer-cart {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-top: 16px;
-            padding-top: 16px;
-            border-top: 1px solid #f0f0f0;
+            padding: 10px 15px;
+            border-top: 1px solid #eee;
+            background-color: #fff;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            max-width: 375px;
+            box-sizing: border-box;
+            z-index: 100;
         }
 
-        .message-text {
-            font-size: 14px;
-            color: #666;
+        .footer-cart .total-price {
+            font-size: 20px;
+            font-weight: 700;
+            color: #ee4d2d;
         }
 
-        .message-input {
-            color: #999;
-            font-size: 14px;
-            cursor: pointer;
-        }
-
-        .shipping-section {
-            background-color: white;
-            margin: 8px 0;
-            padding: 16px;
-        }
-
-        .shipping-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 16px;
-        }
-
-        .shipping-title {
-            font-size: 16px;
-            font-weight: 600;
-            color: #222;
-        }
-
-        .see-more-btn {
-            color: #999;
-            font-size: 14px;
-            background: none;
+        .footer-cart button {
+            background-color: #ee4d2d;
+            color: #fff;
             border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 700;
             cursor: pointer;
+        }
+
+        .footer-cart .checkbox-all {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .footer-cart .checkbox-all input[type="checkbox"] {
+            margin-right: 5px;
+            width: 20px;
+            height: 20px;
+            accent-color: #ee4d2d;
+        }
+
+        /* --- Tela de Comprar (Overlay 1) --- */
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            min-height: 100%;
+            background-color: #fff;
+            z-index: 101;
+            display: none; /* Inicia oculto */
+            animation: slideInUp 0.3s forwards;
+            box-sizing: border-box; /* Garante que padding e border sejam incluídos na largura/altura */
+        }
+
+        .overlay.active {
+            display: block;
+        }
+
+        @keyframes slideInUp {
+            from {
+                transform: translateY(100%);
+            }
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        .address-section {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .address-section .icon {
+            font-size: 20px;
+            margin-right: 10px;
+            color: #555;
+        }
+
+        .address-info h3 {
+            font-size: 16px;
+            font-weight: 500;
+            margin: 0 0 5px;
+        }
+
+        .address-info p {
+            font-size: 14px;
+            color: #777;
+            margin: 0;
+        }
+
+        .address-section .cpf {
+            font-size: 14px;
+            color: #777;
+            margin-top: 5px;
+        }
+
+        .message-seller {
+            border: 1px solid #eee;
+            border-radius: 5px;
+            padding: 10px;
+            margin-top: 15px;
+            font-size: 14px;
+            color: #999;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .shipping-option {
-            background-color: #f8f8f8;
-            border: 1px solid #e5e5e5;
-            border-radius: 8px;
-            padding: 12px;
-        }
-
-        .shipping-option-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-
-        .shipping-icon {
-            width: 16px;
-            height: 16px;
-            background-color: #4CAF50;
-            border-radius: 2px;
-            margin-right: 8px;
-        }
-
-        .shipping-type {
-            font-size: 14px;
-            font-weight: 600;
-            color: #222;
-            flex: 1;
-        }
-
-        .shipping-price {
-            font-size: 14px;
-            color: #ee4d2d;
-            font-weight: 600;
-        }
-
-        .shipping-date {
-            font-size: 12px;
-            color: #666;
-            margin-left: 24px;
-        }
-
-        .payment-sections {
-            background-color: white;
-            margin: 8px 0;
-            padding: 16px;
-        }
-
-        .voucher-checkout-section {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px 0;
-            border-bottom: 1px solid #f0f0f0;
-        }
-
-        .voucher-checkout-icon {
-            width: 20px;
-            height: 20px;
-            background-color: #ee4d2d;
-            border-radius: 2px;
-            margin-right: 12px;
-        }
-
-        .voucher-checkout-text {
-            flex: 1;
-            font-size: 14px;
-            color: #333;
-        }
-
-        .voucher-select-btn {
-            color: #999;
-            font-size: 14px;
-            cursor: pointer;
-        }
-
-        .coins-section {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px 0;
-        }
-
-        .coins-icon {
-            width: 20px;
-            height: 20px;
-            background-color: #ffa500;
-            border-radius: 50%;
-            margin-right: 12px;
-        }
-
-        .coins-text {
-            flex: 1;
-            font-size: 14px;
-            color: #333;
-        }
-
-        .coins-toggle {
-            width: 40px;
-            height: 20px;
-            background-color: #ddd;
-            border-radius: 10px;
-            position: relative;
-            cursor: pointer;
-        }
-
-        .payment-methods-section {
-            margin-top: 16px;
-        }
-
-        .payment-methods-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 16px;
-        }
-
-        .payment-method-item {
-            display: flex;
-            align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid #f0f0f0;
-        }
-
-        .payment-method-item:last-child {
-            border-bottom: none;
-        }
-
-        .payment-method-icon {
-            width: 32px;
-            height: 20px;
-            border-radius: 4px;
-            margin-right: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        .pix-icon {
-            background: linear-gradient(135deg, #00d4aa, #00b894);
-        }
-
-        .credit-icon {
-            background-color: #4169e1;
-        }
-
-        .sparcelado-icon {
-            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-        }
-
-        .payment-method-text {
-            flex: 1;
-            font-size: 14px;
-            color: #333;
-        }
-
-        .payment-method-subtitle {
-            font-size: 12px;
-            color: #666;
-            margin-top: 2px;
-        }
-
-        .payment-method-radio {
-            width: 20px;
-            height: 20px;
-            margin-left: 12px;
-        }
-
-        .add-card-btn {
-            color: #ee4d2d;
-            font-size: 14px;
-            background: none;
-            border: 1px solid #ee4d2d;
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .activate-now-btn {
-            color: #ee4d2d;
-            font-size: 14px;
-            background: none;
-            border: 1px solid #ee4d2d;
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .shopee-pay-text {
-            font-size: 12px;
-            color: #666;
-            text-align: center;
-            margin-top: 8px;
-        }
-
-        .shopee-pay-logo {
-            color: #ee4d2d;
-            font-weight: 600;
-        }
-
-        .payment-details-section {
-            background-color: white;
-            margin: 8px 0;
-            padding: 16px;
-        }
-
-        .payment-details-header {
-            font-size: 16px;
-            font-weight: 600;
-            color: #222;
-            margin-bottom: 16px;
-        }
-
-        .payment-detail-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 8px 0;
+            margin-top: 15px;
+        }
+
+        .shipping-option span {
             font-size: 14px;
+            color: #555;
         }
 
-        .payment-detail-label {
-            color: #666;
-        }
-
-        .payment-detail-value {
+        .shipping-option .delivery-date {
+            font-size: 14px;
             color: #333;
             font-weight: 500;
         }
 
-        .checkout-bottom {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background-color: white;
-            border-top: 1px solid #e5e5e5;
-            padding: 16px;
+        .shipping-option .price {
+            font-size: 14px;
+            color: #ee4d2d;
+            font-weight: 500;
         }
 
-        .checkout-total-section {
+        .summary-row {
             display: flex;
-            align-items: center;
             justify-content: space-between;
-            margin-bottom: 8px;
+            margin-top: 15px;
+            font-size: 14px;
+            color: #333;
         }
 
-        .checkout-total-left {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .checkout-total-price {
+        .summary-row.total {
             font-size: 18px;
-            font-weight: 600;
+            font-weight: 700;
             color: #ee4d2d;
         }
 
-        .checkout-savings {
-            font-size: 12px;
-            color: #666;
+        .methods-payment-section .payment-option {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
         }
 
-        .place-order-btn {
+        .methods-payment-section .payment-option:last-child {
+            border-bottom: none;
+        }
+
+        .methods-payment-section .payment-option .label {
+            display: flex;
+            align-items: center;
+            font-size: 15px;
+            color: #333;
+        }
+
+        .methods-payment-section .payment-option .label img {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+        }
+
+        .methods-payment-section .payment-option .action-button {
+            background-color: #ee4d2d;
+            color: #fff;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .methods-payment-section .payment-option .radio-button {
+            width: 18px;
+            height: 18px;
+            accent-color: #ee4d2d;
+        }
+
+        .methods-payment-section .payment-option .activate-link {
+            color: #ee4d2d;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .payment-details-section {
+            margin-top: 20px;
+        }
+
+        .payment-details-section h3 {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 15px;
+        }
+
+        .payment-details-section .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .payment-details-section .detail-row.total-payment {
+            font-size: 16px;
+            font-weight: 700;
+            color: #ee4d2d;
+            margin-top: 15px;
+        }
+
+        .payment-details-section .saved-amount {
+            font-size: 14px;
+            color: #999;
+            text-align: right;
+            margin-top: 5px;
+        }
+
+        .footer-buy {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 15px;
+            border-top: 1px solid #eee;
+            background-color: #fff;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            max-width: 375px;
+            box-sizing: border-box;
+            z-index: 102; /* Maior que o overlay */
+        }
+
+        .footer-buy .total-price {
+            font-size: 20px;
+            font-weight: 700;
+            color: #ee4d2d;
+        }
+
+        .footer-buy button {
+            background-color: #ee4d2d;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        /* Estilo para o switch toggle */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 38px;
+            height: 22px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            -webkit-transition: .4s;
+            transition: .4s;
+            border-radius: 22px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #ee4d2d;
+        }
+
+        input:focus + .slider {
+            box-shadow: 0 0 1px #ee4d2d;
+        }
+
+        input:checked + .slider:before {
+            -webkit-transform: translateX(16px);
+            -ms-transform: translateX(16px);
+            transform: translateX(16px);
+        }
+
+        /* Estilos específicos para o segundo item (Suporte Ajustável) */
+        .item-details .highlighted {
+            color: #ee4d2d;
+            font-weight: 500;
+        }
+
+        /* Estilos para o novo botão "Adicionar ao Carrinho" */
+        .add-to-cart-btn {
             background-color: #ee4d2d;
             color: white;
             border: none;
-            padding: 12px 24px;
-            border-radius: 20px;
-            font-size: 16px;
-            font-weight: 600;
+            padding: 15px 40px;
+            font-size: 18px;
+            border-radius: 8px;
             cursor: pointer;
-            min-width: 140px;
+            font-weight: 600;
+            transition: background-color 0.3s;
+            display: block; /* Para que o botão ocupe toda a largura disponível */
+            margin: 20px auto; /* Centraliza o botão */
+            width: fit-content; /* Ajusta a largura ao conteúdo */
+        }
+
+        .add-to-cart-btn:hover {
+            background-color: #d73211;
+        }
+
+        /* Estilo para a tela de 'home' que vai conter o botão */
+        #home-screen {
+            padding-top: 20px;
+            text-align: center;
+        }
+
+        #home-screen h2 {
+            margin-bottom: 30px;
+            color: #333;
         }
     </style>
 </head>
 <body>
-    <button class="add-to-cart-btn" onclick="openCart()">Adicionar ao Carrinho</button>
+    <div class="container">
+        <div id="home-screen">
+            <h2>Bem-vindo à Loja!</h2>
+            <p>Clique no botão abaixo para adicionar um item ao carrinho e simular a compra.</p>
+            <button class="add-to-cart-btn" onclick="openCart()">Adicionar ao Carrinho</button>
+        </div>
 
-    <div class="overlay" id="overlay" onclick="closeCart()">
-        <div class="cart-modal" onclick="event.stopPropagation()">
-            <div class="cart-header">
-                <button class="back-btn" onclick="closeCart()">←</button>
-                <span class="cart-title">Carrinho</span>
-                <button class="edit-btn">Editar</button>
-                <div class="notification-icon">1</div>
-            </div>
+        <div id="cart-screen">
+            <header>
+                <span class="back-arrow">&lt;</span>
+                <h1>Carrinho</h1>
+                <button class="edit-button">Editar</button>
+            </header>
 
-            <div class="store-section">
-                <div class="store-header">
-                    <input type="checkbox" class="store-checkbox">
-                    <div class="store-icon"></div>
-                    <span class="store-name">THREE HOUSE1</span>
-                    <button class="edit-btn">Editar</button>
-                </div>
-
-                <div class="product-item">
-                    <input type="checkbox" class="product-checkbox" checked>
-                    <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #0066ff, #004db3); border-radius: 50%; margin-right: 12px; position: relative;">
-                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 30px; height: 30px; background: white; border-radius: 50%;"></div>
-                        <div style="position: absolute; top: 10px; left: 10px; width: 8px; height: 8px; background: black; border-radius: 50%;"></div>
-                        <div style="position: absolute; top: 10px; right: 10px; width: 8px; height: 8px; background: black; border-radius: 50%;"></div>
-                        <div style="position: absolute; bottom: 10px; left: 15px; width: 8px; height: 8px; background: black; border-radius: 50%;"></div>
-                        <div style="position: absolute; bottom: 10px; right: 15px; width: 8px; height: 8px; background: black; border-radius: 50%;"></div>
-                    </div>
-                    <div class="product-info">
-                        <div class="product-title">Cooler Fan Led Azul 120mm Ventoin... <div class="brazil-flag"></div></div>
-                        <div class="product-price">R$17,50 <span class="product-old-price">R$35,99</span></div>
-                    </div>
-                    <div class="quantity-controls">
-                        <button class="quantity-btn">−</button>
-                        <input type="text" class="quantity-input" value="2" readonly>
-                        <button class="quantity-btn">+</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="promo-section">
-                <div class="truck-icon"></div>
-                <div class="promo-text">50% off no frete com cupom (limitado a R$10,00) para pedidos acima de R$59,00</div>
-                <span class="arrow-right">›</span>
-            </div>
-
-            <div class="separator-section">
-                <div class="separator-icon"></div>
-                <div class="separator-text">Separamos os itens que talvez você não precise.</div>
-                <button class="clear-btn">Limpar</button>
-            </div>
-
-            <div class="store-section">
-                <div class="store-header">
-                    <input type="checkbox" class="store-checkbox">
-                    <div class="store-icon"></div>
-                    <span class="store-name" style="color: white; background: #ee4d2d; padding: 2px 6px; border-radius: 4px; font-size: 12px; margin-right: 8px;">Indicado</span>
-                    <span class="store-name">MM MEGA</span>
-                    <button class="edit-btn">Editar</button>
-                </div>
-
-                <div class="product-item">
-                    <input type="checkbox" class="product-checkbox">
-                    <div style="width: 80px; height: 80px; background-color: black; border-radius: 8px; margin-right: 12px; position: relative;">
-                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 6px; height: 40px; background: white; border-radius: 3px;"></div>
-                    </div>
-                    <div class="product-info">
-                        <div class="product-title">Suporte Ajustável Vertical Para Plac...</div>
-                        <div class="product-variant">1 Branco ▽</div>
-                        <div style="margin: 8px 0;">
-                            <span class="brazil-flag"></span>
-                            <span class="free-shipping-badge">FRETE GRÁTIS acima de R$10</span>
+            <div class="section">
+                <div class="item" data-item-price="17.50"> <input type="checkbox" id="item1-checkbox">
+                    <img src="https://via.placeholder.com/70x70/ADD8E6/00008B?text=Fan" alt="Cooler Fan Led Azul 120mm Vento...">
+                    <div class="item-details">
+                        <div class="shop-name">THREE HOUSE1</div>
+                        <div class="product-name">Cooler Fan Led Azul 120mm Ventoin...</div>
+                        <div class="price">
+                            <span class="current-price">R$17,50</span>
+                            <span class="old-price">R$38,99</span>
                         </div>
-                        <div class="product-price">R$14,09 <span class="product-old-price">R$27,90</span></div>
                     </div>
-                    <div class="quantity-controls">
+                    <div class="quantity-control">
                         <button class="quantity-btn">−</button>
-                        <input type="text" class="quantity-input" value="1" readonly>
-                        <button class="quantity-btn">+</button>
+                        <input type="text" class="quantity-input" value="2" readonly> <button class="quantity-btn">+</button>
+                    </div>
+                </div>
+                <div class="shipping-promo">
+                    <img src="https://via.placeholder.com/20x20/FFD700/000000?text=%" alt="Discount Icon">
+                    50% off no frete com cupom (limitado a R$10,00) para pedidos acima de R$59,00
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="info-message">
+                    Separamos os itens que talvez você não precise. <button>Limpar</button>
+                </div>
+                <div class="item" style="margin-top: 15px;" data-item-price="14.09"> <input type="checkbox" id="item2-checkbox">
+                    <img src="https://via.placeholder.com/70x70/D3D3D3/000000?text=Suporte" alt="Suporte Ajustável Vertical Para Plac...">
+                    <div class="item-details">
+                        <div class="shop-name"><span class="highlighted">Indicado</span> MM MEGA</div>
+                        <div class="product-name">Suporte Ajustável Vertical Para Plac...</div>
+                        <div class="product-name">1 Branco</div>
+                        <div class="shipping-promo blue" style="margin-top: 5px; padding: 5px 8px; font-size: 11px;">
+                            FRETE GRÁTIS acima de R$10
+                        </div>
+                        <div class="price" style="margin-top: 5px;">
+                            <span class="current-price">R$14,09</span>
+                            <span class="old-price">R$27,90</span>
+                        </div>
+                    </div>
+                    <div class="quantity-control">
+                        <button class="quantity-btn">−</button>
+                        <input type="text" class="quantity-input" value="1" readonly> <button class="quantity-btn">+</button>
+                    </div>
+                </div>
+                <div class="shipping-promo blue" style="margin-top: 15px;">
+                    Frete grátis em fretes até R$20,00 para pedidos acima de R$10,00
+                </div>
+            </div>
+
+            <div class="section" style="padding-bottom: 80px;">
+                <div class="shipping-promo" style="background-color: #f7f7f7; color: #333;">
+                    Cupom Shopee
+                    <span style="margin-left: auto; color: #999;">Selecione ou insira o código ></span>
+                </div>
+            </div>
+
+            <div class="footer-cart">
+                <div class="checkbox-all">
+                    <input type="checkbox" id="select-all">
+                    <span>Tudo</span>
+                </div>
+                <span>Nenhum item selecionado <span style="font-size: 18px; vertical-align: middle;">ⓘ</span></span>
+                <span class="total-price">R$0,00</span>
+                <button id="checkout-button-cart">Continuar (0)</button>
+            </div>
+        </div>
+
+        <div id="buy-screen-address" class="overlay">
+            <header>
+                <span class="back-arrow" id="back-to-cart">&lt;</span>
+                <h1>Comprar</h1>
+                </header>
+
+            <div class="section">
+                <div class="address-section">
+                    <span class="icon">📍</span>
+                    <div class="address-info">
+                        <h3>Cleiton Ferreira S Fontanari (+55) 11 96535-8872</h3>
+                        <p>Rua José Colão Sama, 161, °°°Campainha°°° Casa 5</p>
+                        <p>Carapicuíba, São Paulo, 06317220</p>
+                        <p class="cpf">CPF 384.948.578-19</p>
                     </div>
                 </div>
             </div>
 
-            <div class="promo-section">
-                <div class="truck-icon"></div>
-                <div class="promo-text">Frete grátis em fretes até R$20,00 para pedidos acima de R$10,00</div>
-                <span class="arrow-right">›</span>
+            <div class="section">
+                <div class="item">
+                    <img src="https://via.placeholder.com/70x70/ADD8E6/00008B?text=Fan" alt="Cooler Fan Led Azul 120mm Vento...">
+                    <div class="item-details">
+                        <div class="shop-name">THREE HOUSE1</div>
+                        <div class="product-name">Cooler Fan Led Azul 120mm Ventoinha Para G...</div>
+                        <div class="price">
+                            <span class="current-price">R$17,50</span>
+                            <span class="old-price">R$38,99</span>
+                        </div>
+                    </div>
+                    <span style="font-size: 14px; color: #555;">x<span id="buy-screen-fan-quantity">2</span></span>
+                </div>
+                <div class="message-seller">
+                    Mensagem para o vendedor:
+                    <span>Digite aqui ></span>
+                </div>
+                <div class="shipping-option">
+                    <span>Opção de Envio</span>
+                    <span>Ver Mais ></span>
+                </div>
+                <div class="shipping-option">
+                    <span class="delivery-date">Entrega Padrão</span>
+                    <span class="price">R$8,39</span>
+                </div>
+                <div class="delivery-date" style="margin-top: 5px; font-size: 13px; color: #777;">Receba até 28 de jul</div>
             </div>
 
-            <div class="voucher-section">
-                <div class="voucher-item">
-                    <div class="voucher-icon">🎫</div>
-                    <div class="voucher-text">Cupom Shopee</div>
-                    <div class="voucher-input">Selecione ou insira o código ›</div>
+            <div class="section" style="padding-bottom: 80px;">
+                <div class="summary-row">
+                    <span>Total de <span id="buy-screen-total-items">2</span> itens</span>
+                    <span class="total" id="buy-screen-total-price">R$43,39</span>
+                </div>
+                <div class="shipping-promo" style="background-color: #f7f7f7; color: #333; margin-top: 15px;">
+                    Cupom Shopee
+                    <span style="margin-left: auto; color: #999;">Selecione ou insira o código ></span>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 15px; color: #333; font-size: 14px;">
+                    Usar minhas 12 Moedas Shopee
+                    <label class="switch">
+                        <input type="checkbox">
+                        <span class="slider"></span>
+                    </label>
                 </div>
             </div>
 
-            <div class="no-selection">
-                <div class="selection-icon"></div>
-                <div class="selection-text">Nenhum item selecionado (?)</div>
+            <div class="footer-buy">
+                <span class="total-price" id="footer-buy-total-price">R$43,39</span>
+                <button id="checkout-button-address">FAZER PEDIDO</button>
+            </div>
+        </div>
+
+        <div id="buy-screen-payment" class="overlay">
+            <header>
+                <span class="back-arrow" id="back-to-address">&lt;</span>
+                <h1>Comprar</h1>
+                </header>
+
+            <div class="section methods-payment-section">
+                <h3>Métodos de pagamento <span style="color: #ee4d2d; font-size: 12px; margin-left: 5px;">Ver Mais ></span></h3>
+                <div class="payment-option">
+                    <label class="label">
+                        <img src="https://via.placeholder.com/24x24/00C853/FFFFFF?text=P" alt="Pix Icon">
+                        Pix
+                    </label>
+                    <input type="radio" name="payment-method" class="radio-button" checked>
+                </div>
+                <div class="payment-option">
+                    <label class="label">
+                        <img src="https://via.placeholder.com/24x24/4285F4/FFFFFF?text=C" alt="Credit Card Icon">
+                        Cartão de Crédito
+                    </label>
+                    <button class="action-button">Adicionar</button>
+                </div>
+                <div class="payment-option">
+                    <label class="label">
+                        <img src="https://via.placeholder.com/24x24/FF9800/FFFFFF?text=S" alt="SParcelado Icon">
+                        SParcelado
+                    </label>
+                    <span class="activate-link">Ativar Agora</span>
+                </div>
+                <div style="font-size: 13px; color: #999; text-align: right; margin-top: 10px;">Ative e ganhe até R$2500 de limite</div>
+                <div style="font-size: 13px; color: #999; text-align: right; margin-top: 5px;">Processado por <span style="color: #ee4d2d; font-weight: 500;">ShopeePay</span></div>
             </div>
 
-            <div class="bottom-section">
-                <div class="select-all">
-                    <input type="checkbox" class="select-all-checkbox">
-                    <span class="select-all-text">Tudo</span>
+            <div class="section payment-details-section" style="padding-bottom: 80px;">
+                <h3>Detalhes de Pagamento</h3>
+                <div class="detail-row">
+                    <span>Total dos Produtos</span>
+                    <span id="payment-details-total-products">R$35,00</span>
                 </div>
-                <div class="total-section">
-                    <div class="total-price">R$0,00</div>
-                    <button class="continue-btn" disabled>Continuar (0)</button>
+                <div class="detail-row">
+                    <span>Total do Frete</span>
+                    <span>R$8,39</span>
                 </div>
+                <div class="detail-row total-payment">
+                    <span>Pagamento Total</span>
+                    <span id="payment-details-total-payment">R$43,39</span>
+                </div>
+                <div class="saved-amount">Economizou R$42,98</div>
+            </div>
+
+            <div class="footer-buy">
+                <span class="total-price" id="footer-payment-total-price">R$43,39</span>
+                <button>FAZER PEDIDO</button>
             </div>
         </div>
     </div>
 
     <script>
-        function openCart() {
-            document.getElementById('overlay').style.display = 'block';
-            document.body.style.overflow = 'hidden';
-        }
+        document.addEventListener('DOMContentLoaded', () => {
+            const homeScreen = document.getElementById('home-screen');
+            const cartScreen = document.getElementById('cart-screen');
+            const buyScreenAddress = document.getElementById('buy-screen-address');
+            const buyScreenPayment = document.getElementById('buy-screen-payment');
 
-        function closeCart() {
-            document.getElementById('overlay').style.display = 'none';
-            document.body.style.overflow = 'auto';
-        }
+            const checkoutButtonCart = document.getElementById('checkout-button-cart');
+            const checkoutButtonAddress = document.getElementById('checkout-button-address');
 
-        // Funcionalidade dos controles de quantidade
-        document.querySelectorAll('.quantity-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const input = this.parentElement.querySelector('.quantity-input');
-                let value = parseInt(input.value);
+            const backToCartButton = document.getElementById('back-to-cart');
+            const backToAddressButton = document.getElementById('back-to-address');
+
+            // Função para mostrar uma tela e esconder as outras
+            function showScreen(screenToShow) {
+                homeScreen.style.display = 'none';
+                cartScreen.classList.remove('active');
+                buyScreenAddress.classList.remove('active');
+                buyScreenPayment.classList.remove('active');
+
+                cartScreen.style.display = 'none';
+                buyScreenAddress.style.display = 'none';
+                buyScreenPayment.style.display = 'none';
+
+                screenToShow.style.display = 'block';
+                screenToShow.classList.add('active');
+            }
+
+            // Função específica para abrir o carrinho
+            window.openCart = function() {
+                showScreen(cartScreen);
+            };
+
+            // Inicialmente, mostra apenas a tela Home
+            showScreen(homeScreen);
+
+            // Evento para ir da tela do carrinho para a tela de endereço
+            checkoutButtonCart.addEventListener('click', () => {
+                showScreen(buyScreenAddress);
+                updateBuyScreenDetails(); // Atualiza os detalhes da tela de compra
+            });
+
+            // Evento para ir da tela de endereço para a tela de pagamento
+            checkoutButtonAddress.addEventListener('click', () => {
+                showScreen(buyScreenPayment);
+                updatePaymentScreenDetails(); // Atualiza os detalhes da tela de pagamento
+            });
+
+            // Evento para voltar da tela de endereço para a tela do carrinho
+            backToCartButton.addEventListener('click', () => {
+                showScreen(cartScreen);
+            });
+
+            // Evento para voltar da tela de pagamento para a tela de endereço
+            backToAddressButton.addEventListener('click', () => {
+                showScreen(buyScreenAddress);
+                updateBuyScreenDetails(); // Atualiza os detalhes se o usuário voltar
+            });
+
+            // Lógica para seleção de itens e atualização do total (simplificada)
+            const itemCheckboxes = document.querySelectorAll('#cart-screen input[type="checkbox"]');
+            const selectAllCheckbox = document.getElementById('select-all');
+            const totalItemsSpan = document.querySelector('.footer-cart span:nth-child(2)');
+            const totalPriceSpan = document.querySelector('.footer-cart .total-price');
+            const checkoutButtonText = document.getElementById('checkout-button-cart');
+
+            // Funcionalidade dos controles de quantidade
+            document.querySelectorAll('.quantity-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const input = this.parentElement.querySelector('.quantity-input');
+                    let value = parseInt(input.value);
+                    
+                    if (this.textContent === '+') {
+                        value++;
+                    } else if (this.textContent === '−' && value > 1) {
+                        value--;
+                    }
+                    
+                    input.value = value;
+                    updateCartSummary(); // Atualiza o resumo do carrinho após a mudança de quantidade
+                });
+            });
+
+            function updateCartSummary() {
+                let selectedItemsCount = 0;
+                let totalProductsPrice = 0;
+                // const shippingCost = 8.39; // Custo de frete fixo para a demonstração (não usado diretamente aqui)
+
+                document.querySelectorAll('#cart-screen .item').forEach(itemDiv => { // Adicionado #cart-screen para maior especificidade
+                    const checkbox = itemDiv.querySelector('input[type="checkbox"]');
+                    const quantityInput = itemDiv.querySelector('.quantity-input'); // CORRIGIDO AQUI!
+                    
+                    if (checkbox && checkbox.checked) {
+                        selectedItemsCount++;
+                        const itemPrice = parseFloat(itemDiv.dataset.itemPrice); // Obtém o preço do data attribute
+                        const quantity = parseInt(quantityInput.value);
+                        totalProductsPrice += itemPrice * quantity;
+                    }
+                });
                 
-                if (this.textContent === '+') {
-                    value++;
-                } else if (this.textContent === '−' && value > 1) {
-                    value--;
+                totalItemsSpan.textContent = `${selectedItemsCount} item${selectedItemsCount !== 1 ? 's' : ''} selecionado`;
+                if (selectedItemsCount === 0) {
+                    totalItemsSpan.textContent = 'Nenhum item selecionado';
                 }
+
+                // O total do carrinho é apenas o total dos produtos nesta tela
+                totalPriceSpan.textContent = `R$${totalProductsPrice.toFixed(2).replace('.', ',')}`;
+                checkoutButtonText.textContent = `Continuar (${selectedItemsCount})`;
+            }
+
+            itemCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', updateCartSummary);
+            });
+
+            selectAllCheckbox.addEventListener('change', () => {
+                itemCheckboxes.forEach(checkbox => {
+                    checkbox.checked = selectAllCheckbox.checked;
+                });
+                updateCartSummary();
+            });
+
+            // Função para atualizar os detalhes na tela de compra (Endereço e Itens)
+            function updateBuyScreenDetails() {
+                let selectedItemsCount = 0;
+                let totalProductsPrice = 0;
+                const shippingCost = 8.39; // Custo de frete fixo para a demonstração
+
+                // Para cada item selecionado no carrinho, adiciona ao cálculo
+                document.querySelectorAll('#cart-screen .item').forEach(itemDiv => { // Adicionado #cart-screen
+                    const checkbox = itemDiv.querySelector('input[type="checkbox"]');
+                    const quantityInput = itemDiv.querySelector('.quantity-input'); // CORRIGIDO AQUI!
+                    if (checkbox && checkbox.checked) {
+                        selectedItemsCount++;
+                        const itemPrice = parseFloat(itemDiv.dataset.itemPrice);
+                        const quantity = parseInt(quantityInput.value);
+                        totalProductsPrice += itemPrice * quantity;
+                    }
+                });
+
+                const totalFinalPrice = totalProductsPrice + shippingCost;
+
+                document.getElementById('buy-screen-total-items').textContent = selectedItemsCount;
+                document.getElementById('buy-screen-total-price').textContent = `R$${totalFinalPrice.toFixed(2).replace('.', ',')}`;
+                document.getElementById('footer-buy-total-price').textContent = `R$${totalFinalPrice.toFixed(2).replace('.', ',')}`;
                 
-                input.value = value;
-                updateTotal();
-            });
+                // Exemplo para atualizar a quantidade do Fan na tela de compra
+                const fanItemDiv = document.querySelector('#cart-screen .item[data-item-price="17.50"]');
+                if (fanItemDiv) {
+                    const fanQuantity = fanItemDiv.querySelector('.quantity-input').value;
+                    document.getElementById('buy-screen-fan-quantity').textContent = fanQuantity;
+                }
+            }
+
+            // Função para atualizar os detalhes na tela de pagamento
+            function updatePaymentScreenDetails() {
+                let totalProductsPrice = 0;
+                const shippingCost = 8.39; // Custo de frete fixo para a demonstração
+
+                // Para cada item selecionado no carrinho, adiciona ao cálculo
+                document.querySelectorAll('#cart-screen .item').forEach(itemDiv => { // Adicionado #cart-screen
+                    const checkbox = itemDiv.querySelector('input[type="checkbox"]');
+                    const quantityInput = itemDiv.querySelector('.quantity-input'); // CORRIGIDO AQUI!
+                    if (checkbox && checkbox.checked) {
+                        const itemPrice = parseFloat(itemDiv.dataset.itemPrice);
+                        const quantity = parseInt(quantityInput.value);
+                        totalProductsPrice += itemPrice * quantity;
+                    }
+                });
+
+                const totalFinalPayment = totalProductsPrice + shippingCost;
+
+                document.getElementById('payment-details-total-products').textContent = `R$${totalProductsPrice.toFixed(2).replace('.', ',')}`;
+                document.getElementById('payment-details-total-payment').textContent = `R$${totalFinalPayment.toFixed(2).replace('.', ',')}`;
+                document.getElementById('footer-payment-total-price').textContent = `R$${totalFinalPayment.toFixed(2).replace('.', ',')}`;
+            }
+
+
+            // Inicializa o resumo do carrinho
+            updateCartSummary();
         });
-
-        // Funcionalidade dos checkboxes
-        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-            checkbox.addEventListener('change', updateTotal);
-        });
-
-        function updateTotal() {
-            const checkedProducts = document.querySelectorAll('.product-checkbox:checked');
-            let total = 0;
-            let count = 0;
-            
-            checkedProducts.forEach(checkbox => {
-                const productItem = checkbox.closest('.product-item');
-                const priceText = productItem.querySelector('.product-price').textContent;
-                const price = parseFloat(priceText.replace('R$', '').replace(',', '.').split(' ')[0]);
-                const quantity = parseInt(productItem.querySelector('.quantity-input').value);
-                
-                total += price * quantity;
-                count += quantity;
-            });
-            
-            document.querySelector('.total-price').textContent = `R$${total.toFixed(2).replace('.', ',')}`;
-            document.querySelector('.continue-btn').textContent = `Continuar (${count})`;
-            document.querySelector('.continue-btn').disabled = count === 0;
-        }
-
-        // Funcionalidade do "Tudo"
-        document.querySelector('.select-all-checkbox').addEventListener('change', function() {
-            const isChecked = this.checked;
-            document.querySelectorAll('.product-checkbox, .store-checkbox').forEach(checkbox => {
-                checkbox.checked = isChecked;
-            });
-            updateTotal();
-        });
-
-        // Inicializar com valores corretos
-        updateTotal();
     </script>
 </body>
 </html>
