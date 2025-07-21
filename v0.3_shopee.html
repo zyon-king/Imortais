@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrinho de Compras - Shopee Inspired</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Align to top initially */
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        /* Add to Cart Button */
+        .add-to-cart-btn {
+            background-color: #ee4d2d; /* Shopee's primary orange */
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .add-to-cart-btn:hover {
+            background-color: #d84323;
+            transform: translateY(-2px);
+        }
+
+        /* Overlay for the Modal */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none; /* Hidden by default */
+            justify-content: flex-end; /* Align cart modal to the right */
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .overlay.active {
+            display: flex; /* Show when active */
+        }
+
+        /* Cart Modal Container */
+        .cart-modal-container {
+            width: 100%;
+            max-width: 420px; /* Typical width for a side modal */
+            height: 100%;
+            position: relative; /* Needed for absolute positioning of inner modals */
+            overflow: hidden; /* Hide overflowing content during transitions */
+        }
+
+        /* Cart Modal (Step 1) */
+        .cart-modal {
+            background-color: #f0f2f5; /* Light gray background for the modal */
+            width: 100%;
+            height: 100%;
+            position: absolute; /* Allows side-by-side positioning with checkout */
+            top: 0;
+            left: 0;
+            display: flex;
+            flex-direction: column;
+            transform: translateX(0); /* Start on-screen */
+            transition: transform 0.3s ease-out;
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.2);
+            overflow-y: auto; /* Enable scrolling for content */
+        }
+
+        /* Checkout Modal (Step 2) */
+        .checkout-modal {
+            background-color: #f0f2f5;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0; /* Initially off-screen to the right */
+            display: flex;
+            flex-direction: column;
+            transform: translateX(100%); /* Start off-screen to the right */
+            transition: transform 0.3s ease-out;
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.2);
+            overflow-y: auto;
+        }
+
+        /* Active state for modal transition */
+        .overlay.active .cart-modal {
+            transform: translateX(0); /* Ensure cart modal slides in */
+        }
+
+        .overlay.checkout-active .cart-modal {
+            transform: translateX(-100%); /* Slide cart modal out to the left */
+        }
+
+        .overlay.checkout-active .checkout-modal {
+            transform: translateX(0); /* Slide checkout modal in from the right */
+        }
+
+        /* Cart Header */
+        .cart-header {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background-color: white;
+            border-bottom: 1px solid #eee;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .cart-header .back-btn {
+            background: none;
+            border: none;
+            font-size: 1.8em;
+            margin-right: 15px;
+            cursor: pointer;
+            color: #555;
+            padding: 0;
+        }
+
+        .cart-header .cart-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            flex-grow: 1;
+            color: #333;
+        }
+
+        .cart-header .edit-btn {
+            background: none;
+            border: none;
+            color: #007bff;
+            font-size: 0.9em;
+            cursor: pointer;
+            margin-right: 15px;
+        }
+
+        .cart-header .notification-icon {
+            background-color: #ee4d2d;
+            color: white;
+            border-radius: 50%;
+            padding: 3px 8px;
+            font-size: 0.8em;
+            font-weight: bold;
+            line-height: 1;
+        }
+
+        /* Store Section */
+        .store-section {
+            background-color: white;
+            margin-top: 10px;
+            padding: 15px;
+            border-radius: 0; /* Remove border-radius for cleaner look */
+        }
+
+        .store-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .store-checkbox {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+
+        .store-icon {
+            width: 20px;
+            height: 20px;
+            background-color: #ccc; /* Placeholder for a store icon */
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .store-name {
+            font-weight: bold;
+            flex-grow: 1;
+            color: #333;
+        }
+
+        /* Product Item */
+        .product-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #f9f9f9;
+        }
+
+        .product-item:last-child {
+            border-bottom: none; /* No border for the last item */
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .product-checkbox {
+            margin-top: 25px; /* Align with image/content */
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+
+        .product-info {
+            flex-grow: 1;
+            margin-right: 10px;
+        }
+
+        .product-title {
+            font-size: 0.95em;
+            color: #333;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+        }
+
+        .product-variant {
+            font-size: 0.85em;
+            color: #777;
+            margin-bottom: 5px;
+        }
+
+        .product-price {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #ee4d2d;
+            display: flex;
+            align-items: center;
+        }
+
+        .product-old-price {
+            font-size: 0.8em;
+            color: #999;
+            text-decoration: line-through;
+            margin-left: 8px;
+        }
+
+        /* Quantity Controls */
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+
+        .quantity-btn {
+            background-color: #f5f5f5;
+            border: none;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 1.1em;
+            color: #555;
+            transition: background-color 0.2s;
+        }
+
+        .quantity-btn:hover {
+            background-color: #eee;
+        }
+
+        .quantity-input {
+            width: 40px;
+            text-align: center;
+            border: none;
+            outline: none;
+            font-size: 1em;
+            color: #333;
+            background-color: white;
+        }
+
+        /* Flag and Badges */
+        .brazil-flag {
+            width: 16px;
+            height: 12px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="#00923F" d="M0 0h512v512H0z"/><path fill="#FFDF00" d="M256 77.4L468.6 256 256 434.6 43.4 256z"/><path fill="#002776" d="M256 160c-53 0-96 43-96 96s43 96 96 96 96-43 96-96-43-96-96-96z"/><path fill="#FFF" d="M256 210c-25.4 0-46 20.6-46 46s20.6 46 46 46 46-20.6 46-46-20.6-46-46-46z"/><circle fill="#000" cx="256" cy="256" r="15"/></svg>'); /* Small Brazil flag SVG */
+            background-size: cover;
+            background-repeat: no-repeat;
+            display: inline-block;
+            vertical-align: middle;
+            margin-left: 5px;
+        }
+
+        .free-shipping-badge {
+            background-color: #ffeeee;
+            color: #ee4d2d;
+            border: 1px solid #ffd0d0;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.75em;
+            margin-left: 5px;
+            white-space: nowrap; /* Prevent wrapping */
+        }
+
+        /* Promo Section */
+        .promo-section {
+            background-color: white;
+            margin-top: 10px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            color: #333;
+            font-size: 0.9em;
+        }
+
+        .truck-icon {
+            width: 24px;
+            height: 24px;
+            background-color: #ccc; /* Placeholder for truck icon */
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .promo-text {
+            flex-grow: 1;
+        }
+
+        .arrow-right {
+            font-weight: bold;
+            font-size: 1.2em;
+            color: #777;
+        }
+
+        /* Separator Section */
+        .separator-section {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background-color: #f0f2f5; /* Background to separate */
+            font-size: 0.9em;
+            color: #777;
+            border-bottom: 1px dashed #ddd;
+            border-top: 1px dashed #ddd;
+            margin-top: 10px;
+        }
+
+        .separator-icon {
+            width: 18px;
+            height: 18px;
+            background-color: #ccc; /* Placeholder */
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .separator-text {
+            flex-grow: 1;
+        }
+
+        .clear-btn {
+            background: none;
+            border: none;
+            color: #007bff;
+            font-size: 0.9em;
+            cursor: pointer;
+        }
+
+        /* Voucher Section */
+        .voucher-section {
+            background-color: white;
+            margin-top: 10px;
+            padding: 15px;
+        }
+
+        .voucher-item {
+            display: flex;
+            align-items: center;
+            font-size: 0.95em;
+            color: #333;
+        }
+
+        .voucher-icon {
+            font-size: 1.5em;
+            margin-right: 10px;
+        }
+
+        .voucher-text {
+            flex-grow: 1;
+            font-weight: bold;
+        }
+
+        .voucher-input {
+            color: #ee4d2d;
+            font-weight: bold;
+        }
+
+        /* No Selection */
+        .no-selection {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background-color: white;
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: #777;
+        }
+
+        .selection-icon {
+            width: 20px;
+            height: 20px;
+            background-color: #ccc; /* Placeholder */
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        /* Bottom Section (Sticky Footer) */
+        .bottom-section {
+            position: sticky;
+            bottom: 0;
+            background-color: white;
+            border-top: 1px solid #eee;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.05);
+            margin-top: auto; /* Push to the bottom */
+        }
+
+        .select-all {
+            display: flex;
+            align-items: center;
+        }
+
+        .select-all-checkbox {
+            margin-right: 8px;
+            transform: scale(1.2);
+        }
+
+        .select-all-text {
+            font-size: 0.95em;
+            color: #333;
+        }
+
+        .total-section {
+            display: flex;
+            align-items: center;
+        }
+
+        .total-price {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #ee4d2d;
+            margin-right: 15px;
+        }
+
+        .continue-btn {
+            background-color: #ee4d2d;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 3px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .continue-btn:disabled {
+            background-color: #f5a08e; /* Lighter red when disabled */
+            cursor: not-allowed;
+        }
+
+        /* Placeholder for Product Images (Cooler Fan Led Azul) */
+        .product-item .product-image-placeholder-1 {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #0066ff, #004db3);
+            border-radius: 50%;
+            margin-right: 12px;
+            position: relative;
+            flex-shrink: 0; /* Prevent shrinking */
+        }
+        .product-item .product-image-placeholder-1 div:nth-child(1) {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 30px;
+            height: 30px;
+            background: white;
+            border-radius: 50%;
+        }
+        .product-item .product-image-placeholder-1 div:nth-child(2) {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 8px;
+            height: 8px;
+            background: black;
+            border-radius: 50%;
+        }
+        .product-item .product-image-placeholder-1 div:nth-child(3) {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 8px;
+            height: 8px;
+            background: black;
+            border-radius: 50%;
+        }
+        .product-item .product-image-placeholder-1 div:nth-child(4) {
+            position: absolute;
+            bottom: 10px;
+            left: 15px;
+            width: 8px;
+            height: 8px;
+            background: black;
+            border-radius: 50%;
+        }
+        .product-item .product-image-placeholder-1 div:nth-child(5) {
+            position: absolute;
+            bottom: 10px;
+            right: 15px;
+            width: 8px;
+            height: 8px;
+            background: black;
+            border-radius: 50%;
+        }
+
+        /* Placeholder for Product Images (Suporte Ajustável) */
+        .product-item .product-image-placeholder-2 {
+            width: 80px;
+            height: 80px;
+            background-color: black;
+            border-radius: 8px;
+            margin-right: 12px;
+            position: relative;
+            flex-shrink: 0; /* Prevent shrinking */
+        }
+        .product-item .product-image-placeholder-2 div:nth-child(1) {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 6px;
+            height: 40px;
+            background: white;
+            border-radius: 3px;
+        }
+
+        /* Checkout Section Styling */
+        .checkout-section {
+            background-color: white;
+            margin-top: 10px;
+            padding: 15px;
+            border-radius: 0;
+            color: #333;
+            font-size: 0.95em;
+        }
+
+        .checkout-section h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            color: #333;
+            font-size: 1.1em;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .checkout-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #f9f9f9;
+        }
+
+        .checkout-item-block {
+            padding: 10px 0;
+            border-bottom: 1px solid #f9f9f9;
+        }
+        .checkout-item-block:last-child {
+            border-bottom: none;
+        }
+
+        .checkout-item:last-child {
+            border-bottom: none;
+        }
+
+        .checkout-item-title {
+            font-weight: bold;
+        }
+
+        .checkout-item-value {
+            color: #555;
+            text-align: right; /* Align value to the right */
+        }
+        .checkout-item-value span {
+            display: block; /* Make each line a block for better spacing */
+            font-size: 0.9em;
+        }
+
+        .checkout-item-action {
+            color: #007bff;
+            cursor: pointer;
+            font-size: 0.85em;
+        }
+
+        .checkout-total {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 15px;
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #ee4d2d;
+            border-top: 1px solid #eee;
+            margin-top: 15px;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 600px) {
+            .cart-modal-container {
+                max-width: 100%; /* Full width on small screens */
+            }
+
+            .cart-header .edit-btn {
+                margin-right: 10px;
+            }
+
+            .product-item {
+                flex-wrap: wrap; /* Allow product items to wrap */
+                justify-content: center;
+                text-align: center;
+            }
+
+            .product-checkbox {
+                margin-top: 0;
+                margin-bottom: 10px;
+            }
+
+            .product-image-placeholder-1,
+            .product-image-placeholder-2 {
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+
+            .product-info {
+                width: 100%;
+                text-align: center;
+                margin-right: 0;
+            }
+
+            .quantity-controls {
+                margin-top: 10px;
+                width: 100%;
+                justify-content: center;
+            }
+
+            .bottom-section {
+                flex-direction: column;
+                padding: 10px;
+            }
+
+            .total-section {
+                width: 100%;
+                justify-content: space-between;
+                margin-top: 10px;
+            }
+
+            .continue-btn {
+                width: 100%;
+                margin-top: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="add-to-cart-btn" onclick="openCart()">Adicionar ao Carrinho</button>
+
+    <div class="overlay" id="overlay" onclick="closeCart()">
+        <div class="cart-modal-container">
+            <div class="cart-modal" id="cartModal" onclick="event.stopPropagation()">
+                <div class="cart-header">
+                    <button class="back-btn" onclick="closeCart()">←</button>
+                    <span class="cart-title">Carrinho</span>
+                    <button class="edit-btn">Editar</button>
+                    <div class="notification-icon">1</div>
+                </div>
+
+                <div class="store-section">
+                    <div class="store-header">
+                        <input type="checkbox" class="store-checkbox">
+                        <div class="store-icon"></div>
+                        <span class="store-name">THREE HOUSE1</span>
+                        <button class="edit-btn">Editar</button>
+                    </div>
+
+                    <div class="product-item">
+                        <input type="checkbox" class="product-checkbox" checked>
+                        <div class="product-image-placeholder-1">
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                        </div>
+                        <div class="product-info">
+                            <div class="product-title">Cooler Fan Led Azul 120mm Ventoin... <div class="brazil-flag"></div></div>
+                            <div class="product-price">R$17,50 <span class="product-old-price">R$38,99</span></div>
+                        </div>
+                        <div class="quantity-controls">
+                            <button class="quantity-btn">−</button>
+                            <input type="text" class="quantity-input" value="2" readonly>
+                            <button class="quantity-btn">+</button>
+                        </div>
+                    </div>
+                    <div class="checkout-item-block">
+                        <div style="font-size: 0.9em; color: #777;">Mensagem para o vendedor:</div>
+                        <div style="font-size: 0.95em; color: #333; margin-top: 5px;">Digite aqui ></div>
+                    </div>
+                </div>
+
+                <div class="promo-section">
+                    <div class="truck-icon"></div>
+                    <div class="promo-text">50% off no frete com cupom (limitado a R$10,00) para pedidos acima de R$59,00</div>
+                    <span class="arrow-right">›</span>
+                </div>
+
+                <div class="separator-section">
+                    <div class="separator-icon"></div>
+                    <div class="separator-text">Separamos os itens que talvez você não precise.</div>
+                    <button class="clear-btn">Limpar</button>
+                </div>
+
+                <div class="store-section">
+                    <div class="store-header">
+                        <input type="checkbox" class="store-checkbox">
+                        <div class="store-icon"></div>
+                        <span class="store-name" style="color: white; background: #ee4d2d; padding: 2px 6px; border-radius: 4px; font-size: 12px; margin-right: 8px;">Indicado</span>
+                        <span class="store-name">MM MEGA</span>
+                        <button class="edit-btn">Editar</button>
+                    </div>
+
+                    <div class="product-item">
+                        <input type="checkbox" class="product-checkbox">
+                        <div class="product-image-placeholder-2">
+                            <div></div>
+                        </div>
+                        <div class="product-info">
+                            <div class="product-title">Suporte Ajustável Vertical Para Plac...</div>
+                            <div class="product-variant">1 Branco ▽</div>
+                            <div style="margin: 8px 0;">
+                                <span class="brazil-flag"></span>
+                                <span class="free-shipping-badge">FRETE GRÁTIS acima de R$10</span>
+                            </div>
+                            <div class="product-price">R$14,09 <span class="product-old-price">R$27,90</span></div>
+                        </div>
+                        <div class="quantity-controls">
+                            <button class="quantity-btn">−</button>
+                            <input type="text" class="quantity-input" value="1" readonly>
+                            <button class="quantity-btn">+</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="promo-section">
+                    <div class="truck-icon"></div>
+                    <div class="promo-text">Frete grátis em fretes até R$20,00 para pedidos acima de R$10,00</div>
+                    <span class="arrow-right">›</span>
+                </div>
+
+                <div class="voucher-section">
+                    <div class="voucher-item">
+                        <div class="voucher-icon">🎫</div>
+                        <div class="voucher-text">Cupom Shopee</div>
+                        <div class="voucher-input" id="cart-voucher-text">Selecione ou insira o código ></div>
+                    </div>
+                </div>
+
+                <div class="no-selection">
+                    <div class="selection-icon"></div>
+                    <div class="selection-text">Nenhum item selecionado (?)</div>
+                </div>
+
+                <div class="bottom-section">
+                    <div class="select-all">
+                        <input type="checkbox" class="select-all-checkbox">
+                        <span class="select-all-text">Tudo</span>
+                    </div>
+                    <div class="total-section">
+                        <div class="total-price" id="cart-total-price">R$0,00</div>
+                        <button class="continue-btn" disabled onclick="showCheckout()">Continuar (0)</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="checkout-modal" id="checkoutModal">
+                <div class="cart-header">
+                    <button class="back-btn" onclick="showCart()">←</button>
+                    <span class="cart-title">Revisar Pedido</span>
+                    </div>
+
+                <div class="checkout-section">
+                    <h3>Endereço de Entrega</h3>
+                    <div class="checkout-item-block">
+                        <div class="checkout-item-title" id="checkout-address-name">Cleiton Ferreira S Fontanari (+55) 11 96535-8872</div>
+                        <div class="checkout-item-value" style="text-align: left;">
+                            <span id="checkout-address-line1">Rua José Colão Sama, 161, °°°Campainha°°° Casa 5</span>
+                            <span id="checkout-address-line2">Carapicuíba, São Paulo, 06317220</span>
+                        </div>
+                    </div>
+                    <div class="checkout-item-block" style="border-bottom: none;">
+                        <div class="checkout-item-title">CPF</div>
+                        <div class="checkout-item-value" id="checkout-cpf">384.948.578-19</div>
+                    </div>
+                    <div class="checkout-item" style="margin-top: 10px;">
+                        <div class="checkout-item-title">Opção de Envio</div>
+                        <div class="checkout-item-value">
+                            <span>Entrega Padrão</span>
+                            <span id="checkout-shipping-estimated">Receba até 28 de jul</span>
+                        </div>
+                        <span class="checkout-item-action">Ver Mais ></span>
+                    </div>
+                </div>
+
+                <div class="checkout-section">
+                    <h3>Itens Selecionados</h3>
+                    <div class="checkout-item-block">
+                        <div class="checkout-item-title">THREE HOUSE1</div>
+                        <div class="checkout-item" style="border-bottom: none; padding-top: 5px;">
+                            <div style="flex-grow: 1;">
+                                <div style="font-size: 0.95em; color: #333; margin-bottom: 5px;">Cooler Fan Led Azul 120mm Ventoinha Para G...</div>
+                                <div style="font-size: 0.85em; color: #777;">x2</div>
+                            </div>
+                            <div class="product-price">R$17,50 <span class="product-old-price">R$38,99</span></div>
+                        </div>
+                    </div>
+                    </div>
+
+                <div class="checkout-section">
+                    <h3>Detalhes do Pagamento</h3>
+                    <div class="checkout-item">
+                        <div class="checkout-item-title">Total de <span id="checkout-total-items-summary">1</span> itens</div>
+                        <div class="checkout-item-value" id="checkout-subtotal">R$35,00</div>
+                    </div>
+                    <div class="checkout-item">
+                        <div class="checkout-item-title">Total do Frete</div>
+                        <div class="checkout-item-value" id="checkout-shipping">R$8,39</div>
+                    </div>
+                    <div class="checkout-item">
+                        <div class="checkout-item-title">Cupom Shopee</div>
+                        <div class="checkout-item-value" id="checkout-coupon">Selecione ou insira o código ></div>
+                    </div>
+                    <div class="checkout-item" style="border-bottom: none;">
+                        <div class="checkout-item-title">Usar minhas <span id="checkout-moedas">12</span> Moedas Shopee</div>
+                        <div class="checkout-item-value"></div>
+                    </div>
+                    <div class="checkout-total">
+                        <span>Total do Pedido</span>
+                        <span id="checkout-final-total">R$43,39</span>
+                    </div>
+                </div>
+
+                <div class="bottom-section">
+                    <button class="continue-btn" style="width: 100%;" onclick="alert('Pedido Finalizado!')">FAZER PEDIDO</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openCart() {
+            document.getElementById('overlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
+            document.getElementById('overlay').classList.remove('checkout-active');
+        }
+
+        function closeCart() {
+            document.getElementById('overlay').classList.remove('active');
+            document.getElementById('overlay').classList.remove('checkout-active');
+            document.body.style.overflow = '';
+        }
+
+        function showCheckout() {
+            document.getElementById('overlay').classList.add('checkout-active');
+            updateCheckoutSummary(); // Atualiza os dados no checkout antes de mostrar
+        }
+
+        function showCart() {
+            document.getElementById('overlay').classList.remove('checkout-active');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const selectAllCheckbox = document.querySelector('.select-all-checkbox');
+            const productCheckboxes = document.querySelectorAll('.product-checkbox');
+            const storeCheckboxes = document.querySelectorAll('.store-checkbox');
+            const continueButton = document.querySelector('.continue-btn');
+            const cartTotalDisplay = document.getElementById('cart-total-price');
+            const quantityInputs = document.querySelectorAll('.quantity-input');
+            const quantityBtns = document.querySelectorAll('.quantity-btn');
+
+            // Hardcoded values from your provided data
+            const product1Price = 17.50;
+            const product1OldPrice = 38.99;
+            const product1Quantity = 2;
+            const shippingCost = 8.39; // Fixed shipping for this example
+            const shopeeCoins = 12; // Your moedas shopee
+
+            let currentTotal = 0;
+            let currentItems = 0;
+
+            function updateCartSummary() {
+                let totalItemsSelected = 0;
+                let totalPrice = 0;
+
+                // For simplicity, we'll calculate based on the first product as per your data
+                // In a real scenario, this would iterate through all checked products
+                const product1Checked = productCheckboxes[0].checked; // Assuming Cooler Fan is the first product
+
+                if (product1Checked) {
+                    totalItemsSelected = product1Quantity;
+                    totalPrice = product1Price * product1Quantity;
+                }
+
+                currentTotal = totalPrice; // Subtotal only for items
+                currentItems = totalItemsSelected;
+
+                continueButton.textContent = `Continuar (${totalItemsSelected})`;
+                continueButton.disabled = totalItemsSelected === 0;
+                cartTotalDisplay.textContent = `R$${totalPrice.toFixed(2).replace('.', ',')}`;
+
+                document.querySelector('.notification-icon').textContent = totalItemsSelected;
+            }
+
+            function updateCheckoutSummary() {
+                // Address and CPF are static from your input
+                document.getElementById('checkout-address-name').textContent = "Cleiton Ferreira S Fontanari (+55) 11 96535-8872";
+                document.getElementById('checkout-address-line1').textContent = "Rua José Colão Sama, 161, °°°Campainha°°° Casa 5";
+                document.getElementById('checkout-address-line2').textContent = "Carapicuíba, São Paulo, 06317220";
+                document.getElementById('checkout-cpf').textContent = "384.948.578-19";
+                document.getElementById('checkout-shipping-estimated').textContent = "Receba até 28 de jul";
+
+                // Item summary
+                document.getElementById('checkout-total-items-summary').textContent = currentItems;
+
+                // Price details
+                document.getElementById('checkout-subtotal').textContent = `R$${currentTotal.toFixed(2).replace('.', ',')}`;
+                document.getElementById('checkout-shipping').textContent = `R$${shippingCost.toFixed(2).replace('.', ',')}`;
+                document.getElementById('checkout-coupon').textContent = "Selecione ou insira o código >"; // As per your data
+                document.getElementById('checkout-moedas').textContent = shopeeCoins; // Display moedas
+
+                const finalTotal = currentTotal + shippingCost; // No coupon discount for now, based on your data R$43,39
+                document.getElementById('checkout-final-total').textContent = `R$${finalTotal.toFixed(2).replace('.', ',')}`;
+            }
+
+            selectAllCheckbox.addEventListener('change', (event) => {
+                productCheckboxes.forEach(checkbox => {
+                    checkbox.checked = event.target.checked;
+                });
+                storeCheckboxes.forEach(checkbox => {
+                    checkbox.checked = event.target.checked;
+                });
+                updateCartSummary();
+            });
+
+            productCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', () => {
+                    if (!checkbox.checked) {
+                        selectAllCheckbox.checked = false;
+                    } else {
+                        const allChecked = Array.from(productCheckboxes).every(cb => cb.checked);
+                        selectAllCheckbox.checked = allChecked;
+                    }
+                    updateCartSummary();
+                });
+            });
+
+            quantityBtns.forEach(button => {
+                button.addEventListener('click', () => {
+                    const input = button.parentElement.querySelector('.quantity-input');
+                    let currentValue = parseInt(input.value);
+                    if (button.textContent === '+') {
+                        currentValue++;
+                    } else if (button.textContent === '−' && currentValue > 1) {
+                        currentValue--;
+                    }
+                    input.value = currentValue;
+                    if (input.closest('.product-item').querySelector('.product-checkbox').checked) {
+                           updateCartSummary();
+                    }
+                });
+            });
+
+            // Set initial quantity for Cooler Fan
+            document.querySelector('.product-item:first-of-type .quantity-input').value = product1Quantity;
+
+            // Initial update
+            updateCartSummary();
+        });
+    </script>
+</body>
+</html>
