@@ -234,9 +234,11 @@
         }
 
         .product-old-price {
-            font-size: 0.8em;
+            font-size: 0.95em;
+            font-weight: bold;
             color: #999;
             text-decoration: line-through;
+            margin-left: 4px;
         }
 
         /* Quantity Controls */
@@ -402,7 +404,23 @@
                     </div>
                 </div>
             </div>
-        </div>
+            
+            <div class="bottom-section">
+	            <div class="no-selection">
+            		<div class="selection-icon"></div>
+            		<div class="selection-text">Nenhum item selecionado (?)</div>
+            	</div>
+            	<div class="select-all">
+                	<input type="checkbox" class="select-all-checkbox">
+                	<span class="select-all-text">Tudo</span>
+            	</div>
+                <div class="total-section">
+                	<div class="total-price" id="cart-total-price">R$0,00</div>
+                	<button class="continue-btn" disabled onclick="showCheckout()">Continuar (0)</button>
+                </div>
+           </div>
+           
+        </div><!-Content-->
     </div>
 <script>
         const openOverlayBtn = document.getElementById('openOverlay');
