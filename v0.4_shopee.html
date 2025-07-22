@@ -46,7 +46,7 @@
             z-index: 1000;
             opacity: 0;
             visibility: hidden;
-            transition: opacity 0.3s ease, visibility 0.3s ease;  
+            transition: opacity 0.3s ease, visibility 0.3s ease;
         }
 
         .overlay.active {
@@ -57,15 +57,16 @@
         .overlay-content {
             background-color: #f0f2f5;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            width: 90vw; /* 80% of viewport width */
-            max-width: 450px; /* Maximum width to prevent it from getting too large */
-            height: 100%; /* Occupies 100% of the overlay height */
-            box-sizing: border-box; /* Ensures padding and border are included in width/height */
+            width: 90vw;
+            max-width: 450px;
+            height: 100%;
+            box-sizing: border-box;
             position: relative;
-
-            /* Transition for the slide effect */
-            transform: translateX(100%); /* Starts off-screen, to the right */
-            transition: transform 0.4s ease-out; /* Speed and type of transition */ 
+            overflow-y: auto;
+            transform: translateX(100%);
+            transition: transform 0.4s ease-out;
+            display: flex;
+            flex-direction: column;
         }
 
         .overlay.active .overlay-content {
@@ -91,6 +92,7 @@
             background-color: white;
             border-bottom: 1px solid #eee;
             position: sticky;
+            top: 0; /* Make it sticky at the top of the overlay-content */
             z-index: 10;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
         }
@@ -105,22 +107,369 @@
             padding: 0;
             transition: transform 0.5s ease-in-out;
         }
-        
+
         .back-btn:hover {
-        	scale: 1.1;
+            scale: 1.1;
         }
-        
+
         .back-btn:active {
-        	scale: 1.0;
+            scale: 1.0;
         }
 
         .cart-header .cart-title {
-        	text-align: center;
+            text-align: center;
             font-size: 1.2em;
             font-weight: bold;
             flex-grow: 1;
             color: #333;
         }
+
+        /* Store Section */
+        .store-section {
+            background-color: white;
+            margin-top: 10px;
+            padding: 15px;
+            border-radius: 0; /* Remove border-radius for cleaner look */
+        }
+
+        .store-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .store-checkbox {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+
+        .store-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .store-name {
+            font-weight: bold;
+            flex-grow: 1;
+            color: #333;
+        }
+
+        /* Product Item */
+        .product-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #f9f9f9;
+        }
+
+        .product-item:last-of-type { /* Changed to last-of-type to target the last product item in its parent */
+            border-bottom: none; /* No border for the last item */
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .product-checkbox {
+            margin-top: 25px; /* Align with image/content */
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+
+        .product-image-placeholder {
+            flex-shrink: 0; /* Prevent image from shrinking */
+            width: 80px; /* Adjust as needed */
+            height: 80px; /* Adjust as needed */
+            margin-right: 15px;
+        }
+
+        .product-image-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        .product-info {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column; /* Changed to column to stack elements */
+            justify-content: space-between;
+        }
+
+        /* Group for Title and Quantity */
+        .title-and-quantity {
+            display: flex;
+            align-items: center; /* Align items vertically */
+            justify-content: space-between; /* Push quantity to the right */
+            margin-bottom: 5px; /* Space between title/qty and prices */
+            flex-wrap: wrap; /* Allow wrapping on small screens */
+        }
+
+        .product-title {
+            font-size: 0.95em;
+            color: #333;
+            font-weight: bold; /* Make title bold */
+            margin-bottom: 0; /* Remove bottom margin from title directly */
+            flex-grow: 1; /* Allow title to take available space */
+            margin-right: 10px; /* Space between title and quantity */
+        }
+
+        /* Price Group */
+        .price-group {
+            display: flex; /* Allow current and old price to be side by side */
+            align-items: baseline; /* Align prices at their baseline */
+            margin-top: 5px; /* Space above prices */
+        }
+
+        .product-price {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #ee4d2d;
+            margin-right: 8px; /* Space between current and old price */
+        }
+
+        .product-old-price {
+            font-size: 0.95em;
+            font-weight: bold;
+            color: #999;
+            text-decoration: line-through;
+            margin-left: 4px;
+        }
+
+        /* Quantity Controls */
+        .quantity-controls {
+            display: flex;
+            border: 1px solid #ddd;
+            align-items: center;
+            border-radius: 3px;
+            flex-shrink: 0; /* Prevent quantity controls from shrinking */
+        }
+
+        .quantity-btn {
+            background-color: #f5f5f5;
+            border: none;
+            padding: 6px 10px; /* Adjusted padding for smaller size */
+            cursor: pointer;
+            font-size: 1em; /* Adjusted font size */
+            color: #555;
+            transition: background-color 0.2s;
+        }
+
+        .quantity-btn:hover {
+            background-color: #eee;
+        }
+
+        .quantity-input {
+            width: 30px; /* Adjusted width for smaller size */
+            text-align: center;
+            border: none;
+            outline: none;
+            font-size: 0.9em; /* Adjusted font size */
+            color: #333;
+            background-color: white;
+            padding: 6px 0; /* Adjusted padding */
+        }
+
+        /* Flag and Badges */
+        .brazil-flag {
+            width: 16px;
+            height: 12px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="#00923F" d="M0 0h512v512H0z"/><path fill="#FFDF00" d="M256 77.4L468.6 256 256 434.6 43.4 256z"/><path fill="#002776" d="M256 160c-53 0-96 43-96 96s43 96 96 96 96-43 96-96-43-96-96-96z"/><path fill="#FFF" d="M256 210c-25.4 0-46 20.6-46 46s20.6 46 46 46 46-20.6 46-46-20.6-46-46-46z"/><circle fill="#000" cx="256" cy="256" r="15"/></svg>'); /* Small Brazil flag SVG */
+            background-size: cover;
+            background-repeat: no-repeat;
+            display: inline-block;
+            vertical-align: middle;
+            margin-left: 5px;
+        }
+
+        .free-shipping-badge {
+            background-color: #ffeeee;
+            color: #ee4d2d;
+            border: 1px solid #ffd0d0;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.75em;
+            margin-left: 5px;
+            white-space: nowrap; /* Prevent wrapping */
+        }
+
+        /* Message to seller block */
+        .checkout-item-block {
+            margin-top: 15px; /* Space above the message block */
+            padding: 10px;
+            border: 1px dashed #ccc;
+            border-radius: 5px;
+            background-color: #fff;
+            width: 100%; /* Ensures it takes full width */
+            box-sizing: border-box;
+        }
+
+        .checkout-item-block > div {
+            margin-bottom: 5px;
+        }        
+
+        /* Bottom Section (Sticky Footer) */    
+        .bottom-section {
+            position: sticky;
+            bottom: 0;
+            background-color: white;
+            border-top: 1px solid #eee;
+            padding: 15px;
+            display: column;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.05);
+            margin-top: auto;
+            flex-shrink: 0;
+        }
+        .no-selection {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .select-all-checkbox {
+            margin-right: 8px;
+            transform: scale(1.2);
+        }
+        .select-all-text {
+            font-size: 0.95em;
+            color: #333;
+        }
+        
+        .total-section {
+            display: flex;
+            align-items: center;
+        }
+
+        .total-price {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #ee4d2d;
+            margin: 15px;
+        }
+        
+        .select-all-checkbox {
+            margin-left: 20px;
+        }
+        
+        .select-all-text {
+            margin-right: 100px;
+        }
+
+        .continue-btn {
+            background-color: #ee4d2d;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 3px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .continue-btn:disabled {
+            background-color: #f5a08e; /* Lighter red when disabled */
+            cursor: not-allowed;
+        }
+
+
+        /* Responsive adjustments for product-item layout */
+        @media (max-width: 600px) {
+            .product-item {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .product-info {
+                align-items: center;
+                margin-top: 15px;
+                width: 100%; /* Ensure product info takes full width when stacked */
+            }
+
+            .product-checkbox {
+                margin-bottom: 10px;
+            }
+
+            .title-and-quantity {
+                flex-direction: column; /* Stack title and quantity vertically */
+                align-items: center;
+                width: 100%;
+            }
+
+            .product-title {
+                margin-right: 0;
+                margin-bottom: 5px;
+            }
+
+            .quantity-controls {
+                margin-top: 5px; /* Add space between stacked title and quantity */
+            }
+
+            .price-group {
+                justify-content: center; /* Center prices when stacked */
+            }
+        }
+
+        /* New styles for the fixed footer bar */
+        .footer-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #f05713;
+            backdrop-filter: blur(8px); /* Frosted glass effect */
+            border-top: 1px solid #e0e0e0;
+            padding: 10px 0;
+            display: flex;
+            justify-content: center;
+            gap: 20px; /* Space between buttons */
+            z-index: 999; /* Below overlay, above other content */
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .footer-bar button {
+            background: white;
+            border: none;
+            font-size: 1.8em; /* Adjust icon size */
+            color: white;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 5px 10px;
+            border-radius: 8px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .footer-bar button:hover {
+            background-color: #f0f0f0;
+            transform: translateY(-3px); /* Slight lift on hover */
+        }
+
+        .footer-bar button:active {
+            transform: translateY(0);
+            background-color: #e0e0e0;
+        }
+
+        .footer-bar button span {
+            font-size: 0.6em; /* Label text size */
+            margin-top: 5px;
+            color: #333;
+        }
+
+        .footer-bar button img {
+            width: 35px;
+            height: 35px;
+        }
+
     </style>
 </head>
 <body>
@@ -129,18 +478,91 @@
 
     <div class="overlay" id="myOverlay">
         <div class="overlay-content">
-          <div class="cart-header">
-              <button class="back-btn" id="back-btn">←</button>
-              <span class="cart-title">🛒 Carrinho</span>
-          </div>
-          
-          
-        
-        
-        </div>
+
+            <div class="cart-header">
+                <button class="back-btn" id="back-btn">←</button>
+                <span class="cart-title">🛒 Carrinho</span>
+            </div>
+
+            <div class="store-section">
+                <div class="store-header">
+                    <input type="checkbox" class="store-checkbox">
+                    <div class="store-icon">🧛</div>
+                    <span class="store-name">LOJA IMORTAIS COMPLETOS</span>
+                    <button class="edit-btn">Editar</button>
+                </div>
+                <div class="product-item">
+                    <input type="checkbox" class="product-checkbox" checked>
+                    <div class="product-image-placeholder">
+                        <img src="https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcQBS3CQXupdyvstNW6e3CuDJp-McDfUxVYBIsMT2kH5VYomuGubsiWbLC1S24gujTO8lkzRFUggGLKU5Ze1F0BHo61foXKJv71UPWXUB6irgDk7yrVv7PnHhw" alt="Livro: Imortais Completos" class="image">
+                    </div>
+                    <div class="product-info">
+                        <div class="title-and-quantity">
+                            <div class="product-title">
+                                Livro: Imortais Completos - O Recomeco
+                            </div>
+                            <div class="price-group">
+                                <div class="product-price">
+                                    R$17,50
+                                </div>
+                                <span class="product-old-price">
+                                    R$38,99
+                                </span>
+                            </div>
+                            <div class="quantity-controls">
+                                <button class="quantity-btn">−</button>
+                                <input type="text" class="quantity-input" value="2" readonly>
+                                <button class="quantity-btn">+</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="checkout-item-block">
+                    <div style="font-size: 0.9em; color: #777;">Mensagem para o vendedor:</div>
+                    <div style="font-size: 0.95em; color: #333; margin-top: 5px;">
+                        Digite aqui --> Entrega rápida, por favor!
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="bottom-section">
+            	
+                <div class="no-selection">
+					Nenhum item selecionado ('')
+            	</div>
+            	        
+            	<div class="total-section">    
+            		<input type="checkbox" class="select-all-checkbox">
+            		<span class="select-all-text">Tudo</span>
+            		    
+            		<div class="total-price" id="cart-total-price">R$0,00</div>
+            		<button class="continue-btn" disabled onclick="showCheckout()">
+            		    Continuar (0)
+            		</button>                        
+            	</div>
+            	
+            </div>
+            
+        </div><!-Content-->
     </div>
 
-    <script>
+    <div class="footer-bar">
+        <button>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/WhatsApp.svg/2044px-WhatsApp.svg.png">
+            <span>Whatsapp</span>
+        </button>
+        <button>
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqLMDRR426yL1p1anZMDE8NesDmYy1c_tB5Q&s">
+            <span>Comprar Agora</span>
+        </button>
+        <button>
+            <img src="https://img.freepik.com/premium-vector/book-cart-icon-outline-vector-library-shop-online-trolley-color-flat_96318-95341.jpg">
+            <span>Adicionar</span>
+        </button>
+    </div>
+
+<script>
         const openOverlayBtn = document.getElementById('openOverlay');
         const myOverlay = document.getElementById('myOverlay');
         const backOverlayBtn = document.getElementById('back-btn');
@@ -151,7 +573,6 @@
 
         // Close overlay when clicking outside the content
         myOverlay.addEventListener('click', (event) => {
-            // Check if the click was on the overlay itself, not the content or close button
             if (event.target === myOverlay) {
                 myOverlay.classList.remove('active');
             }
@@ -167,6 +588,29 @@
             if (event.key === 'Escape' && myOverlay.classList.contains('active')) {
                 myOverlay.classList.remove('active');
             }
+        });
+
+        // JavaScript for quantity buttons
+        document.addEventListener('DOMContentLoaded', () => {
+            const quantityInputs = document.querySelectorAll('.quantity-input');
+
+            quantityInputs.forEach(input => {
+                const parent = input.closest('.quantity-controls');
+                const minusBtn = parent.querySelector('.quantity-btn:first-child');
+                const plusBtn = parent.querySelector('.quantity-btn:last-child');
+
+                minusBtn.addEventListener('click', () => {
+                    let value = parseInt(input.value);
+                    if (value > 1) {
+                        input.value = value - 1;
+                    }
+                });
+
+                plusBtn.addEventListener('click', () => {
+                    let value = parseInt(input.value);
+                    input.value = value + 1;
+                });
+            });
         });
     </script>
 
