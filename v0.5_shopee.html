@@ -426,14 +426,17 @@
             transform: scale(1); /* Exemplo de outra propriedade para transição */
             transition: opacity 0.5s ease-in-out, transform 0.3s ease;
         }
+        
         .footer-bar:hover {
           opacity: 1; /* Aumenta para 100% de opacidade suavemente */
           transform: scale(1.01); /* Exemplo de outra mudança */
         }
-        .meu-elemento-escondido.visivel {
-            opacity: 1;
+        
+        .footer-bar.active {
+          opacity: 1; /* Aumenta para 100% de opacidade suavemente */
+          transform: scale(1.01); /* Exemplo de outra mudança */
         }
-
+		
         .footer-bar button {
             background: #f1f3fe;
             border: none;
@@ -453,11 +456,6 @@
             transform: translateY(-3px); /* Slight lift on hover */
         }
 
-        .footer-bar button:active {
-            transform: translateY(0);
-            background-color: #e0e0e0;
-        }
-
         .footer-bar button span {
             font-size: 0.6em; /* Label text size */
             margin-top: 0.01em;
@@ -472,6 +470,50 @@
     </style>
 </head>
 <body>
+	<div class="container" id="container-media">
+    
+    	<div class="content">
+            
+            <div class="text" style="background-color: #ecf1f9">
+                <h2>꧁Legado e Maldição꧂</h2>
+                <h3>"Você não precisa me ver para me sentir. Eu estive com você o tempo todo."</h3><br>
+                <p>Essa frase ressoa de um jeito bem particular pra mim. Ela me transporta imediatamente para uma fase da vida onde eu buscava uma conexão mais profunda e autêntica, sabe? Quando percebi que as presenças mais verdadeiras nem sempre são as mais visíveis, mas sim as que se fazem sentir constantemente, como uma força silenciosa me guiando ou uma memória que nunca se apaga. É a certeza de que alguém essencial sempre esteve lá, mesmo que eu não percebesse na época.</p>
+                <hr>
+                <p>Amorim, Ray T.</p>
+                <p>Brasil | Julho, 2025.</p>
+              	
+            </div>
+            
+            <div class="text" style="background-color: #ecf1f9">
+                <h2>꧁Dualidade e Conflito꧂</h2>
+                <h3>Eles são gêmeos é verdade e se amam como tal. Até que o poder os consuma no final.</h3><br>
+                <p>Mesmo quando estive do outro lado do mundo, essa frase já me fazia pensar em como as maiores paixões, até mesmo o amor fraternal, podem se tornar destrutivas quando a busca por algo maior (como o poder), entra em cena. É um lembrete vívido da fragilidade humana, independentemente de onde estamos.</p>
+                <hr>
+                <p>Pinheiro, Ariane S.</p>
+                <p>United States | Fevereiro, 2024.</p>
+            </div>
+            
+            <div class="text" style="background-color: #ecf1f9">
+                <h2>꧁Profecias e Reviravoltas꧂</h2>
+                <h3>Para cumprir a profecia eles renascerão mais poderosos. E com uma sede... que somente o poder pode saciar.</h3><br>
+                <p>Sempre que eu chego nessa parte do livro sou atingida em cheio, fico até arrepiada. Sabe quando a gente falha, mas encontra uma força interior para se reerguer? A "sede de poder" aqui não é só por controle, mas por superação. É sobre a fome de provar a si mesmo que, mesmo depois de uma queda feia, a gente pode voltar mais forte e conquistar algo ainda maior. É a essência da resiliência e da vitória sobre as próprias limitações.</p>
+                <hr>
+                <p>Leitor misterioso.</p>
+                <p>Brasil | Julho, 2024.</p>
+            </div>
+            
+            <div class="text" style="background-color: #ecf1f9">
+                <h2>꧁Batalhas Épicas꧂</h2>
+                <h3>Dois jovens irmãos que lutam para ascender ao poder e se tornarem os imortais mais poderosos de todos os tempos.</h3><br>
+                <p>É tipo a gente, que é jovem, e todo mundo já nos olha torto, acha que não temos experiência ou capacidade. A gente tem que provar o tempo todo que merece um espaço, que tem ideias, que é capaz de conquistar coisas grandes. Essa "ascensão ao poder" e o desejo de ser "o mais poderoso" não é só sobre dominar, é sobre ser reconhecido, sobre mostrar que a idade ou as aparências não definem o seu potencial. É a nossa própria batalha contra julgamentos de quem nos subestima só por sermos jovens.</p>
+                <hr>
+                <p>Leitor misterioso.</p>
+                <p>Japão | Abril, 2025.</p>
+            </div>
+            
+        </div>
+    </div>
+
     <div class="overlay" id="myOverlay">
         <div class="overlay-content">
 
@@ -543,7 +585,7 @@
         </div><!-Content-->
     </div>
 
-    <div class="footer-bar">
+    <div class="footer-bar" id="footerBar">
         <button>
             <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/WhatsApp.svg/2044px-WhatsApp.svg.png">
             <span>Whatsapp</span>
@@ -562,6 +604,31 @@
     const openOverlayBtns = document.querySelectorAll('.openOverlay'); // Changed to .openOverlay
     const myOverlay = document.getElementById('myOverlay');
     const backOverlayBtn = document.getElementById('back-btn');
+
+    // Defina a função que será chamada no evento de scroll.
+    
+        
+        const meuElementoFlutuante = document.getElementById("footerBar");
+        let timeoutId; // Esta variável armazenará o ID do nosso temporizador
+
+        function handleScrollActivity() {
+            // 1. Adiciona a classe 'active' imediatamente ao rolar
+            meuElementoFlutuante.classList.add("active");
+
+            // 2. Limpa qualquer temporizador anterior.
+            // Isso é crucial para reiniciar o tempo de 1 segundo a cada nova rolagem.
+            clearTimeout(timeoutId);
+
+            // 3. Define um novo temporizador para remover a classe após 1 segundo
+            timeoutId = setTimeout(() => {
+                meuElementoFlutuante.classList.remove("active");
+                console.log("Classe 'active' removida após 1 segundo de inatividade.");
+            }, 1000); // 1000 milissegundos = 1 segundo
+        }
+
+        // Adiciona o ouvinte de evento de scroll à janela (documento inteiro)
+        window.addEventListener("scroll", handleScrollActivity);
+
 
     openOverlayBtns.forEach(button => { // Changed variable name to plural for clarity
         button.addEventListener('click', () => {
