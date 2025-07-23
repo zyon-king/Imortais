@@ -548,7 +548,7 @@
                             </div>
                             <div class="quantity-controls">
                                 <button class="quantity-btn">−</button>
-                                <input type="text" class="quantity-input" value="1" readonly>
+                                <input type="text" class="quantity-input" value="0">
                                 <button class="quantity-btn">+</button>
                             </div>
                         </div>
@@ -640,7 +640,44 @@
     const noSelectionElement = document.querySelector('.no-selection');
     const productCheckboxes = document.querySelectorAll('.product-checkbox');
     const selectAllCheckboxes = document.querySelectorAll('.select-all-checkbox'); // Variável declarada, mas não usada aqui.
+    
+        
+// Função para calcular e atualizar o total e a contagem de itens selecionados
+function updateTotal() {
+  let total = 0;
+  let count = 0;
 
+  // Itera sobre CADA checkbox de produto
+  productCheckboxes.forEach(checkbox => {
+    // APENAS se o checkbox estiver MARCADO, considere o item no cálculo
+    if (checkbox.checked) { 
+      const productItem = checkbox.closest('.product-item');
+      // Verificações adicionais para garantir que os elementos existem
+      if (productItem) {
+        const priceElement = productItem.querySelector('.product-price');
+        const quantityInputElement = productItem.querySelector('.quantity-input');
+
+        if (priceElement && quantityInputElement) {
+          const priceText = priceElement.textContent;
+          // Garante que o replace seja feito apenas no primeiro 'R$' e a separação por espaço
+          const price = parseFloat(priceText.replace('R$', '').replace(',', '.').trim());
+          const quantity = parseInt(quantityInputElement.value);
+
+          // Verifica se price e quantity são números válidos antes de somar
+          if (!isNaN(price) && !isNaN(quantity)) {
+            total += price * quantity;
+            count += quantity;
+          }
+        }
+      }
+    }
+  });
+
+  // Atualiza os elementos HTML com os novos valores
+  document.querySelector('.total-price').textContent = `R$${total.toFixed(2).replace('.', ',')}`;
+  document.querySelector('.continue-btn').textContent = `Continuar (${count})`;
+  document.querySelector('.continue-btn').disabled = count === 0;
+}
     // Função para verificar e atualizar o estado do noSelectionElement
     function updateNoSelectionDisplay() {
       const anyProductChecked = Array.from(productCheckboxes).some(cb => cb.checked);
@@ -702,14 +739,51 @@
           updateNoSelectionDisplay();
         });
       });
-    }
+    }    
+
+    // Funcionalidade do "Tudo"
+    document.querySelector('.select-all-checkbox').addEventListener('change', function() {
+      const isChecked = this.checked;
+      // Marca/desmarca todos os checkboxes de produto e loja
+      document.querySelectorAll('.product-checkbox, .store-checkbox').forEach(checkbox => {
+        checkbox.checked = isChecked;
+      });
+      // Depois de alterar os checkboxes, atualiza o total
+      updateTotal();
+    });
+
+    // Adiciona event listeners para os checkboxes de produto para que o total seja atualizado
+    productCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', updateTotal);
+    });
+
+    // Adiciona event listeners para os botões de quantidade
+    document.querySelectorAll('.quantity-controls .quantity-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const productItem = this.closest('.product-item');
+            const quantityInput = productItem.querySelector('.quantity-input');
+            let currentQuantity = parseInt(quantityInput.value);
+
+            if (this.textContent === '+') {
+                currentQuantity++;
+            } else if (this.textContent === '−') { // Use o caractere correto para o traço
+                if (currentQuantity > 1) { // Garante que a quantidade não seja menor que 1
+                    currentQuantity--;
+                }
+            }
+            quantityInput.value = currentQuantity; // Atualiza o valor do input
+
+            updateTotal(); // CHAMA A FUNÇÃO DE ATUALIZAÇÃO DO TOTAL AQUI!
+            updateNoSelectionDisplay(); // Também pode ser útil atualizar o display de "nenhuma seleção"
+        });
+    }); 
     
     // Call the functions to set up the event listeners when the page loads
     updateStoreCheckboxes();
     updateProductCheckboxes();
     updateAllCheckboxes()
     updateNoSelectionDisplay(); // Chama no carregamento inicial para definir o estado correto
-
+    updateTotal(); // Inicializar com valores corretos ao carregar a página
 
     // Close overlay when clicking outside the content
     myOverlay.addEventListener('click', (event) => {
@@ -728,29 +802,6 @@
         if (event.key === 'Escape' && myOverlay.classList.contains('active')) {
             myOverlay.classList.remove('active');
         }
-    });
-
-    // JavaScript for quantity buttons
-    document.addEventListener('DOMContentLoaded', () => {
-        const quantityInputs = document.querySelectorAll('.quantity-input');
-
-        quantityInputs.forEach(input => {
-            const parent = input.closest('.quantity-controls');
-            const minusBtn = parent.querySelector('.quantity-btn:first-child');
-            const plusBtn = parent.querySelector('.quantity-btn:last-child');
-
-            minusBtn.addEventListener('click', () => {
-                let value = parseInt(input.value);
-                if (value > 1) {
-                    input.value = value - 1;
-                }
-            });
-
-            plusBtn.addEventListener('click', () => {
-                let value = parseInt(input.value);
-                input.value = value + 1;
-            });
-        });
     });
 </script>
 
