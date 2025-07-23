@@ -409,7 +409,6 @@
         /* New styles for the fixed footer bar */
         .footer-bar {
             position: fixed;
-            bottom: 0;
             width: 100%;
             max-width: 350px;
             background-color: #f05713;
@@ -530,7 +529,7 @@
                     <button class="edit-btn">Editar</button>
                 </div>
                 <div class="product-item">
-                    <input type="checkbox" class="product-checkbox" checked>
+                    <input type="checkbox" class="product-checkbox">
                     <div class="product-image-placeholder">
                         <img src="https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcQBS3CQXupdyvstNW6e3CuDJp-McDfUxVYBIsMT2kH5VYomuGubsiWbLC1S24gujTO8lkzRFUggGLKU5Ze1F0BHo61foXKJv71UPWXUB6irgDk7yrVv7PnHhw" alt="Livro: Imortais Completos" class="image">
                     </div>
@@ -549,7 +548,7 @@
                             </div>
                             <div class="quantity-controls">
                                 <button class="quantity-btn">−</button>
-                                <input type="text" class="quantity-input" value="2" readonly>
+                                <input type="text" class="quantity-input" value="0">
                                 <button class="quantity-btn">+</button>
                             </div>
                         </div>
@@ -567,7 +566,7 @@
             <div class="bottom-section">
             	
                 <div class="no-selection">
-					Nenhum item selecionado ('')
+					ℹ️ Nenhum item selecionado
             	</div>
             	        
             	<div class="total-section">    
@@ -605,15 +604,15 @@
     const myOverlay = document.getElementById('myOverlay');
     const backOverlayBtn = document.getElementById('back-btn');
 
-    // Defina a função que será chamada no evento de scroll.
+    // Defina a função que será chamada no evento de scroll.    
+    const footerBar = document.getElementById("footerBar"); 
+    let timeoutId; // Armazen ID do temporizador
     
-        
-        const meuElementoFlutuante = document.getElementById("footerBar");
-        let timeoutId; // Esta variável armazenará o ID do nosso temporizador
-
-        function handleScrollActivity() {
-            // 1. Adiciona a classe 'active' imediatamente ao rolar
-            meuElementoFlutuante.classList.add("active");
+    footerBar.style.top = '2vh'; // 100vh (base) - 20vh = 80vh
+    
+    function handleScrollActivity() {
+    	// 1. Adiciona a classe 'active' imediatamente ao rolar
+            footerBar.classList.add("active");
 
             // 2. Limpa qualquer temporizador anterior.
             // Isso é crucial para reiniciar o tempo de 1 segundo a cada nova rolagem.
@@ -621,9 +620,9 @@
 
             // 3. Define um novo temporizador para remover a classe após 1 segundo
             timeoutId = setTimeout(() => {
-                meuElementoFlutuante.classList.remove("active");
+                footerBar.classList.remove("active");
                 console.log("Classe 'active' removida após 1 segundo de inatividade.");
-            }, 1000); // 1000 milissegundos = 1 segundo
+            }, 500); // 1000 milissegundos = 1 segundo
         }
 
         // Adiciona o ouvinte de evento de scroll à janela (documento inteiro)
@@ -635,6 +634,158 @@
             myOverlay.classList.add('active');
         });
     });
+    
+    // Get all store checkboxes
+    const storeCheckboxes = document.querySelectorAll('.store-checkbox');
+    const noSelectionElement = document.querySelector('.no-selection');
+    const productCheckboxes = document.querySelectorAll('.product-checkbox');
+    const selectAllCheckboxes = document.querySelectorAll('.select-all-checkbox'); // Variável declarada, mas não usada aqui.
+        
+    // Função para calcular e atualizar o total e a contagem de itens selecionados
+    function updateTotal() {
+      let total = 0;
+      let count = 0;
+
+      // Itera sobre CADA checkbox de produto
+      productCheckboxes.forEach(checkbox => {
+        // APENAS se o checkbox estiver MARCADO, considere o item no cálculo
+        if (checkbox.checked) { 
+          const productItem = checkbox.closest('.product-item');
+          // Verificações adicionais para garantir que os elementos existem
+          if (productItem) {
+            const priceElement = productItem.querySelector('.product-price');
+            const quantityInputElement = productItem.querySelector('.quantity-input');
+
+            if (priceElement && quantityInputElement) {
+              const priceText = priceElement.textContent;
+              // Garante que o replace seja feito apenas no primeiro 'R$' e a separação por espaço
+              const price = parseFloat(priceText.replace('R$', '').replace(',', '.').trim());
+              const quantity = parseInt(quantityInputElement.value);
+
+              // Verifica se price e quantity são números válidos antes de somar
+              if (!isNaN(price) && !isNaN(quantity)) {
+                total += price * quantity;
+                count += quantity;
+              }
+            }
+          }
+        }
+      });
+
+      // Atualiza os elementos HTML com os novos valores
+      document.querySelector('.total-price').textContent = `R$${total.toFixed(2).replace('.', ',')}`;
+      document.querySelector('.continue-btn').textContent = `Continuar (${count})`;
+      document.querySelector('.continue-btn').disabled = count === 0;
+    }
+
+    // Adiciona event listeners para os botões de quantidade
+    document.querySelectorAll('.quantity-controls .quantity-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const productItem = this.closest('.product-item');
+            const quantityInput = productItem.querySelector('.quantity-input');
+            const productCheckbox = productItem.querySelector('.product-checkbox');
+            let currentQuantity = parseInt(quantityInput.value);
+
+            if (this.textContent === '+') {
+            	productCheckbox.checked = true;
+                currentQuantity++;
+            } else if (this.textContent === '−') { // Use o caractere correto para o traço
+                if (currentQuantity > 1) { // Garante que a quantidade não seja menor que 1
+                    currentQuantity--;
+                }
+            }
+            quantityInput.value = currentQuantity; // Atualiza o valor do input
+
+            updateTotal(); // CHAMA A FUNÇÃO DE ATUALIZAÇÃO DO TOTAL AQUI!
+            updateNoSelectionDisplay(); // Também pode ser útil atualizar o display de "nenhuma seleção"
+        });
+    });
+    
+    // Função para verificar e atualizar o estado do noSelectionElement
+    function updateNoSelectionDisplay() {
+      const anyProductChecked = Array.from(productCheckboxes).some(cb => cb.checked);
+      const anyStoreChecked = Array.from(storeCheckboxes).some(cb => cb.checked);
+
+      if (anyProductChecked || anyStoreChecked) {
+        noSelectionElement.style.display = 'none'; // Esconde se algo estiver selecionado
+      } else {
+        noSelectionElement.style.display = 'block'; // Mostra se nada estiver selecionado
+      }
+    }
+
+    function updateStoreCheckboxes() {
+      // Add an event listener to each Store Checkbox
+      storeCheckboxes.forEach(storeCheckbox => {
+        storeCheckbox.addEventListener('change', function() {
+          // If a store checkbox is checked, check all product checkboxes
+          if (this.checked) {
+            productCheckboxes.forEach(productCheckbox => {
+              productCheckbox.checked = true;
+            });
+          } else {
+            // If a store checkbox is unchecked, uncheck all product checkboxes
+            productCheckboxes.forEach(productCheckbox => {
+              productCheckbox.checked = false;
+            });
+          }
+          updateNoSelectionDisplay(); // Chama a função para atualizar o display
+        });
+      });
+    }
+
+    function updateProductCheckboxes() {
+      // Add an event listener to each Product Checkbox
+      productCheckboxes.forEach(productCheckbox => {
+        productCheckbox.addEventListener('change', function() {
+          updateNoSelectionDisplay(); // Chama a função para atualizar o display
+        });
+      });
+    }
+    
+    function updateAllCheckboxes() {
+      // Adiciona um listener a cada checkbox 'selecionar tudo'
+      selectAllCheckboxes.forEach(allCheckbox => { // Usando selectAllCheckboxes aqui
+        allCheckbox.addEventListener('change', function() {
+          const isChecked = this.checked;
+
+          // Itera sobre todos os checkboxes de loja e os marca/desmarca
+          storeCheckboxes.forEach(storeCheckbox => {
+            storeCheckbox.checked = isChecked;
+          });
+
+          // Itera sobre todos os checkboxes de produto e os marca/desmarca
+          productCheckboxes.forEach(productCheckbox => {
+            productCheckbox.checked = isChecked;
+          });
+
+          // Atualiza a exibição do elemento "nenhuma seleção"
+          updateNoSelectionDisplay();
+        });
+      });
+    }    
+
+    // Funcionalidade do "Tudo"
+    document.querySelector('.select-all-checkbox').addEventListener('change', function() {
+      const isChecked = this.checked;
+      // Marca/desmarca todos os checkboxes de produto e loja
+      document.querySelectorAll('.product-checkbox, .store-checkbox').forEach(checkbox => {
+        checkbox.checked = isChecked;
+      });
+      // Depois de alterar os checkboxes, atualiza o total
+      updateTotal();
+    });
+
+    // Adiciona event listeners para os checkboxes de produto para que o total seja atualizado
+    productCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', updateTotal);
+    });
+    
+    // Call the functions to set up the event listeners when the page loads
+    updateStoreCheckboxes();
+    updateProductCheckboxes();
+    updateAllCheckboxes()
+    updateNoSelectionDisplay(); // Chama no carregamento inicial para definir o estado correto
+    updateTotal(); // Inicializar com valores corretos ao carregar a página
 
     // Close overlay when clicking outside the content
     myOverlay.addEventListener('click', (event) => {
@@ -653,29 +804,6 @@
         if (event.key === 'Escape' && myOverlay.classList.contains('active')) {
             myOverlay.classList.remove('active');
         }
-    });
-
-    // JavaScript for quantity buttons
-    document.addEventListener('DOMContentLoaded', () => {
-        const quantityInputs = document.querySelectorAll('.quantity-input');
-
-        quantityInputs.forEach(input => {
-            const parent = input.closest('.quantity-controls');
-            const minusBtn = parent.querySelector('.quantity-btn:first-child');
-            const plusBtn = parent.querySelector('.quantity-btn:last-child');
-
-            minusBtn.addEventListener('click', () => {
-                let value = parseInt(input.value);
-                if (value > 1) {
-                    input.value = value - 1;
-                }
-            });
-
-            plusBtn.addEventListener('click', () => {
-                let value = parseInt(input.value);
-                input.value = value + 1;
-            });
-        });
     });
 </script>
 
