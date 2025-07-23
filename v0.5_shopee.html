@@ -262,29 +262,6 @@
             padding: 6px 0; /* Adjusted padding */
         }
 
-        /* Flag and Badges */
-        .brazil-flag {
-            width: 16px;
-            height: 12px;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="#00923F" d="M0 0h512v512H0z"/><path fill="#FFDF00" d="M256 77.4L468.6 256 256 434.6 43.4 256z"/><path fill="#002776" d="M256 160c-53 0-96 43-96 96s43 96 96 96 96-43 96-96-43-96-96-96z"/><path fill="#FFF" d="M256 210c-25.4 0-46 20.6-46 46s20.6 46 46 46 46-20.6 46-46-20.6-46-46-46z"/><circle fill="#000" cx="256" cy="256" r="15"/></svg>'); /* Small Brazil flag SVG */
-            background-size: cover;
-            background-repeat: no-repeat;
-            display: inline-block;
-            vertical-align: middle;
-            margin-left: 5px;
-        }
-
-        .free-shipping-badge {
-            background-color: #ffeeee;
-            color: #ee4d2d;
-            border: 1px solid #ffd0d0;
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-size: 0.75em;
-            margin-left: 5px;
-            white-space: nowrap; /* Prevent wrapping */
-        }
-
         /* Message to seller block */
         .checkout-item-block {
             margin-top: 15px; /* Space above the message block */
@@ -320,6 +297,9 @@
             align-items: center;
             margin-bottom: 15px;
             padding-bottom: 10px;
+            font-size: 1em;
+            font-weight: bold;
+            color: #ee4d2d;
             border-bottom: 1px solid #f0f0f0;
         }
         .select-all-checkbox {
@@ -344,7 +324,7 @@
         }
         
         .select-all-checkbox {
-            margin-left: 20px;
+            margin-left: 15px;
         }
         
         .select-all-text {
@@ -574,7 +554,79 @@
             		<span class="select-all-text">Tudo</span>
             		    
             		<div class="total-price" id="cart-total-price">R$0,00</div>
-            		<button class="continue-btn" disabled onclick="showCheckout()">
+            		<button class="continue-btn" disabled>
+            		    Continuar (0)
+            		</button>                        
+            	</div>
+            	
+            </div>
+            
+        </div><!-Content-->
+    </div>
+
+
+    <div class="overlay" id="checkout">
+        <div class="overlay-content">
+
+            <div class="cart-header">
+                <button class="back-btn" id="back-btn">←</button>
+                <span class="cart-title">🛍️ Checkout</span>
+            </div>
+
+            <div class="store-section">
+                <div class="store-header">
+                    <input type="checkbox" class="store-checkbox">
+                    <div class="store-icon">🧛</div>
+                    <span class="store-name">LOJA IMORTAIS COMPLETOS</span>
+                    <button class="edit-btn">Editar</button>
+                </div>
+                <div class="product-item">
+                    <input type="checkbox" class="product-checkbox">
+                    <div class="product-image-placeholder">
+                        <img src="https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcQBS3CQXupdyvstNW6e3CuDJp-McDfUxVYBIsMT2kH5VYomuGubsiWbLC1S24gujTO8lkzRFUggGLKU5Ze1F0BHo61foXKJv71UPWXUB6irgDk7yrVv7PnHhw" alt="Livro: Imortais Completos" class="image">
+                    </div>
+                    <div class="product-info">
+                        <div class="title-and-quantity">
+                            <div class="product-title">
+                                Livro: Imortais Completos - O Recomeco
+                            </div>
+                            <div class="price-group">
+                                <div class="product-price">
+                                    R$89,90
+                                </div>
+                                <span class="product-old-price">
+                                    R$109,90
+                                </span>
+                            </div>
+                            <div class="quantity-controls">
+                                <button class="quantity-btn">−</button>
+                                <input type="text" class="quantity-input" value="0">
+                                <button class="quantity-btn">+</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="checkout-item-block">
+                    <div style="font-size: 0.9em; color: #777;">Mensagem para o vendedor:</div>
+                    <div style="font-size: 0.95em; color: #333; margin-top: 5px;">
+                        Digite aqui --> Entrega rápida, por favor!
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="bottom-section">
+            	
+                <div class="no-selection">
+					ℹ️ Nenhum item selecionado
+            	</div>
+            	        
+            	<div class="total-section">    
+            		<input type="checkbox" class="select-all-checkbox">
+            		<span class="select-all-text">Tudo</span>
+            		    
+            		<div class="total-price" id="cart-total-price">R$0,00</div>
+            		<button class="continue-btn" disabled>
             		    Continuar (0)
             		</button>                        
             	</div>
@@ -600,211 +652,218 @@
     </div>
 
 <script>
-    const openOverlayBtns = document.querySelectorAll('.openOverlay'); // Changed to .openOverlay
-    const myOverlay = document.getElementById('myOverlay');
-    const backOverlayBtn = document.getElementById('back-btn');
+// --- Overlays ---
+const openOverlayBtns = document.querySelectorAll('.openOverlay');
+const myOverlay = document.getElementById('myOverlay');
+const backOverlayBtn = document.getElementById('back-btn');
+// Certifique-se de que 'checkout' é o ID correto para o seu overlay de checkout no HTML
+const checkoutOverlay = document.getElementById('checkout'); // Você precisará adicionar <div id="checkout" class="overlay">...</div> no seu HTML
+const continueBtn = document.querySelector('.continue-btn'); // Usando o seletor de classe para o botão
 
-    // Defina a função que será chamada no evento de scroll.    
-    const footerBar = document.getElementById("footerBar"); 
-    let timeoutId; // Armazen ID do temporizador
-    
-    footerBar.style.top = '2vh'; // 100vh (base) - 20vh = 80vh
-    
-    function handleScrollActivity() {
-    	// 1. Adiciona a classe 'active' imediatamente ao rolar
-            footerBar.classList.add("active");
+// --- Funcionalidade do Footer Bar (mantida como estava) ---
+const footerBar = document.getElementById("footerBar");
+let timeoutId;
 
-            // 2. Limpa qualquer temporizador anterior.
-            // Isso é crucial para reiniciar o tempo de 1 segundo a cada nova rolagem.
-            clearTimeout(timeoutId);
+footerBar.style.top = '2vh';
 
-            // 3. Define um novo temporizador para remover a classe após 1 segundo
-            timeoutId = setTimeout(() => {
-                footerBar.classList.remove("active");
-                console.log("Classe 'active' removida após 1 segundo de inatividade.");
-            }, 500); // 1000 milissegundos = 1 segundo
-        }
+function handleScrollActivity() {
+    footerBar.classList.add("active");
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => {
+        footerBar.classList.remove("active");
+    }, 500);
+}
+window.addEventListener("scroll", handleScrollActivity);
 
-        // Adiciona o ouvinte de evento de scroll à janela (documento inteiro)
-        window.addEventListener("scroll", handleScrollActivity);
-
-
-    openOverlayBtns.forEach(button => { // Changed variable name to plural for clarity
-        button.addEventListener('click', () => {
-            myOverlay.classList.add('active');
-        });
+// --- Abrir Overlay de Carrinho ---
+openOverlayBtns.forEach(button => {
+    button.addEventListener('click', () => {
+        myOverlay.classList.add('active');
     });
-    
-    // Get all store checkboxes
-    const storeCheckboxes = document.querySelectorAll('.store-checkbox');
-    const noSelectionElement = document.querySelector('.no-selection');
-    const productCheckboxes = document.querySelectorAll('.product-checkbox');
-    const selectAllCheckboxes = document.querySelectorAll('.select-all-checkbox'); // Variável declarada, mas não usada aqui.
-        
-    // Função para calcular e atualizar o total e a contagem de itens selecionados
-    function updateTotal() {
-      let total = 0;
-      let count = 0;
+});
 
-      // Itera sobre CADA checkbox de produto
-      productCheckboxes.forEach(checkbox => {
-        // APENAS se o checkbox estiver MARCADO, considere o item no cálculo
-        if (checkbox.checked) { 
-          const productItem = checkbox.closest('.product-item');
-          // Verificações adicionais para garantir que os elementos existem
-          if (productItem) {
-            const priceElement = productItem.querySelector('.product-price');
-            const quantityInputElement = productItem.querySelector('.quantity-input');
+// --- Fechar Overlay de Carrinho (botão de voltar e clique fora) ---
+backOverlayBtn.addEventListener('click', () => {
+    myOverlay.classList.remove('active');
+});
 
-            if (priceElement && quantityInputElement) {
-              const priceText = priceElement.textContent;
-              // Garante que o replace seja feito apenas no primeiro 'R$' e a separação por espaço
-              const price = parseFloat(priceText.replace('R$', '').replace(',', '.').trim());
-              const quantity = parseInt(quantityInputElement.value);
-
-              // Verifica se price e quantity são números válidos antes de somar
-              if (!isNaN(price) && !isNaN(quantity)) {
-                total += price * quantity;
-                count += quantity;
-              }
-            }
-          }
-        }
-      });
-
-      // Atualiza os elementos HTML com os novos valores
-      document.querySelector('.total-price').textContent = `R$${total.toFixed(2).replace('.', ',')}`;
-      document.querySelector('.continue-btn').textContent = `Continuar (${count})`;
-      document.querySelector('.continue-btn').disabled = count === 0;
+myOverlay.addEventListener('click', (event) => {
+    if (event.target === myOverlay) { // Só fecha se clicar no fundo do overlay, não no conteúdo
+        myOverlay.classList.remove('active');
     }
+});
 
-    // Adiciona event listeners para os botões de quantidade
-    document.querySelectorAll('.quantity-controls .quantity-btn').forEach(button => {
-        button.addEventListener('click', function() {
-            const productItem = this.closest('.product-item');
-            const quantityInput = productItem.querySelector('.quantity-input');
-            const productCheckbox = productItem.querySelector('.product-checkbox');
-            let currentQuantity = parseInt(quantityInput.value);
+// --- Funcionalidade do Botão 'Continuar' (Abrir Checkout) ---
+if (continueBtn) { // Verifica se o botão existe
+    continueBtn.addEventListener('click', () => {
+        myOverlay.classList.remove('active'); // Esconde o overlay do carrinho
+        if (checkoutOverlay) { // Verifica se o overlay de checkout existe
+            checkoutOverlay.classList.add('active'); // Mostra o overlay de checkout
+        }
+    });
+}
 
-            if (this.textContent === '+') {
-            	productCheckbox.checked = true;
-                currentQuantity++;
-            } else if (this.textContent === '−') { // Use o caractere correto para o traço
-                if (currentQuantity > 1) { // Garante que a quantidade não seja menor que 1
-                    currentQuantity--;
+
+// --- Fechar Overlays com a Tecla ESC ---
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+        if (myOverlay.classList.contains('active')) {
+            myOverlay.classList.remove('active');
+        }
+        if (checkoutOverlay && checkoutOverlay.classList.contains('active')) {
+            checkoutOverlay.classList.remove('active');
+        }
+    }
+});
+
+// --- Funcionalidades do Carrinho (mantidas como estavam e corrigidas anteriormente) ---
+const productCheckboxes = document.querySelectorAll('.product-checkbox');
+const storeCheckboxes = document.querySelectorAll('.store-checkbox');
+const selectAllCheckbox = document.querySelector('.select-all-checkbox');
+const noSelectionElement = document.querySelector('.no-selection');
+
+// Desmarcar todos os checkboxes ao carregar a página
+productCheckboxes.forEach(checkbox => {
+    checkbox.checked = false;
+});
+storeCheckboxes.forEach(checkbox => {
+    checkbox.checked = false;
+});
+if (selectAllCheckbox) {
+    selectAllCheckbox.checked = false;
+}
+
+// Função para calcular e atualizar o total e a contagem de itens selecionados
+function updateTotal() {
+    let total = 0;
+    let count = 0;
+
+    productCheckboxes.forEach(checkbox => {
+        if (checkbox.checked) {
+            const productItem = checkbox.closest('.product-item');
+            if (productItem) {
+                const priceElement = productItem.querySelector('.product-price');
+                const quantityInputElement = productItem.querySelector('.quantity-input');
+
+                if (priceElement && quantityInputElement) {
+                    const priceText = priceElement.textContent;
+                    const price = parseFloat(priceText.replace('R$', '').replace(',', '.').trim());
+                    const quantity = parseInt(quantityInputElement.value);
+
+                    if (!isNaN(price) && !isNaN(quantity)) {
+                        total += price * quantity;
+                        count += quantity;
+                    }
                 }
             }
-            quantityInput.value = currentQuantity; // Atualiza o valor do input
-
-            updateTotal(); // CHAMA A FUNÇÃO DE ATUALIZAÇÃO DO TOTAL AQUI!
-            updateNoSelectionDisplay(); // Também pode ser útil atualizar o display de "nenhuma seleção"
-        });
+        }
     });
-    
-    // Função para verificar e atualizar o estado do noSelectionElement
-    function updateNoSelectionDisplay() {
-      const anyProductChecked = Array.from(productCheckboxes).some(cb => cb.checked);
-      const anyStoreChecked = Array.from(storeCheckboxes).some(cb => cb.checked);
 
-      if (anyProductChecked || anyStoreChecked) {
-        noSelectionElement.style.display = 'none'; // Esconde se algo estiver selecionado
-      } else {
-        noSelectionElement.style.display = 'block'; // Mostra se nada estiver selecionado
-      }
+    document.querySelector('.total-price').textContent = `R$${total.toFixed(2).replace('.', ',')}`;
+    document.querySelector('.continue-btn').textContent = `Continuar (${count})`;
+    document.querySelector('.continue-btn').disabled = count === 0;
+
+    if (selectAllCheckbox) {
+        const allProductsChecked = Array.from(productCheckboxes).every(cb => cb.checked);
+        selectAllCheckbox.checked = allProductsChecked;
     }
+}
 
-    function updateStoreCheckboxes() {
-      // Add an event listener to each Store Checkbox
-      storeCheckboxes.forEach(storeCheckbox => {
+// Função para verificar e atualizar o estado do noSelectionElement
+function updateNoSelectionDisplay() {
+    const anyProductChecked = Array.from(productCheckboxes).some(cb => cb.checked);
+    if (noSelectionElement) {
+        if (anyProductChecked) {
+            noSelectionElement.style.display = 'none';
+        } else {
+            noSelectionElement.style.display = 'flex';
+        }
+    }
+}
+
+// Adiciona event listeners para os botões de quantidade
+document.querySelectorAll('.quantity-controls .quantity-btn').forEach(button => {
+    button.addEventListener('click', function() {
+        const productItem = this.closest('.product-item');
+        const quantityInput = productItem.querySelector('.quantity-input');
+        const productCheckbox = productItem.querySelector('.product-checkbox');
+        let currentQuantity = parseInt(quantityInput.value);
+
+        if (this.textContent === '+') {
+            currentQuantity++;
+            if (productCheckbox) {
+                productCheckbox.checked = true;
+            }
+        } else if (this.textContent === '−') {
+            if (currentQuantity > 1) {
+                currentQuantity--;
+            }
+        }
+        quantityInput.value = currentQuantity;
+
+        updateTotal();
+        updateNoSelectionDisplay();
+    });
+});
+
+// Configura listeners para os checkboxes de loja
+function setupStoreCheckboxesListeners() {
+    storeCheckboxes.forEach(storeCheckbox => {
         storeCheckbox.addEventListener('change', function() {
-          // If a store checkbox is checked, check all product checkboxes
-          if (this.checked) {
-            productCheckboxes.forEach(productCheckbox => {
-              productCheckbox.checked = true;
-            });
-          } else {
-            // If a store checkbox is unchecked, uncheck all product checkboxes
-            productCheckboxes.forEach(productCheckbox => {
-              productCheckbox.checked = false;
-            });
-          }
-          updateNoSelectionDisplay(); // Chama a função para atualizar o display
+            const isStoreChecked = this.checked;
+            const storeSection = this.closest('.store-section');
+            if (storeSection) {
+                storeSection.querySelectorAll('.product-checkbox').forEach(productCb => {
+                    productCb.checked = isStoreChecked;
+                });
+            }
+            updateTotal();
+            updateNoSelectionDisplay();
         });
-      });
-    }
+    });
+}
 
-    function updateProductCheckboxes() {
-      // Add an event listener to each Product Checkbox
-      productCheckboxes.forEach(productCheckbox => {
+// Configura listeners para os checkboxes de produto
+function setupProductCheckboxesListeners() {
+    productCheckboxes.forEach(productCheckbox => {
         productCheckbox.addEventListener('change', function() {
-          updateNoSelectionDisplay(); // Chama a função para atualizar o display
+            updateTotal();
+            updateNoSelectionDisplay();
+            const storeSection = this.closest('.store-section');
+            if (storeSection) {
+                const allProductsInStore = storeSection.querySelectorAll('.product-checkbox');
+                const allCheckedInStore = Array.from(allProductsInStore).every(cb => cb.checked);
+                const storeCb = storeSection.querySelector('.store-checkbox');
+                if (storeCb) {
+                    storeCb.checked = allCheckedInStore;
+                }
+            }
         });
-      });
-    }
-    
-    function updateAllCheckboxes() {
-      // Adiciona um listener a cada checkbox 'selecionar tudo'
-      selectAllCheckboxes.forEach(allCheckbox => { // Usando selectAllCheckboxes aqui
-        allCheckbox.addEventListener('change', function() {
-          const isChecked = this.checked;
+    });
+}
 
-          // Itera sobre todos os checkboxes de loja e os marca/desmarca
-          storeCheckboxes.forEach(storeCheckbox => {
-            storeCheckbox.checked = isChecked;
-          });
-
-          // Itera sobre todos os checkboxes de produto e os marca/desmarca
-          productCheckboxes.forEach(productCheckbox => {
-            productCheckbox.checked = isChecked;
-          });
-
-          // Atualiza a exibição do elemento "nenhuma seleção"
-          updateNoSelectionDisplay();
+// Funcionalidade do checkbox "Tudo"
+if (selectAllCheckbox) {
+    selectAllCheckbox.addEventListener('change', function() {
+        const isChecked = this.checked;
+        productCheckboxes.forEach(checkbox => {
+            checkbox.checked = isChecked;
         });
-      });
-    }    
-
-    // Funcionalidade do "Tudo"
-    document.querySelector('.select-all-checkbox').addEventListener('change', function() {
-      const isChecked = this.checked;
-      // Marca/desmarca todos os checkboxes de produto e loja
-      document.querySelectorAll('.product-checkbox, .store-checkbox').forEach(checkbox => {
-        checkbox.checked = isChecked;
-      });
-      // Depois de alterar os checkboxes, atualiza o total
-      updateTotal();
+        storeCheckboxes.forEach(checkbox => {
+            checkbox.checked = isChecked;
+        });
+        updateTotal();
+        updateNoSelectionDisplay();
     });
+}
 
-    // Adiciona event listeners para os checkboxes de produto para que o total seja atualizado
-    productCheckboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', updateTotal);
-    });
-    
-    // Call the functions to set up the event listeners when the page loads
-    updateStoreCheckboxes();
-    updateProductCheckboxes();
-    updateAllCheckboxes()
-    updateNoSelectionDisplay(); // Chama no carregamento inicial para definir o estado correto
-    updateTotal(); // Inicializar com valores corretos ao carregar a página
-
-    // Close overlay when clicking outside the content
-    myOverlay.addEventListener('click', (event) => {
-        if (event.target === myOverlay) {
-            myOverlay.classList.remove('active');
-        }
-    });
-
-    // Close overlay when clicking the 'x' button
-    backOverlayBtn.addEventListener('click', () => {
-        myOverlay.classList.remove('active');
-    });
-
-    // Optional: Close overlay with the ESC key
-    document.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape' && myOverlay.classList.contains('active')) {
-            myOverlay.classList.remove('active');
-        }
-    });
+// --- Inicialização ao carregar a página ---
+document.addEventListener('DOMContentLoaded', () => {
+    setupStoreCheckboxesListeners();
+    setupProductCheckboxesListeners();
+    updateTotal();
+    updateNoSelectionDisplay();
+});
 </script>
 
 </body>
