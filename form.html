@@ -13,12 +13,11 @@
             align-items: flex-start; /* Align to the top */
             min-height: 100vh;
             margin: 0;
-            padding: 20px;
             box-sizing: border-box;
         }
 
         .container {
-            background-color: #ffffff;
+            background-color: #f0f2f5;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             width: 100%;
@@ -32,6 +31,7 @@
             padding: 15px 20px;
             border-bottom: 1px solid #eee;
             background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
         }
 
         .header .back-arrow {
@@ -48,11 +48,9 @@
         }
 
         .form-section {
-            padding: 20px;
         }
 
         .form-group {
-            margin-bottom: 15px;
         }
 
         .form-group label {
@@ -65,10 +63,9 @@
         .form-group input[type="text"],
         .form-group input[type="tel"],
         .form-group textarea {
-            width: calc(100% - 20px); /* Adjust for padding */
+            width: 100%;
             padding: 10px;
             border: 1px solid #ddd;
-            border-radius: 4px;
             font-size: 16px;
             color: #333;
             box-sizing: border-box; /* Include padding and border in element's total width and height */
@@ -77,7 +74,6 @@
         .form-group.inline {
             display: flex;
             justify-content: space-between;
-            gap: 10px;
         }
 
         .form-group.inline .input-half {
@@ -85,24 +81,42 @@
         }
 
         .section-title {
-            font-size: 14px;
+            font-size: 0.8em;
             color: #888;
             margin-top: 25px;
             margin-bottom: 10px;
             text-transform: uppercase;
         }
+        
+        /* --- */
+        .setup-group {        
+            background-color: white;
+            display: flex;
+            align-items: center; /* Aligns items vertically in the middle */
+            padding: 10px 20px;
+            margin-bottom: 15px; /* Adjust as needed for spacing from elements below */
+            justify-content: space-between;
+        }
+
+        .setup-group span {
+            /* No specific changes needed here unless you want to adjust its font size or color */
+            font-size: 15px;
+            color: #333;
+            white-space: nowrap; /* Prevents the text from wrapping if space is tight */
+        }
 
         .radio-group {
             display: flex;
-            gap: 10px;
-            margin-top: 10px;
+            gap: 10px; /* Keeps the spacing between "Trabalho" and "Casa" */
+            margin-top: 0; /* Remove any previous top margin if it was pushing it down */
+            margin-right: 0;
         }
-
+        
         .radio-group .radio-button {
             flex: 1;
-            padding: 10px 0;
+            background-color: #e0f2f7; /* Light blue */
+            padding: 5px 10px;
             text-align: center;
-            border: 1px solid #ddd;
             border-radius: 4px;
             cursor: pointer;
             color: #555;
@@ -111,8 +125,8 @@
 
         .radio-group .radio-button.selected {
             background-color: #e0f2f7; /* Light blue */
-            border-color: #2196F3; /* Blue */
-            color: #2196F3;
+            border: 1px solid grey; /* Separator for settings */
+            color: grey;
             font-weight: bold;
         }
 
@@ -249,7 +263,7 @@
             </div>
 
             <div class="section-title">Configurações</div>
-            <div class="form-group">
+            <div class="setup-group">
                 <span>Salvar como:</span>
                 <div class="radio-group">
                     <div class="radio-button selected">Trabalho</div>
