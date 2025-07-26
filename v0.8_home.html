@@ -468,18 +468,22 @@
             color: #555;
             margin-bottom: 5px;
         }
-
+        
         .form-group input[type="text"],
         .form-group input[type="cpf"],
         .form-group input[type="tel"],
         .form-group input[type="email"],
-        .form-group textarea {
+        .form-group textarea { /* Added textarea to this selector */
             width: 100%;
-            padding: .5em;
+            padding: .5em 1.2em;
             border: 1px solid #ddd;
-            font-size: 16px;
+            font-size: 1em; /* Base font size for all */
             color: #333;
-            box-sizing: border-box; /* Include padding and border in element's total width and height */
+            box-sizing: border-box;
+        }
+
+        .form-group textarea { /* Specific rule to override font-size for textarea */
+            font-size: 1.2em; /* Larger font size for textarea only */
         }
 
         .form-group.inline {
