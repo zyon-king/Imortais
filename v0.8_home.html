@@ -798,26 +798,21 @@
                   <input type="email" placeholder="E-mail">
               </div>
               <div class="section-title">Endereço</div>
-              <div class="form-group">
-                  <input type="text" placeholder="CEP">
-              </div>
-              <div class="form-group">
-                  <input type="text" placeholder="Estado - Cidade">
-              </div>
-              <div class="form-group">
-                  <input type="text" placeholder="Bairro">
-              </div>
-              <div class="form-group inline">
-                  <div class="input-half">
-                      <input type="text" placeholder="Nome da rua">
-                  </div>
-                  <div class="input-half">
-                      <input type="text" placeholder="Número">
-                  </div>
-              </div>
-              <div class="form-group">
-                  <textarea placeholder="Complemento/Referências Próx./Descrição do Prédio"></textarea>
-              </div>
+                          <div class="form-group">
+                <input type="text" id="cep" placeholder="CEP" maxlength="9"> </div>
+            <div class="form-group">
+                <input type="text" id="estadoCidade" placeholder="Estado - Cidade" readonly> </div>
+            <div class="form-group">
+                <input type="text" id="bairro" placeholder="Bairro" readonly> </div>
+            <div class="form-group inline">
+                <div class="input-half">
+                    <input type="text" id="logradouro" placeholder="Nome da rua" readonly> </div>
+                <div class="input-half">
+                    <input type="text" id="numero" placeholder="Número"> </div>
+            </div>
+            <div class="form-group">
+                <textarea id="complemento" placeholder="Complemento/Referências Próx./Descrição do Prédio"></textarea>            
+            </div>
 
               <div class="section-title">Configurações</div>
               <div class="setup-group">
@@ -1196,7 +1191,102 @@
         });
     }
 
-    
+    // CEP fields
+    const cepInput = document.getElementById('cep');
+    const estadoCidadeInput = document.getElementById('estadoCidade');
+    const bairroInput = document.getElementById('bairro');
+    const logradouroInput = document.getElementById('logradouro');
+    const numeroInput = document.getElementById('numero');
+    const complementoInput = document.getElementById('complemento');
+
+    // Function to clear address fields
+    function clearAddressFields() {
+        estadoCidadeInput.value = '';
+        bairroInput.value = '';
+        logradouroInput.value = '';
+	}
+
+	// Function to fetch address from ViaCEP
+	async function fetchAddressByCEP(cep) {
+		clearAddressFields(); // Clear fields before fetching
+		
+        // Show loading state (optional: disable fields, add spinner)
+        estadoCidadeInput.placeholder = 'Buscando...';
+        bairroInput.placeholder = 'Buscando...';
+        logradouroInput.placeholder = 'Buscando...';
+
+        estadoCidadeInput.readOnly = true;
+        bairroInput.readOnly = true;
+        logradouroInput.readOnly = true;
+	
+        const cleanedCep = cep.replace(/\D/g, ''); // Remove non-digits
+	
+        if (cleanedCep.length !== 8) {
+        	// Not a valid CEP length, clear and reset placeholders
+            estadoCidadeInput.placeholder = 'Estado - Cidade';
+            bairroInput.placeholder = 'Bairro';
+            logradouroInput.placeholder = 'Nome da rua';
+            return;
+        }
+			
+        try {
+			const response = await fetch(`https://viacep.com.br/ws/${cleanedCep}/json/`);
+			const data = await response.json();
+
+			if (data.erro) {
+            	alert('CEP não encontrado.');
+            	clearAddressFields();
+            	estadoCidadeInput.placeholder = 'CEP não encontrado';
+            	bairroInput.placeholder = 'CEP não encontrado';
+            	logradouroInput.placeholder = 'CEP não encontrado';
+            } else {
+                estadoCidadeInput.value = `${data.uf} - ${data.localidade}`;
+                bairroInput.value = data.bairro;
+                logradouroInput.value = data.logradouro;
+                numeroInput.focus(); // Focus on the number field
+            }
+        } catch (error) {
+            console.error('Erro ao buscar CEP:', error);
+            alert('Erro ao buscar o CEP. Tente novamente.');
+            clearAddressFields();
+            estadoCidadeInput.placeholder = 'Erro na busca';
+            bairroInput.placeholder = 'Erro na busca';
+            logradouroInput.placeholder = 'Erro na busca';
+		} finally {
+        	// Reset placeholders to original after fetching
+        	if (estadoCidadeInput.value === '') estadoCidadeInput.placeholder = 'Estado - Cidade';
+            if (bairroInput.value === '') bairroInput.placeholder = 'Bairro';
+            if (logradouroInput.value === '') logradouroInput.placeholder = 'Nome da rua';
+
+            estadoCidadeInput.readOnly = false;
+            bairroInput.readOnly = false;
+            logradouroInput.readOnly = false;
+		}
+	}// <--- Function to fetch address from ViaCEP
+
+    // Event listener for CEP input (on blur for efficiency, or keyup with debounce)
+    if (cepInput) {
+    	// Add a mask to the CEP input (optional but good for UX)
+    	cepInput.addEventListener('input', function (e) {
+        	let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+        	if (value.length > 5) {
+            	value = value.substring(0, 5) + '-' + value.substring(5, 8);
+                }
+                e.target.value = value;
+            });
+
+            cepInput.addEventListener('blur', () => {
+                const cepValue = cepInput.value.replace(/\D/g, ''); // Clean CEP for validation
+                if (cepValue.length === 8) {
+                    fetchAddressByCEP(cepValue);
+                } else if (cepValue.length > 0 && cepValue.length < 8) {
+                    alert('CEP inválido. Por favor, digite 8 dígitos.');
+                    clearAddressFields();
+                } else if (cepValue.length === 0) {
+                    clearAddressFields();
+                }
+		});
+	}
 
     // --- Inicialização ao carregar a página ---
     document.addEventListener('DOMContentLoaded', () => {
