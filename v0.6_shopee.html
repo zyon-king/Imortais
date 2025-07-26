@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sliding Overlay</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Align to top initially */
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .open-overlay-button {
+        }
+
+        /* Overlay Styles */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Transparent dark background for overlay */
+            display: flex;
+            justify-content: flex-end; /* Align content to the right */
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .overlay-content {
+            background-color: #f0f2f5;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            width: 90vw;
+            max-width: 450px;
+            height: 100%;
+            box-sizing: border-box;
+            position: relative;
+            overflow-y: auto;
+            transform: translateX(100%);
+            transition: transform 0.4s ease-out;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .overlay.active .overlay-content {
+            transform: translateX(0); /* Slides to the normal position (0) */
+        }
+
+        .overlay-content h2 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        .overlay-content p {
+            color: #555;
+            line-height: 1.6;
+        }
+
+        /* Cart Header */
+        .cart-header {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            width: 100%;
+            background-color: white;
+            border-bottom: 1px solid #eee;
+            position: sticky;
+            top: 0; /* Make it sticky at the top of the overlay-content */
+            z-index: 10;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .cart-header .back-btn {
+            background: none;
+            border: none;
+            font-size: 1.8em;
+            margin-right: 15px;
+            cursor: pointer;
+            color: #f05713;
+            padding: 0;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .back-btn:hover {
+            scale: 1.1;
+        }
+
+        .back-btn:active {
+            scale: 1.0;
+        }
+
+        .cart-header .cart-title {
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: bold;
+            flex-grow: 1;
+            color: #333;
+        }
+
+        /* Store Section */
+        .store-section {
+            background-color: white;
+            margin-top: 10px;
+            padding: 15px;
+            border-radius: 0; /* Remove border-radius for cleaner look */
+        }
+
+        .store-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .store-checkbox {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+
+        .store-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .store-name {
+            font-weight: bold;
+            flex-grow: 1;
+            color: #333;
+        }
+
+        /* Product Item */
+        .product-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #f9f9f9;
+        }
+
+        .product-item:last-of-type { /* Changed to last-of-type to target the last product item in its parent */
+            border-bottom: none; /* No border for the last item */
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .product-checkbox {
+            margin-top: 25px; /* Align with image/content */
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+
+        .product-image-placeholder {
+            flex-shrink: 0; /* Prevent image from shrinking */
+            width: 80px; /* Adjust as needed */
+            height: 80px; /* Adjust as needed */
+            margin-right: 15px;
+        }
+
+        .product-image-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        .product-info {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column; /* Changed to column to stack elements */
+            justify-content: space-between;
+        }
+
+        /* Group for Title and Quantity */
+        .title-and-quantity {
+            display: flex;
+            align-items: center; /* Align items vertically */
+            justify-content: space-between; /* Push quantity to the right */
+            margin-bottom: 5px; /* Space between title/qty and prices */
+            flex-wrap: wrap; /* Allow wrapping on small screens */
+        }
+
+        .product-title {
+            font-size: 0.95em;
+            color: #333;
+            font-weight: bold; /* Make title bold */
+            margin-bottom: 0; /* Remove bottom margin from title directly */
+            flex-grow: 1; /* Allow title to take available space */
+            margin-right: 10px; /* Space between title and quantity */
+        }
+
+        /* Price Group */
+        .price-group {
+            display: flex; /* Allow current and old price to be side by side */
+            align-items: baseline; /* Align prices at their baseline */
+            margin-top: 5px; /* Space above prices */
+        }
+
+        .product-price {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #ee4d2d;
+            margin-right: 8px; /* Space between current and old price */
+        }
+
+        .product-old-price {
+            font-size: 0.95em;
+            font-weight: bold;
+            color: #999;
+            text-decoration: line-through;
+            margin-left: 4px;
+        }
+
+        /* Quantity Controls */
+        .quantity-controls {
+            display: flex;
+            border: 1px solid #ddd;
+            align-items: center;
+            border-radius: 3px;
+            flex-shrink: 0; /* Prevent quantity controls from shrinking */
+        }
+
+        .quantity-btn {
+            background-color: #f5f5f5;
+            border: none;
+            padding: 6px 10px; /* Adjusted padding for smaller size */
+            cursor: pointer;
+            font-size: 1em; /* Adjusted font size */
+            color: #555;
+            transition: background-color 0.2s;
+        }
+
+        .quantity-btn:hover {
+            background-color: #eee;
+        }
+
+        .quantity-input {
+            width: 30px; /* Adjusted width for smaller size */
+            text-align: center;
+            border: none;
+            outline: none;
+            font-size: 0.9em; /* Adjusted font size */
+            color: #333;
+            background-color: white;
+            padding: 6px 0; /* Adjusted padding */
+        }
+
+        /* Message to seller block */
+        .checkout-item-block {
+            margin-top: 15px; /* Space above the message block */
+            padding: 10px;
+            border: 1px dashed #ccc;
+            border-radius: 5px;
+            background-color: #fff;
+            width: 100%; /* Ensures it takes full width */
+            box-sizing: border-box;
+        }
+
+        .checkout-item-block > div {
+            margin-bottom: 5px;
+        }        
+
+        /* Bottom Section (Sticky Footer) */    
+        .bottom-section {
+            position: sticky;
+            bottom: 0;
+            background-color: white;
+            border-top: 1px solid #eee;
+            padding: 15px;
+            display: column;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.05);
+            margin-top: auto;
+            flex-shrink: 0;
+        }
+        .no-selection {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            font-size: 1em;
+            font-weight: bold;
+            color: #ee4d2d;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .select-all-checkbox {
+            margin-right: 8px;
+            transform: scale(1.2);
+        }
+        .select-all-text {
+            font-size: 0.95em;
+            color: #333;
+        }
+        
+        .total-section {
+            display: flex;
+            align-items: center;
+        }
+
+        .total-price {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #ee4d2d;
+            margin: 15px;
+        }
+        
+        .select-all-checkbox {
+            margin-left: 15px;
+        }
+        
+        .select-all-text {
+            margin-right: 100px;
+        }
+
+        .continue-btn {
+            background-color: #ee4d2d;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 3px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .continue-btn:disabled {
+            background-color: #f5a08e; /* Lighter red when disabled */
+            cursor: not-allowed;
+        }
+
+
+        /* Responsive adjustments for product-item layout */
+        @media (max-width: 600px) {
+            .product-item {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .product-info {
+                align-items: center;
+                margin-top: 15px;
+                width: 100%; /* Ensure product info takes full width when stacked */
+            }
+
+            .product-checkbox {
+                margin-bottom: 10px;
+            }
+
+            .title-and-quantity {
+                flex-direction: column; /* Stack title and quantity vertically */
+                align-items: center;
+                width: 100%;
+            }
+
+            .product-title {
+                margin-right: 0;
+                margin-bottom: 5px;
+            }
+
+            .quantity-controls {
+                margin-top: 5px; /* Add space between stacked title and quantity */
+            }
+
+            .price-group {
+                justify-content: center; /* Center prices when stacked */
+            }
+        }
+
+        /* New styles for the fixed footer bar */
+        .footer-bar {
+            position: fixed;
+            width: 100%;
+            max-width: 350px;
+            background-color: #f05713;
+            backdrop-filter: blur(8px); /* Frosted glass effect */
+            border-radius: 20px 20px 0 0;
+            border-top: 1px solid #e0e0e0;
+            padding: 0.4em 0.4em;
+            display: flex;
+            justify-content: center;
+            gap: 0.8em; /* Space between buttons */
+            z-index: 999; /* Below overlay, above other content */
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            opacity: 0.25; /* Começa com 50% de opacidade */
+            transform: scale(1); /* Exemplo de outra propriedade para transição */
+            transition: opacity 0.5s ease-in-out, transform 0.3s ease;
+        }
+        
+        .footer-bar:hover {
+          opacity: 1; /* Aumenta para 100% de opacidade suavemente */
+          transform: scale(1.01); /* Exemplo de outra mudança */
+        }
+        
+        .footer-bar.active {
+          opacity: 1; /* Aumenta para 100% de opacidade suavemente */
+          transform: scale(1.01); /* Exemplo de outra mudança */
+        }
+		
+        .footer-bar button {
+            background: #f1f3fe;
+            border: none;
+            font-size: 1.8em; /* Adjust icon size */
+            color: white;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0.04em 0.16em;
+            border-radius: 8px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .footer-bar button:hover {
+            background-color: #f0f0f0;
+            transform: translateY(-3px); /* Slight lift on hover */
+        }
+
+        .footer-bar button span {
+            font-size: 0.6em; /* Label text size */
+            margin-top: 0.01em;
+            color: #333;
+        }
+
+        .footer-bar button img {
+            width: 35px;
+            height: 35px;
+        }
+        /*============*/
+        /*FORM OVERLAY*/
+		/*============*/
+        .form-header {
+            display: flex;
+            align-items: center;
+            padding: .2em .4em;
+            border-bottom: 1px solid #eee;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .form-header .form-back-arrow {
+            font-size: 24px;
+            margin-right: 15px;
+            color: #333;
+            text-decoration: none;
+        }
+
+        .form-header h1 {
+            font-size: 18px;
+            color: #333;
+            margin: 0;
+        }
+
+        .form-section {
+        }
+
+        .form-group {
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 5px;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="cpf"],
+        .form-group input[type="tel"],
+        .form-group input[type="email"],
+        .form-group textarea {
+            width: 100%;
+            padding: .6em;
+            border: 1px solid #ddd;
+            font-size: 16px;
+            color: #333;
+            box-sizing: border-box; /* Include padding and border in element's total width and height */
+        }
+
+        .form-group.inline {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .form-group.inline .input-half {
+            flex: 1;
+        }
+
+        .section-title {
+            font-size: 0.8em;
+            color: #888;
+            padding: 1.8em .4em .4em 1em;
+            text-transform: uppercase;
+        }
+        
+        /* --- */
+        .setup-group, .toggle-group {        
+            background-color: white;
+            display: flex;
+            align-items: center; /* Aligns items vertically in the middle */
+            padding: .4em .8em;
+            margin-bottom: 15px; /* Adjust as needed for spacing from elements below */
+            justify-content: space-between;
+        }
+
+        .setup-group span {
+            /* No specific changes needed here unless you want to adjust its font size or color */
+            font-size: 15px;
+            color: #333;
+            white-space: nowrap; /* Prevents the text from wrapping if space is tight */
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 0;
+            margin-right: 0;
+        }
+        
+        .radio-group .radio-button {
+            flex: 1;
+            background-color: #e0e0e0;
+            padding: 5px 10px;
+            text-align: center;
+            border-radius: 4px;
+            cursor: pointer;
+            color: #555;
+            font-size: 15px;
+        }
+
+        .radio-group .radio-button.selected {
+            border: 1px solid grey; /* Separator for settings */
+            color: grey;
+            font-weight: bold;
+        }
+
+        .toggle-groupe {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee; /* Separator for settings */
+        }
+
+        .toggle-group span {
+            font-size: 15px;
+            color: #333;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            -webkit-transition: .4s;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+
+        input:focus + .slider {
+            box-shadow: 0 0 1px #2196F3;
+        }
+
+        input:checked + .slider:before {
+            -webkit-transform: translateX(16px);
+            -ms-transform: translateX(16px);
+            transform: translateX(16px);
+        }
+
+        .save-button-container {
+            padding: .4em;
+            text-align: center;
+            background-color: ;
+            border-top: 1px solid #eee;
+        }
+
+        .save-button {
+            width: 100%;
+            padding: 15px;
+            background-color: #e0e0e0; /* Disabled look */
+            color: #a0a0a0; /* Disabled text color */
+            border: none;
+            border-radius: 2px;
+            font-size: 17px;
+            cursor: not-allowed; /* Indicate it's not active */
+            font-weight: bold;
+        }
+
+        /* Active button style - uncomment or change background-color to make it active */
+        /* .save-button.active {
+            background-color: #FF5722;
+            color: #fff;
+            cursor: pointer;
+        } */
+
+
+    </style>
+</head>
+<body>
+	<div class="container" id="container-media">
+    
+    	<div class="content">
+            
+            <div class="text" style="background-color: #ecf1f9">
+                <h2>꧁Legado e Maldição꧂</h2>
+                <h3>"Você não precisa me ver para me sentir. Eu estive com você o tempo todo."</h3><br>
+                <p>Essa frase ressoa de um jeito bem particular pra mim. Ela me transporta imediatamente para uma fase da vida onde eu buscava uma conexão mais profunda e autêntica, sabe? Quando percebi que as presenças mais verdadeiras nem sempre são as mais visíveis, mas sim as que se fazem sentir constantemente, como uma força silenciosa me guiando ou uma memória que nunca se apaga. É a certeza de que alguém essencial sempre esteve lá, mesmo que eu não percebesse na época.</p>
+                <hr>
+                <p>Amorim, Ray T.</p>
+                <p>Brasil | Julho, 2025.</p>
+              	
+            </div>
+            
+            <div class="text" style="background-color: #ecf1f9">
+                <h2>꧁Dualidade e Conflito꧂</h2>
+                <h3>Eles são gêmeos é verdade e se amam como tal. Até que o poder os consuma no final.</h3><br>
+                <p>Mesmo quando estive do outro lado do mundo, essa frase já me fazia pensar em como as maiores paixões, até mesmo o amor fraternal, podem se tornar destrutivas quando a busca por algo maior (como o poder), entra em cena. É um lembrete vívido da fragilidade humana, independentemente de onde estamos.</p>
+                <hr>
+                <p>Pinheiro, Ariane S.</p>
+                <p>United States | Fevereiro, 2024.</p>
+            </div>
+            
+            <div class="text" style="background-color: #ecf1f9">
+                <h2>꧁Profecias e Reviravoltas꧂</h2>
+                <h3>Para cumprir a profecia eles renascerão mais poderosos. E com uma sede... que somente o poder pode saciar.</h3><br>
+                <p>Sempre que eu chego nessa parte do livro sou atingida em cheio, fico até arrepiada. Sabe quando a gente falha, mas encontra uma força interior para se reerguer? A "sede de poder" aqui não é só por controle, mas por superação. É sobre a fome de provar a si mesmo que, mesmo depois de uma queda feia, a gente pode voltar mais forte e conquistar algo ainda maior. É a essência da resiliência e da vitória sobre as próprias limitações.</p>
+                <hr>
+                <p>Leitor misterioso.</p>
+                <p>Brasil | Julho, 2024.</p>
+            </div>
+            
+            <div class="text" style="background-color: #ecf1f9">
+                <h2>꧁Batalhas Épicas꧂</h2>
+                <h3>Dois jovens irmãos que lutam para ascender ao poder e se tornarem os imortais mais poderosos de todos os tempos.</h3><br>
+                <p>É tipo a gente, que é jovem, e todo mundo já nos olha torto, acha que não temos experiência ou capacidade. A gente tem que provar o tempo todo que merece um espaço, que tem ideias, que é capaz de conquistar coisas grandes. Essa "ascensão ao poder" e o desejo de ser "o mais poderoso" não é só sobre dominar, é sobre ser reconhecido, sobre mostrar que a idade ou as aparências não definem o seu potencial. É a nossa própria batalha contra julgamentos de quem nos subestima só por sermos jovens.</p>
+                <hr>
+                <p>Leitor misterioso.</p>
+                <p>Japão | Abril, 2025.</p>
+            </div>
+            
+        </div>
+    </div>
+
+    <div class="overlay" id="myOverlay">
+        <div class="overlay-content">
+
+            <div class="cart-header">
+                <button class="back-btn" id="back-btn-cart">🢦</button>
+                <span class="cart-title">🛒 Carrinho</span>
+            </div>
+
+            <div class="store-section">
+                <div class="store-header">
+                    <input type="checkbox" class="store-checkbox">
+                    <div class="store-icon">🧛</div>
+                    <span class="store-name">LOJA IMORTAIS COMPLETOS</span>
+                    <button class="edit-btn" id="adr-btn">Endereço</button>
+                </div>
+                <div class="product-item">
+                    <input type="checkbox" class="product-checkbox">
+                    <div class="product-image-placeholder">
+                        <img src="https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcQBS3CQXupdyvstNW6e3CuDJp-McDfUxVYBIsMT2kH5VYomuGubsiWbLC1S24gujTO8lkzRFUggGLKU5Ze1F0BHo61foXKJv71UPWXUB6irgDk7yrVv7PnHhw" alt="Livro: Imortais Completos" class="image">
+                    </div>
+                    <div class="product-info">
+                        <div class="title-and-quantity">
+                            <div class="product-title">
+                                Livro: Imortais Completos - O Recomeco
+                            </div>
+                            <div class="price-group">
+                                <div class="product-price">
+                                    R$89,90
+                                </div>
+                                <span class="product-old-price">
+                                    R$109,90
+                                </span>
+                            </div>
+                            <div class="quantity-controls">
+                                <button class="quantity-btn">−</button>
+                                <input type="text" class="quantity-input" value="0">
+                                <button class="quantity-btn">+</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="checkout-item-block">
+                    <div style="font-size: 0.9em; color: #777;">Mensagem para o vendedor:</div>
+                    <div style="font-size: 0.95em; color: #333; margin-top: 5px;">
+                        Digite aqui --> Entrega rápida, por favor!
+                    </div>
+                </div>
+                
+            </div>
+			
+            <!-Adress->
+            <div class="store-section">
+                <div class="store-header">
+                    <div class="store-icon">🦇</div>
+                    <span class="store-name">Entrega</span>
+                    <button class="edit-btn" id="edit-btn">Editar</button>
+                </div>
+                <div class="show-adress">                    
+                	<h3>Cleiton Ferreira S Fontanari</h3>
+                	<h4>xxxxx@gmail.com</h4>
+                	<h4>(+55) 11 9xxx-xxx</h4>
+                      <p>Rua José , 000</p>
+                      <p>°°°Campainha°°° Casa 5</p>
+                      <p>Carapicuíba, São Paulo, 06310000</p>
+                      <p>CPF 000.000.000-00</p>
+                </div>
+                
+            </div>
+            
+            <div class="bottom-section">
+            	
+                <div class="no-selection">
+					ℹ️ Nenhum item selecionado
+            	</div>
+            	        
+            	<div class="total-section">    
+            		<input type="checkbox" class="select-all-checkbox">
+            		<span class="select-all-text">Tudo</span>
+            		    
+            		<div class="total-price" id="cart-total-price">R$0,00</div>
+            		<button class="continue-btn" disabled>
+            		    Continuar (0)
+            		</button>                        
+            	</div>
+            	
+            </div>
+            
+        </div><!-Content-->
+    </div>
+
+    <div class="overlay" id="form-overlay">
+        <div class="overlay-content">
+            
+        </div><!-Content-->
+    </div>
+
+    <div class="overlay" id="checkout">
+        <div class="overlay-content">
+
+            <div class="cart-header">
+                <button class="back-btn" id="back-btn-checkout">🢦</button>
+                <span class="cart-title">🛍️ Checkout</span>
+            </div>
+
+            <div class="store-section">
+                <div class="store-header">
+                    <input type="checkbox" class="store-checkbox">
+                    <div class="store-icon">🧛</div>
+                    <span class="store-name">LOJA IMORTAIS COMPLETOS</span>
+                    <button class="edit-btn" id="edit-btn">Editar</button>
+                </div>
+                <div class="product-item">
+                    <input type="checkbox" class="product-checkbox">
+                    <div class="product-image-placeholder">
+                        <img src="https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcQBS3CQXupdyvstNW6e3CuDJp-McDfUxVYBIsMT2kH5VYomuGubsiWbLC1S24gujTO8lkzRFUggGLKU5Ze1F0BHo61foXKJv71UPWXUB6irgDk7yrVv7PnHhw" alt="Livro: Imortais Completos" class="image">
+                    </div>
+                    <div class="product-info">
+                        <div class="title-and-quantity">
+                            <div class="product-title">
+                                Livro: Imortais Completos - O Recomeco
+                            </div>
+                            <div class="price-group">
+                                <div class="product-price">
+                                    R$89,90
+                                </div>
+                                <span class="product-old-price">
+                                    R$109,90
+                                </span>
+                            </div>
+                            <div class="quantity-controls">
+                                <button class="quantity-btn">−</button>
+                                <input type="text" class="quantity-input" value="0">
+                                <button class="quantity-btn">+</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="checkout-item-block">
+                    <div style="font-size: 0.9em; color: #777;">Mensagem para o vendedor:</div>
+                    <div style="font-size: 0.95em; color: #333; margin-top: 5px;">
+                        Digite aqui --> Entrega rápida, por favor!
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="bottom-section">
+            	
+                <div class="no-selection">
+					ℹ️ Nenhum item selecionado
+            	</div>
+            	        
+            	<div class="total-section">    
+            		<input type="checkbox" class="select-all-checkbox">
+            		<span class="select-all-text">Tudo</span>
+            		    
+            		<div class="total-price" id="cart-total-price">R$0,00</div>
+            		<button class="continue-btn" disabled>
+            		    Continuar (0)
+            		</button>                        
+            	</div>
+            	
+            </div>
+            
+        </div><!-Content-->
+    </div>
+
+    <div class="footer-bar" id="footerBar">
+        <button>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/WhatsApp.svg/2044px-WhatsApp.svg.png">
+            <span>Whatsapp</span>
+        </button>
+        <button class="openOverlay">
+            <img src="https://raw.githubusercontent.com/zyon-king/Imortais/refs/heads/main/shop-bag.png">
+            <span>Comprar Agora</span>
+        </button>
+        <button class="openOverlay">
+            <img src="https://raw.githubusercontent.com/zyon-king/Imortais/refs/heads/main/shop-cart.png">
+            <span>Adicionar</span>
+        </button>
+    </div>
+
+    <script>
+    /// --- Overlays ---
+    const openOverlayBtns = document.querySelectorAll('.openOverlay');
+    const myOverlay = document.getElementById('myOverlay');
+    const backBtnCart = document.getElementById('back-btn-cart');
+    const checkoutOverlay = document.getElementById('checkout');
+    const backBtnCheckout = document.getElementById('back-btn-checkout'); // NEW: Get checkout's back button
+    const continueBtn = document.querySelector('.continue-btn');
+
+    // --- Funcionalidade do Footer Bar (mantida como estava) ---
+    const footerBar = document.getElementById("footerBar");
+    let timeoutId;
+
+    footerBar.style.top = '2vh';
+
+    function handleScrollActivity() {
+        footerBar.classList.add("active");
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => {
+            footerBar.classList.remove("active");
+        }, 500);
+    }
+    window.addEventListener("scroll", handleScrollActivity);
+
+    // --- Abrir Overlay de Carrinho ---
+    openOverlayBtns.forEach(button => {
+        button.addEventListener('click', () => {
+            myOverlay.classList.add('active');
+        });
+    });
+
+    // --- Fechar Overlay de Carrinho (backBtnCart click) ---
+    // This listener handles the back button IN THE CART OVERLAY
+    if (backBtnCart) {
+        backBtnCart.addEventListener('click', () => {
+            myOverlay.classList.remove('active'); // Simply close the cart
+        });
+    }
+
+    // --- Fechar Overlay clicando fora do myOverlay (cart) ---
+    myOverlay.addEventListener('click', (event) => {
+        if (event.target === myOverlay) {
+            myOverlay.classList.remove('active');
+        }
+    });
+
+	// --- Fechar Overlay de Checkout (backBtnCheckout click) ---
+    if (backBtnCheckout) {
+        backBtnCheckout.addEventListener('click', () => {
+            // When clicking back from checkout, you likely want to go back to the cart,
+            // not just close everything.
+            if (checkoutOverlay) {
+                checkoutOverlay.classList.remove('active'); // Close checkout
+            }
+            myOverlay.classList.add('active'); // Open cart again
+        });
+    }
+
+    // --- Fechar Overlay clicando fora do myOverlay (cart) ---
+    checkoutOverlay.addEventListener('click', (event) => {
+        if (event.target === checkoutOverlay) {
+            checkoutOverlay.classList.remove('active');
+        }
+    });
+
+    // --- Funcionalidade do Botão 'Continuar' (Abrir Checkout) ---
+    if (continueBtn) { // Verifica se o botão existe
+        continueBtn.addEventListener('click', () => {
+            myOverlay.classList.remove('active'); // Esconde o overlay do carrinho
+            if (checkoutOverlay) { // Verifica se o overlay de checkout existe
+                checkoutOverlay.classList.add('active'); // Mostra o overlay de checkout
+            }
+        });
+    }
+
+    // --- Fechar Overlays com a Tecla ESC ---
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+            if (myOverlay.classList.contains('active')) {
+                myOverlay.classList.remove('active');
+            }
+            if (checkoutOverlay && checkoutOverlay.classList.contains('active')) {
+                checkoutOverlay.classList.remove('active');
+            }
+        }
+    });
+
+    // --- Funcionalidades do Carrinho (mantidas como estavam e corrigidas anteriormente) ---
+    const productCheckboxes = document.querySelectorAll('.product-checkbox');
+    const storeCheckboxes = document.querySelectorAll('.store-checkbox');
+    const selectAllCheckbox = document.querySelector('.select-all-checkbox');
+    const noSelectionElement = document.querySelector('.no-selection');
+
+    // Desmarcar todos os checkboxes ao carregar a página
+    productCheckboxes.forEach(checkbox => {
+        checkbox.checked = false;
+    });
+    storeCheckboxes.forEach(checkbox => {
+        checkbox.checked = false;
+    });
+    if (selectAllCheckbox) {
+        selectAllCheckbox.checked = false;
+    }
+
+    // Função para calcular e atualizar o total e a contagem de itens selecionados
+    function updateTotal() {
+        let total = 0;
+        let count = 0;
+
+        productCheckboxes.forEach(checkbox => {
+            if (checkbox.checked) {
+                const productItem = checkbox.closest('.product-item');
+                if (productItem) {
+                    const priceElement = productItem.querySelector('.product-price');
+                    const quantityInputElement = productItem.querySelector('.quantity-input');
+
+                    if (priceElement && quantityInputElement) {
+                        const priceText = priceElement.textContent;
+                        const price = parseFloat(priceText.replace('R$', '').replace(',', '.').trim());
+                        const quantity = parseInt(quantityInputElement.value);
+
+                        if (!isNaN(price) && !isNaN(quantity)) {
+                            total += price * quantity;
+                            count += quantity;
+                        }
+                    }
+                }
+            }
+        });
+
+        document.querySelector('.total-price').textContent = `R$${total.toFixed(2).replace('.', ',')}`;
+        document.querySelector('.continue-btn').textContent = `Continuar (${count})`;
+        document.querySelector('.continue-btn').disabled = count === 0;
+
+        if (selectAllCheckbox) {
+            const allProductsChecked = Array.from(productCheckboxes).every(cb => cb.checked);
+            selectAllCheckbox.checked = allProductsChecked;
+        }
+    }
+
+    // Função para verificar e atualizar o estado do noSelectionElement
+    function updateNoSelectionDisplay() {
+        const anyProductChecked = Array.from(productCheckboxes).some(cb => cb.checked);
+        if (noSelectionElement) {
+            if (anyProductChecked) {
+                noSelectionElement.style.display = 'none';
+            } else {
+                noSelectionElement.style.display = 'flex';
+            }
+        }
+    }
+
+    // Adiciona event listeners para os botões de quantidade
+    document.querySelectorAll('.quantity-controls .quantity-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const productItem = this.closest('.product-item');
+            const quantityInput = productItem.querySelector('.quantity-input');
+            const productCheckbox = productItem.querySelector('.product-checkbox');
+            let currentQuantity = parseInt(quantityInput.value);
+
+            if (this.textContent === '+') {
+                currentQuantity++;
+                if (productCheckbox) {
+                    productCheckbox.checked = true;
+                }
+            } else if (this.textContent === '−') {
+                if (currentQuantity > 1) {
+                    currentQuantity--;
+                }
+            }
+            quantityInput.value = currentQuantity;
+
+            updateTotal();
+            updateNoSelectionDisplay();
+        });
+    });
+
+    // Configura listeners para os checkboxes de loja
+    function setupStoreCheckboxesListeners() {
+        storeCheckboxes.forEach(storeCheckbox => {
+            storeCheckbox.addEventListener('change', function() {
+                const isStoreChecked = this.checked;
+                const storeSection = this.closest('.store-section');
+                if (storeSection) {
+                    storeSection.querySelectorAll('.product-checkbox').forEach(productCb => {
+                        productCb.checked = isStoreChecked;
+                    });
+                }
+                updateTotal();
+                updateNoSelectionDisplay();
+            });
+        });
+    }
+
+    // Configura listeners para os checkboxes de produto
+    function setupProductCheckboxesListeners() {
+        productCheckboxes.forEach(productCheckbox => {
+            productCheckbox.addEventListener('change', function() {
+                updateTotal();
+                updateNoSelectionDisplay();
+                const storeSection = this.closest('.store-section');
+                if (storeSection) {
+                    const allProductsInStore = storeSection.querySelectorAll('.product-checkbox');
+                    const allCheckedInStore = Array.from(allProductsInStore).every(cb => cb.checked);
+                    const storeCb = storeSection.querySelector('.store-checkbox');
+                    if (storeCb) {
+                        storeCb.checked = allCheckedInStore;
+                    }
+                }
+            });
+        });
+    }
+
+    // Funcionalidade do checkbox "Tudo"
+    if (selectAllCheckbox) {
+        selectAllCheckbox.addEventListener('change', function() {
+            const isChecked = this.checked;
+            productCheckboxes.forEach(checkbox => {
+                checkbox.checked = isChecked;
+            });
+            storeCheckboxes.forEach(checkbox => {
+                checkbox.checked = isChecked;
+            });
+            updateTotal();
+            updateNoSelectionDisplay();
+        });
+    }
+        
+    // --- ============ ---
+    // --- FORM OVERLAY ---
+    // --- ============ ---
+    const openFormBtns = document.querySelectorAll('.edit-btn'); // Changed to openFormBtns (plural)
+    const formOverlay = document.getElementById('form-overlay');
+    const backBtnForm = document.getElementById('back-btn-form');
+
+    // --- Abrir Form (edit-btn click) ---
+    // Loop through each button with the class 'edit-btn'
+    openFormBtns.forEach(button => {
+        button.addEventListener('click', () => {
+            myOverlay.classList.remove('active'); // Hide the cart overlay
+            if (formOverlay) { // Check if the form overlay exists
+                formOverlay.classList.add('active'); // Show the form overlay
+            }
+        });
+    });
+
+    // --- Fechar Form (backBtnForm click) ---
+    if (backBtnForm) {
+        backBtnForm.addEventListener('click', () => {
+            if (formOverlay) {
+                formOverlay.classList.remove('active'); // Close form overlay
+            }
+            myOverlay.classList.add('active'); // Open cart again
+        });
+    }
+
+    
+
+    // --- Inicialização ao carregar a página ---
+    document.addEventListener('DOMContentLoaded', () => {
+        setupStoreCheckboxesListeners();
+        setupProductCheckboxesListeners();
+        updateTotal();
+        updateNoSelectionDisplay();
+    });
+</script>
+
+</body>
+</html>
