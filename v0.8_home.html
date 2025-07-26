@@ -629,12 +629,11 @@
             font-weight: bold;
         }
 
-        /* Active button style - uncomment or change background-color to make it active */
-        /* .save-button.active {
+        .save-button.active {
             background-color: #FF5722;
             color: #fff;
             cursor: pointer;
-        } */
+        }
 
 
     </style>
@@ -738,19 +737,10 @@
             <div class="store-section">
                 <div class="store-header">
                     <div class="store-icon">🦇</div>
-                    <span class="store-name">Entrega</span>
+                    <span class="store-name">Opcao de Envio</span>
                     <button class="edit-btn" id="edit-btn">Editar</button>
                 </div>
-                <div class="show-adress">                    
-                	<h3>Cleiton Ferreira S Fontanari</h3>
-                	<h4>xxxxx@gmail.com</h4>
-                	<h4>(+55) 11 9xxx-xxx</h4>
-                      <p>Rua José , 000</p>
-                      <p>°°°Campainha°°° Casa 5</p>
-                      <p>Carapicuíba, São Paulo, 06310000</p>
-                      <p>CPF 000.000.000-00</p>
-                </div>
-                
+                <div class="show-adress" id="showAddress"> </div>                
             </div>
             
             <div class="bottom-section">
@@ -1204,6 +1194,128 @@
     const logradouroInput = document.getElementById('logradouro');
     const numeroInput = document.getElementById('numero');
     const complementoInput = document.getElementById('complemento');
+    
+    // Get references to new elements
+    const cpfInput = document.getElementById('cpf');
+    const nomeCompletoInput = document.getElementById('nomeCompleto');
+    const telefoneInput = document.getElementById('telefone');
+    const emailInput = document.getElementById('email');
+    // CEP fields are already defined: cepInput, estadoCidadeInput, bairroInput, logradouroInput, numeroInput, complementoInput
+
+    const saveButton = document.getElementById('saveButton');
+    const showAddressDiv = document.getElementById('showAddress');
+    const saveWorkRadio = document.getElementById('saveWork');
+    const saveHomeRadio = document.getElementById('saveHome');
+    const enderecoPadraoCheckbox = document.getElementById('enderecoPadrao');
+
+
+    // Function to validate if all required fields are filled
+    function validateForm() {
+        // List of required input fields (adjust as needed)
+        const requiredFields = [
+            cpfInput,
+            nomeCompletoInput,
+            telefoneInput,
+            emailInput,
+            cepInput,
+            estadoCidadeInput,
+            bairroInput,
+            logradouroInput,
+            numeroInput
+        ];
+
+        let allFilled = true;
+        requiredFields.forEach(field => {
+            if (!field.value.trim()) { // Check if value is empty or just whitespace
+                allFilled = false;
+                // Optional: Add a class to highlight empty fields
+                // field.classList.add('is-invalid');
+            } else {
+                // field.classList.remove('is-invalid');
+            }
+        });
+
+        // Enable/disable the save button based on validation
+        if (saveButton) {
+            if (allFilled) {
+                saveButton.classList.add('active'); // Apply active style
+                saveButton.disabled = false;
+            } else {
+                saveButton.classList.remove('active'); // Remove active style
+                saveButton.disabled = true;
+            }
+        }
+
+        return allFilled;
+    }
+
+    // Add event listeners to all relevant input fields to re-validate on change
+    document.querySelectorAll('.form-section input, .form-section textarea').forEach(input => {
+        input.addEventListener('input', validateForm);
+    });
+    // Call validateForm initially to set the button state on page load
+    validateForm();
+
+
+    // Function to capture and display address
+    if (saveButton) {
+        saveButton.addEventListener('click', (event) => {
+            event.preventDefault(); // Prevent default form submission if it were a <form>
+
+            if (validateForm()) { // Only proceed if the form is valid
+                const cpf = cpfInput.value.trim();
+                const nomeCompleto = nomeCompletoInput.value.trim();
+                const telefone = telefoneInput.value.trim();
+                const email = emailInput.value.trim();
+                const cep = cepInput.value.trim();
+                const estadoCidade = estadoCidadeInput.value.trim();
+                const bairro = bairroInput.value.trim();
+                const logradouro = logradouroInput.value.trim();
+                const numero = numeroInput.value.trim();
+                const complemento = complementoInput.value.trim(); // Optional field
+
+                let tipoEndereco = '';
+                if (saveWorkRadio && saveWorkRadio.classList.contains('selected')) {
+                    tipoEndereco = 'Trabalho';
+                } else if (saveHomeRadio && saveHomeRadio.classList.contains('selected')) {
+                    tipoEndereco = 'Casa';
+                }
+
+                const isDefaultAddress = enderecoPadraoCheckbox ? enderecoPadraoCheckbox.checked : false;
+
+                // Construct the display string
+                let addressDisplay = `CPF: ${cpf}\n`;
+                addressDisplay += `Nome Completo: ${nomeCompleto}\n`;
+                addressDisplay += `E-mail: ${email}\n`;
+                addressDisplay += `Telefone: ${telefone}\n`;
+                addressDisplay += `CEP: ${cep}\n`;
+                addressDisplay += `Endereço: ${logradouro}, ${numero}\n`;
+                if (complemento) { // Only add complement if it exists
+                    addressDisplay += `Complemento: ${complemento}\n`;
+                }
+                addressDisplay += `Bairro: ${bairro}\n`;
+                addressDisplay += `Cidade - UF: ${estadoCidade}\n`;
+                addressDisplay += `Tipo: ${tipoEndereco}\n`;
+                addressDisplay += `Endereço Padrão: ${isDefaultAddress ? 'Sim' : 'Não'}`;
+
+                // Display in the div
+                if (showAddressDiv) {
+                    showAddressDiv.textContent = addressDisplay;
+                    showAddressDiv.style.display = 'block'; // Make the div visible
+
+                    // --- THIS IS THE LINE TO ADD/UNCOMMENT/MODIFY ---
+                    if (formOverlay) { // Check if formOverlay exists
+                        formOverlay.classList.remove('active'); // Hide the form overlay
+                    }
+                }
+
+                alert('Endereço salvo com sucesso! Veja os detalhes abaixo.'); // Feedback to user
+
+            } else {
+                alert('Por favor, preencha todos os campos obrigatórios.');
+            }
+        });
+    }
 
     // Function to clear address fields
     function clearAddressFields() {
