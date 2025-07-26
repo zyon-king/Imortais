@@ -1263,31 +1263,27 @@
             logradouroInput.readOnly = false;
 		}
 	}// <--- Function to fetch address from ViaCEP
-
-    // Event listener for CEP input (on blur for efficiency, or keyup with debounce)
+    
+    // Event listener for CEP input (fires on every change)
     if (cepInput) {
-    	// Add a mask to the CEP input (optional but good for UX)
-    	cepInput.addEventListener('input', function (e) {
-        	let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
-        	if (value.length > 5) {
-            	value = value.substring(0, 5) + '-' + value.substring(5, 8);
-                }
-                e.target.value = value;
-            });
+        // Add a mask to the CEP input
+        cepInput.addEventListener('input', function (e) {
+            let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+            if (value.length > 5) {
+                value = value.substring(0, 5) + '-' + value.substring(5, 8);
+            }
+            e.target.value = value;
 
-            cepInput.addEventListener('blur', () => {
-                const cepValue = cepInput.value.replace(/\D/g, ''); // Clean CEP for validation
-                if (cepValue.length === 8) {
-                    fetchAddressByCEP(cepValue);
-                } else if (cepValue.length > 0 && cepValue.length < 8) {
-                    alert('CEP inválido. Por favor, digite 8 dígitos.');
-                    clearAddressFields();
-                } else if (cepValue.length === 0) {
-                    clearAddressFields();
-                }
-		});
-	}
-
+            // --- NEW: Trigger search immediately if 8 digits are typed ---
+            const cleanedCep = value.replace(/\D/g, ''); // Clean CEP again for the check
+            if (cleanedCep.length === 8) {
+                fetchAddressByCEP(cleanedCep);
+            } else {
+                // Optionally clear fields if CEP becomes invalid (e.g., user backspaces)
+                clearAddressFields();
+            }
+        });
+    }
     // --- Inicialização ao carregar a página ---
     document.addEventListener('DOMContentLoaded', () => {
         setupStoreCheckboxesListeners();
