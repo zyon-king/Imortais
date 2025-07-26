@@ -1191,6 +1191,16 @@
         });
     }
 
+	const radioButtons = document.querySelectorAll('.radio-group .radio-button');
+		if (radioButtons) {
+			radioButtons.forEach(button => {
+				button.addEventListener('click', function() {
+					radioButtons.forEach(btn => btn.classList.remove('selected'));
+					this.classList.add('selected');
+			});
+		});
+	}
+
     // CEP fields
     const cepInput = document.getElementById('cep');
     const estadoCidadeInput = document.getElementById('estadoCidade');
