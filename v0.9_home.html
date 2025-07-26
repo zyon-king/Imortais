@@ -1202,12 +1202,11 @@
     const emailInput = document.getElementById('email');
     // CEP fields are already defined: cepInput, estadoCidadeInput, bairroInput, logradouroInput, numeroInput, complementoInput
 
-    const saveButton = document.getElementById('saveButton');
+    const saveButton = document.getElementById('save-button');
     const showAddressDiv = document.getElementById('showAddress');
     const saveWorkRadio = document.getElementById('saveWork');
     const saveHomeRadio = document.getElementById('saveHome');
     const enderecoPadraoCheckbox = document.getElementById('enderecoPadrao');
-
 
     // Function to validate if all required fields are filled
     function validateForm() {
@@ -1298,15 +1297,8 @@
                 addressDisplay += `Tipo: ${tipoEndereco}\n`;
                 addressDisplay += `Endereço Padrão: ${isDefaultAddress ? 'Sim' : 'Não'}`;
 
-                // Display in the div
-                if (showAddressDiv) {
-                    showAddressDiv.textContent = addressDisplay;
-                    showAddressDiv.style.display = 'block'; // Make the div visible
-
-                    // --- THIS IS THE LINE TO ADD/UNCOMMENT/MODIFY ---
-                    if (formOverlay) { // Check if formOverlay exists
-                        formOverlay.classList.remove('active'); // Hide the form overlay
-                    }
+                if (formOverlay) { // Check if formOverlay exists
+                    formOverlay.classList.remove('active'); // Hide the form overlay
                 }
 
                 alert('Endereço salvo com sucesso! Veja os detalhes abaixo.'); // Feedback to user
