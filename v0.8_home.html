@@ -784,21 +784,18 @@
               <span class="header-title">📍 Endereço</span>
           </div>
           <div class="form-section">
-              <div class="section-title">Contato</div>
-              <div class="form-group">
-                  <input type="cpf" placeholder="CPF">
-              </div>
-              <div class="form-group">
-                  <input type="text" placeholder="Nome Completo">
-              </div>
-              <div class="form-group">
-                  <input type="tel" placeholder="Número de telefone">
-              </div>
-              <div class="form-group">
-                  <input type="email" placeholder="E-mail">
-              </div>
-              <div class="section-title">Endereço</div>
-                          <div class="form-group">
+			<div class="section-title">Contato</div>
+            <div class="form-group">
+                <input type="cpf" id="cpf" placeholder="CPF"> </div>
+            <div class="form-group">
+                <input type="text" id="nomeCompleto" placeholder="Nome Completo"> </div>
+            <div class="form-group">
+                <input type="tel" id="telefone" placeholder="Número de telefone"> </div>
+            <div class="form-group">
+                  <input type="email" id="email" placeholder="E-mail"> </div>
+              
+            <div class="section-title">Endereço</div>
+            <div class="form-group">
                 <input type="text" id="cep" placeholder="CEP" maxlength="9"> </div>
             <div class="form-group">
                 <input type="text" id="estadoCidade" placeholder="Estado - Cidade" readonly> </div>
@@ -809,7 +806,7 @@
                     <input type="text" id="logradouro" placeholder="Nome da rua" readonly> </div>
                 <div class="input-half">
                     <input type="text" id="numero" placeholder="Número"> </div>
-            </div>
+          </div>
             <div class="form-group">
                 <textarea id="complemento" placeholder="Complemento/Referências Próx./Descrição do Prédio"></textarea>            
             </div>
@@ -818,20 +815,19 @@
               <div class="setup-group">
                   <span>Salvar como:</span>
                   <div class="radio-group">
-                      <div class="radio-button selected">Trabalho</div>
-                      <div class="radio-button">Casa</div>
+                      <div class="radio-button selected" id="saveWork">Trabalho</div> <div class="radio-button" id="saveHome">Casa</div>
                   </div>
               </div>
               <div class="toggle-group">
                   <span>Definir como endereço padrão</span>
                   <label class="switch">
-                      <input type="checkbox">
+                      <input type="checkbox" id="enderecoPadrao">
                       <span class="slider"></span>
                   </label>
               </div>
           </div>
           <div class="save-button-container">
-              <button class="save-button">Salvar</button>
+              <button class="save-button" id="save-button">Salvar</button>
           </div>
             
         </div><!-Content-->
