@@ -275,7 +275,21 @@
         .checkout-item-block > div {
             margin-bottom: 5px;
         }        
-
+		
+        .show-adress {
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            white-space: pre-wrap; /* Preserves whitespace and line breaks */
+            font-family: monospace; /* For a more 'code-like' display */
+            display: none; /* Hide initially */
+            max-width: 500px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
         /* Bottom Section (Sticky Footer) */    
         .bottom-section {
             position: sticky;
@@ -1195,7 +1209,7 @@
     const numeroInput = document.getElementById('numero');
     const complementoInput = document.getElementById('complemento');
     
-    // Get references to new elements
+    // Get references to form elements
     const cpfInput = document.getElementById('cpf');
     const nomeCompletoInput = document.getElementById('nomeCompleto');
     const telefoneInput = document.getElementById('telefone');
@@ -1255,7 +1269,6 @@
     // Call validateForm initially to set the button state on page load
     validateForm();
 
-
     // Function to capture and display address
     if (saveButton) {
         saveButton.addEventListener('click', (event) => {
@@ -1289,16 +1302,25 @@
                 addressDisplay += `Telefone: ${telefone}\n`;
                 addressDisplay += `CEP: ${cep}\n`;
                 addressDisplay += `Endereço: ${logradouro}, ${numero}\n`;
+                addressDisplay += `Bairro: ${bairro}\n`;
+                addressDisplay += `Cidade - UF: ${estadoCidade}\n`;
                 if (complemento) { // Only add complement if it exists
                     addressDisplay += `Complemento: ${complemento}\n`;
                 }
-                addressDisplay += `Bairro: ${bairro}\n`;
-                addressDisplay += `Cidade - UF: ${estadoCidade}\n`;
                 addressDisplay += `Tipo: ${tipoEndereco}\n`;
                 addressDisplay += `Endereço Padrão: ${isDefaultAddress ? 'Sim' : 'Não'}`;
+                
+                if (showAddressDiv) {
+                    showAddressDiv.textContent = addressDisplay;
+                    showAddressDiv.style.display = 'block'; // Make the div visible
+                    
+                    if (formOverlay) { // Check if formOverlay exists
+                        formOverlay.classList.remove('active'); // Hide the form overlay
+                    }
 
-                if (formOverlay) { // Check if formOverlay exists
-                    formOverlay.classList.remove('active'); // Hide the form overlay
+                    if (myOverlay) { // Check if formOverlay exists
+                        myOverlay.classList.add('active'); // Hide the form overlay
+                    }
                 }
 
                 alert('Endereço salvo com sucesso! Veja os detalhes abaixo.'); // Feedback to user
