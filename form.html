@@ -9,10 +9,10 @@
             font-family: Arial, sans-serif;
             background-color: #f0f2f5;
             display: flex;
-            
-            * Align to the top */
+            justify-content: center; /* Center the form container */
+            align-items: flex-start; /* Align to the top */
             min-height: 100vh;
-            
+            margin: 0; /* Remove default body margin */
         }
 
         .form-container {
@@ -25,22 +25,28 @@
             width: 100%;
             max-width: 500px; /* Limit width for better readability */
             overflow: hidden;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1); /* Optional: add a subtle shadow */
         }
 
         .form-header {
             display: flex;
             align-items: center;
-            padding: .2em .4em;
+            padding: .8em 1em; /* Increased padding */
             border-bottom: 1px solid #eee;
             background-color: #fff;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
         }
 
-        .form-header .form-back-arrow {
+        .form-header .back-btn { /* Changed class to back-btn to match JS */
             font-size: 24px;
             margin-right: 15px;
             color: #333;
             text-decoration: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            line-height: 1; /* Align arrow properly */
         }
 
         .form-header h1 {
@@ -50,9 +56,12 @@
         }
 
         .form-section {
+            padding: 0 1em; /* Added padding to the section */
+            background-color: #fff; /* White background for the form fields */
         }
 
         .form-group {
+            margin-bottom: 15px; /* Spacing between form groups */
         }
 
         .form-group label {
@@ -68,44 +77,69 @@
         .form-group input[type="email"],
         .form-group textarea {
             width: 100%;
-            padding: .6em;
+            padding: .8em 1.2em; /* Adjusted padding */
             border: 1px solid #ddd;
-            font-size: 16px;
+            font-size: .9em; /* Base font size */
             color: #333;
-            box-sizing: border-box; /* Include padding and border in element's total width and height */
+            box-sizing: border-box;
+            border-radius: 4px; /* Slightly rounded corners for inputs */
+        }
+
+        .form-group textarea { /* Specific rule to override font-size for textarea */
+            font-size: 1.2em; /* Larger font size for textarea only */
+            resize: vertical; /* Allow vertical resizing */
+            min-height: 80px; /* Minimum height for textarea */
         }
 
         .form-group.inline {
             display: flex;
-            justify-content: space-between;
+            gap: 10px; /* Space between inline inputs */
         }
 
         .form-group.inline .input-half {
             flex: 1;
         }
+        
+        .form-group.inline .input-half:first-child {
+            width: 70%; /* Adjust width for street name */
+            flex: 0 0 70%;
+        }
+
+        .form-group.inline .input-half:last-child {
+            width: 30%; /* Adjust width for number */
+            flex: 0 0 30%;
+        }
+
 
         .section-title {
             font-size: 0.8em;
             color: #888;
-            padding: 1.8em .4em .4em 1em;
+            padding: 1.8em 1em .4em 1em; /* Adjusted padding */
             text-transform: uppercase;
+            background-color: #f0f2f5; /* Background for section title */
+            margin: 0 -1em; /* Extend background to full width of container */
         }
         
         /* --- */
-        .setup-group, .toggle-group {        
+        .setup-group, .toggle-group {          
             background-color: white;
             display: flex;
             align-items: center; /* Aligns items vertically in the middle */
-            padding: .4em .8em;
-            margin-bottom: 15px; /* Adjust as needed for spacing from elements below */
+            padding: .8em 1em; /* Adjusted padding */
+            margin-bottom: 1px; /* Adjust as needed for spacing from elements below */
             justify-content: space-between;
+            border-bottom: 1px solid #eee; /* Separator between setup groups */
+        }
+        .toggle-group {
+             padding-bottom: 1.2em; /* More padding for the last item before button */
+             border-bottom: none;
+             margin-bottom: 0;
         }
 
-        .setup-group span {
-            /* No specific changes needed here unless you want to adjust its font size or color */
+        .setup-group span, .toggle-group span {
             font-size: 15px;
             color: #333;
-            white-space: nowrap; /* Prevents the text from wrapping if space is tight */
+            white-space: nowrap;
         }
 
         .radio-group {
@@ -117,34 +151,21 @@
         
         .radio-group .radio-button {
             flex: 1;
-            background-color: #e0f2f7;
+            background-color: #e0e0e0;
             padding: 5px 10px;
             text-align: center;
             border-radius: 4px;
             cursor: pointer;
             color: #555;
             font-size: 15px;
+            min-width: 60px; /* Ensure buttons have a minimum width */
         }
 
         .radio-group .radio-button.selected {
-            background-color: #e0f2f7; /* Light blue */
-            border: 1px solid grey; /* Separator for settings */
-            color: grey;
+            border: 1px solid #2196F3; /* Use a more distinct border for selected */
+            color: #2196F3;
             font-weight: bold;
-        }
-
-        .toggle-groupe {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 20px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid #eee; /* Separator for settings */
-        }
-
-        .toggle-group span {
-            font-size: 15px;
-            color: #333;
+            background-color: #e6f2ff; /* Light blue background for selected */
         }
 
         .switch {
@@ -201,10 +222,11 @@
         }
 
         .save-button-container {
-            padding: .4em;
+            padding: 1em; /* Increased padding */
             text-align: center;
-            background-color: ;
+            background-color: #fff; /* White background for the button container */
             border-top: 1px solid #eee;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.05); /* Shadow at the top */
         }
 
         .save-button {
@@ -213,95 +235,414 @@
             background-color: #e0e0e0; /* Disabled look */
             color: #a0a0a0; /* Disabled text color */
             border: none;
-            border-radius: 2px;
+            border-radius: 4px; /* Rounded corners for button */
             font-size: 17px;
-            cursor: not-allowed; /* Indicate it's not active */
+            cursor: not-allowed;
             font-weight: bold;
+            transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition */
         }
 
-        /* Active button style - uncomment or change background-color to make it active */
-        /* .save-button.active {
-            background-color: #FF5722;
+        /* Active button style */
+        .save-button.active {
+            background-color: #FF5722; /* Vibrant orange */
             color: #fff;
             cursor: pointer;
-        } */
+        }
 
+        /* Overlays (for context, assuming they exist elsewhere) */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0s, opacity 0.3s ease-in-out;
+        }
+
+        .overlay.active {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .overlay .overlay-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            max-width: 90%;
+            max-height: 90%;
+            overflow-y: auto;
+        }
+        /* Basic styling for the show-adress div */
+        .show-adress {
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            white-space: pre-wrap; /* Preserves whitespace and line breaks */
+            font-family: monospace; /* For a more 'code-like' display */
+            display: none; /* Hide initially */
+            max-width: 500px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* ... (your existing CSS) ... */
     </style>
 </head>
 <body>
     <div class="form-container">
         <div class="form-header">
-            <a href="#" class="form-back-arrow">&larr;</a>
+            <button class="back-btn" id="back-btn-form">🢦</button>
             <h1>Endereço novo</h1>
         </div>
         <div class="form-section">
             <div class="section-title">Contato</div>
             <div class="form-group">
-                <input type="cpf" placeholder="CPF">
-            </div>
+                <input type="cpf" id="cpf" placeholder="CPF"> </div>
             <div class="form-group">
-                <input type="text" placeholder="Nome Completo">
-            </div>
+                <input type="text" id="nomeCompleto" placeholder="Nome Completo"> </div>
             <div class="form-group">
-                <input type="tel" placeholder="Número de telefone">
-            </div>
+                <input type="tel" id="telefone" placeholder="Número de telefone"> </div>
             <div class="form-group">
-                <input type="email" placeholder="E-mail">
-            </div>
+                <input type="email" id="email" placeholder="E-mail"> </div>
             <div class="section-title">Endereço</div>
             <div class="form-group">
-                <input type="text" placeholder="CEP">
+                <input type="text" id="cep" placeholder="CEP" maxlength="9">
             </div>
             <div class="form-group">
-                <input type="text" placeholder="Estado - Cidade">
+                <input type="text" id="estadoCidade" placeholder="Estado - Cidade" readonly>
             </div>
             <div class="form-group">
-                <input type="text" placeholder="Bairro">
+                <input type="text" id="bairro" placeholder="Bairro" readonly>
             </div>
             <div class="form-group inline">
                 <div class="input-half">
-                    <input type="text" placeholder="Nome da rua">
+                    <input type="text" id="logradouro" placeholder="Nome da rua" readonly>
                 </div>
                 <div class="input-half">
-                    <input type="text" placeholder="Número">
+                    <input type="text" id="numero" placeholder="Número">
                 </div>
             </div>
             <div class="form-group">
-                <textarea placeholder="Complemento/Referências Próx./Descrição do Prédio"></textarea>
+                <textarea id="complemento" placeholder="Complemento/Referências Próx./Descrição do Prédio"></textarea>
             </div>
 
             <div class="section-title">Configurações</div>
             <div class="setup-group">
                 <span>Salvar como:</span>
                 <div class="radio-group">
-                    <div class="radio-button selected">Trabalho</div>
-                    <div class="radio-button">Casa</div>
-                </div>
+                    <div class="radio-button selected" id="saveWork">Trabalho</div> <div class="radio-button" id="saveHome">Casa</div> </div>
             </div>
             <div class="toggle-group">
                 <span>Definir como endereço padrão</span>
                 <label class="switch">
-                    <input type="checkbox">
-                    <span class="slider"></span>
+                    <input type="checkbox" id="enderecoPadrao"> <span class="slider"></span>
                 </label>
             </div>
         </div>
         <div class="save-button-container">
-            <button class="save-button">Salvar</button>
-        </div>
+            <button class="save-button" id="saveButton">Salvar</button> </div>
     </div>
 
+    <div id="showAddress" class="show-adress">
+        </div>
+
     <script>
+        // --- General Overlay & Navigation ---
+        // Assuming 'myOverlay' and 'checkoutOverlay' exist in a parent script or context
+        // For this standalone HTML, we'll mock them or make them global if needed.
+        // In a real application, ensure these are correctly scoped.
+        const myOverlay = document.getElementById('my-cart-overlay-id') || document.createElement('div'); // Mock or retrieve
+        myOverlay.id = 'my-cart-overlay-id'; // Ensure ID for mock
+        const checkoutOverlay = document.getElementById('checkout-overlay-id') || document.createElement('div'); // Mock or retrieve
+        checkoutOverlay.id = 'checkout-overlay-id'; // Ensure ID for mock
+
+        // --- FORM OVERLAY (CEP integration) ---
+        const openFormBtns = document.querySelectorAll('.edit-btn');
+        const formOverlay = document.getElementById('form-overlay');
+        const backBtnForm = document.getElementById('back-btn-form');
+
+        // CEP fields
+        const cepInput = document.getElementById('cep');
+        const estadoCidadeInput = document.getElementById('estadoCidade');
+        const bairroInput = document.getElementById('bairro');
+        const logradouroInput = document.getElementById('logradouro');
+        const numeroInput = document.getElementById('numero');
+        const complementoInput = document.getElementById('complemento');
+        
+        // Get references to new elements
+    const cpfInput = document.getElementById('cpf');
+    const nomeCompletoInput = document.getElementById('nomeCompleto');
+    const telefoneInput = document.getElementById('telefone');
+    const emailInput = document.getElementById('email');
+    // CEP fields are already defined: cepInput, estadoCidadeInput, bairroInput, logradouroInput, numeroInput, complementoInput
+
+    const saveButton = document.getElementById('saveButton');
+    const showAddressDiv = document.getElementById('showAddress');
+    const saveWorkRadio = document.getElementById('saveWork');
+    const saveHomeRadio = document.getElementById('saveHome');
+    const enderecoPadraoCheckbox = document.getElementById('enderecoPadrao');
+
+
+    // Function to validate if all required fields are filled
+    function validateForm() {
+        // List of required input fields (adjust as needed)
+        const requiredFields = [
+            cpfInput,
+            nomeCompletoInput,
+            telefoneInput,
+            emailInput,
+            cepInput,
+            estadoCidadeInput,
+            bairroInput,
+            logradouroInput,
+            numeroInput
+        ];
+
+        let allFilled = true;
+        requiredFields.forEach(field => {
+            if (!field.value.trim()) { // Check if value is empty or just whitespace
+                allFilled = false;
+                // Optional: Add a class to highlight empty fields
+                // field.classList.add('is-invalid');
+            } else {
+                // field.classList.remove('is-invalid');
+            }
+        });
+
+        // Enable/disable the save button based on validation
+        if (saveButton) {
+            if (allFilled) {
+                saveButton.classList.add('active'); // Apply active style
+                saveButton.disabled = false;
+            } else {
+                saveButton.classList.remove('active'); // Remove active style
+                saveButton.disabled = true;
+            }
+        }
+
+        return allFilled;
+    }
+
+    // Add event listeners to all relevant input fields to re-validate on change
+    document.querySelectorAll('.form-section input, .form-section textarea').forEach(input => {
+        input.addEventListener('input', validateForm);
+    });
+    // Call validateForm initially to set the button state on page load
+    validateForm();
+
+
+    // Function to capture and display address
+    if (saveButton) {
+        saveButton.addEventListener('click', (event) => {
+            event.preventDefault(); // Prevent default form submission if it were a <form>
+
+            if (validateForm()) { // Only proceed if the form is valid
+                const cpf = cpfInput.value.trim();
+                const nomeCompleto = nomeCompletoInput.value.trim();
+                const telefone = telefoneInput.value.trim();
+                const email = emailInput.value.trim();
+                const cep = cepInput.value.trim();
+                const estadoCidade = estadoCidadeInput.value.trim();
+                const bairro = bairroInput.value.trim();
+                const logradouro = logradouroInput.value.trim();
+                const numero = numeroInput.value.trim();
+                const complemento = complementoInput.value.trim(); // Optional field
+
+                let tipoEndereco = '';
+                if (saveWorkRadio && saveWorkRadio.classList.contains('selected')) {
+                    tipoEndereco = 'Trabalho';
+                } else if (saveHomeRadio && saveHomeRadio.classList.contains('selected')) {
+                    tipoEndereco = 'Casa';
+                }
+
+                const isDefaultAddress = enderecoPadraoCheckbox ? enderecoPadraoCheckbox.checked : false;
+
+                // Construct the display string
+                let addressDisplay = `CPF: ${cpf}\n`;
+                addressDisplay += `Nome Completo: ${nomeCompleto}\n`;
+                addressDisplay += `E-mail: ${email}\n`;
+                addressDisplay += `Telefone: ${telefone}\n`;
+                addressDisplay += `CEP: ${cep}\n`;
+                addressDisplay += `Endereço: ${logradouro}, ${numero}\n`;
+                if (complemento) { // Only add complement if it exists
+                    addressDisplay += `Complemento: ${complemento}\n`;
+                }
+                addressDisplay += `Bairro: ${bairro}\n`;
+                addressDisplay += `Cidade - UF: ${estadoCidade}\n`;
+                addressDisplay += `Tipo: ${tipoEndereco}\n`;
+                addressDisplay += `Endereço Padrão: ${isDefaultAddress ? 'Sim' : 'Não'}`;
+
+                // Display in the div
+                if (showAddressDiv) {
+                    showAddressDiv.textContent = addressDisplay;
+                    showAddressDiv.style.display = 'block'; // Make the div visible
+
+                    // --- THIS IS THE LINE TO ADD/UNCOMMENT/MODIFY ---
+                    if (formOverlay) { // Check if formOverlay exists
+                        formOverlay.classList.remove('active'); // Hide the form overlay
+                    }
+                }
+
+                alert('Endereço salvo com sucesso! Veja os detalhes abaixo.'); // Feedback to user
+
+            } else {
+                alert('Por favor, preencha todos os campos obrigatórios.');
+            }
+        });
+    }
+
+        // Function to clear address fields
+        function clearAddressFields() {
+            estadoCidadeInput.value = '';
+            bairroInput.value = '';
+            logradouroInput.value = '';
+        }
+
+        // Function to fetch address from ViaCEP
+        async function fetchAddressByCEP(cep) {
+            clearAddressFields(); // Clear fields before fetching
+            
+            estadoCidadeInput.readOnly = true;
+            bairroInput.readOnly = true;
+            logradouroInput.readOnly = true;
+
+            const cleanedCep = cep.replace(/\D/g, ''); // Remove non-digits
+
+            if (cleanedCep.length !== 8) {
+                // Not a valid CEP length, clear and reset placeholders
+                estadoCidadeInput.placeholder = 'Estado - Cidade';
+                bairroInput.placeholder = 'Bairro';
+                logradouroInput.placeholder = 'Nome da rua';
+                return;
+            }
+
+            try {
+                const response = await fetch(`https://viacep.com.br/ws/${cleanedCep}/json/`);
+                const data = await response.json();
+
+                if (data.erro) {
+                    alert('CEP não encontrado.');
+                    clearAddressFields();
+                    estadoCidadeInput.placeholder = 'CEP não encontrado';
+                    bairroInput.placeholder = 'CEP não encontrado';
+                    logradouroInput.placeholder = 'CEP não encontrado';
+                } else {
+                    estadoCidadeInput.value = `${data.uf} - ${data.localidade}`;
+                    bairroInput.value = data.bairro;
+                    logradouroInput.value = data.logradouro;
+                    numeroInput.focus(); // Focus on the number field
+                }
+            } catch (error) {
+                console.error('Erro ao buscar CEP:', error);
+                alert('Erro ao buscar o CEP. Tente novamente.');
+                clearAddressFields();
+                estadoCidadeInput.placeholder = 'Erro na busca';
+                bairroInput.placeholder = 'Erro na busca';
+                logradouroInput.placeholder = 'Erro na busca';
+            } finally {
+                // Reset placeholders to original after fetching
+                if (estadoCidadeInput.value === '') estadoCidadeInput.placeholder = 'Estado - Cidade';
+                if (bairroInput.value === '') bairroInput.placeholder = 'Bairro';
+                if (logradouroInput.value === '') logradouroInput.placeholder = 'Nome da rua';
+
+                estadoCidadeInput.readOnly = false;
+                bairroInput.readOnly = false;
+                logradouroInput.readOnly = false;
+            }
+        }
+
+        // Event listener for CEP input (fires on every change)
+        if (cepInput) {
+            // Add a mask to the CEP input
+            cepInput.addEventListener('input', function (e) {
+                let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+                if (value.length > 5) {
+                    value = value.substring(0, 5) + '-' + value.substring(5, 8);
+                }
+                e.target.value = value;
+
+                // --- NEW: Trigger search immediately if 8 digits are typed ---
+                const cleanedCep = value.replace(/\D/g, ''); // Clean CEP again for the check
+                if (cleanedCep.length === 8) {
+                    fetchAddressByCEP(cleanedCep);
+                } else {
+                    // Optionally clear fields if CEP becomes invalid (e.g., user backspaces)
+                    clearAddressFields();
+                }
+            });
+        }
+
+        // --- Abrir Form (edit-btn click) ---
+        openFormBtns.forEach(button => {
+            button.addEventListener('click', () => {
+                if (myOverlay) myOverlay.classList.remove('active'); // Esconde o overlay do carrinho (if it exists)
+                if (formOverlay) {
+                    formOverlay.classList.add('active'); // Mostra o overlay de checkout
+                }
+            });
+        });
+
+        // --- Fechar Form (backBtnForm click) ---
+        if (backBtnForm) {
+            backBtnForm.addEventListener('click', () => {
+                if (formOverlay) {
+                    formOverlay.classList.remove('active'); // Close form overlay
+                }
+                if (myOverlay) myOverlay.classList.add('active'); // Open cart again (if it exists)
+            });
+        }
+
+        // --- Fechar Form clicando fora do formOverlay ---
+        if (formOverlay) {
+            formOverlay.addEventListener('click', (event) => {
+                // Check if the click target is the overlay itself, not its children
+                if (event.target === formOverlay) {
+                    formOverlay.classList.remove('active');
+                    // Optionally go back to the cart overlay if that's the desired flow
+                    // if (myOverlay) myOverlay.classList.add('active');
+                }
+            });
+        }
+
+        // --- Fechar Overlays com a Tecla ESC ---
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
+                if (formOverlay && formOverlay.classList.contains('active')) {
+                    formOverlay.classList.remove('active');
+                }
+                // Assuming other overlays (myOverlay, checkoutOverlay) are also handled here
+                // if (myOverlay && myOverlay.classList.contains('active')) {
+                //     myOverlay.classList.remove('active');
+                // }
+                // if (checkoutOverlay && checkoutOverlay.classList.contains('active')) {
+                //     checkoutOverlay.classList.remove('active');
+                // }
+            }
+        });
+
+		const radioButtons = document.querySelectorAll('.radio-group .radio-button');
+		if (radioButtons) {
+          radioButtons.forEach(button => {
+              button.addEventListener('click', function() {
+                  radioButtons.forEach(btn => btn.classList.remove('selected'));
+                  this.classList.add('selected');
+              });
+          });
+		}
+        
         // Optional: JavaScript to handle radio button selection
         document.addEventListener('DOMContentLoaded', function() {
-            const radioButtons = document.querySelectorAll('.radio-group .radio-button');
-
-            radioButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    radioButtons.forEach(btn => btn.classList.remove('selected'));
-                    this.classList.add('selected');
-                });
-            });
+            
         });
     </script>
 </body>
