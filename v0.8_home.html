@@ -1312,10 +1312,8 @@
 	            addressDisplay += `${bairro}<br>`;
 	            addressDisplay += `${cidade} - ${estado}<br>`;
 	            addressDisplay += `${cep}<br>`;
-	            if (complemento) {
-	                addressDisplay += `Complemento: ${complemento}<br>`;
-	            }
-	            addressDisplay += `Tipo: ${tipoEndereco}<br><br>`;
+		    addressDisplay += `Complemento: ${complemento}<br><br>`;
+	            addressDisplay += `Tipo: ${tipoEndereco}<br>`;
 	            addressDisplay += `Endereço Padrão: ${isDefaultAddress ? 'Sim' : 'Não'}`;
 	
 	            if (showAddressDiv) {
