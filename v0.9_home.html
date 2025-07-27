@@ -323,27 +323,29 @@
         .total-section {
             display: flex;
             align-items: center;
+            justify-content: center;
         }
 
         .total-price {
             font-size: 1.3em;
             font-weight: bold;
             color: #ee4d2d;
-            margin: 15px;
+            margin: em;
         }
         
         .select-all-checkbox {
-            margin-left: 15px;
+            margin-left: 1em;
         }
         
         .select-all-text {
-            margin-right: 100px;
+            margin-right: 8em;
         }
 
         .continue-btn {
             background-color: #ee4d2d;
             color: white;
             padding: 12px 25px;
+            margin-left: 1em;
             border: none;
             border-radius: 3px;
             font-size: 1em;
@@ -860,7 +862,7 @@
             <div class="store-section">
                 <div class="checkout-item-block">
                     <div style="font-size: 0.9em; color: #777;">
-            <p>Você será direcionado para pagar através de um link do <strong>Mercado Pago</strong>. Estando logado na sua conta Mercado Pago, você tem a  segurança da <strong>Compra Garantida</strong>.</p>
+            <p>Você será direcionado para pagar através do link de pagamento do <strong>Mercado Pago</strong>. Estando logado na sua conta Mercado Pago, você tem a  segurança da <strong>Compra Garantida</strong>.</p>
             <h4>Como funciona a Compra Garantida do Mercado Pago?</h4>
             <p>A Compra Garantida do Mercado Pago é um benefício gratuito que visa proteger o comprador em transações realizadas dentro da plataforma. Para ter direito a ela, você precisa seguir alguns requisitos:</p>
             <p><strong>• Pagar logado:</strong> É fundamental que você esteja com sua conta Mercado Pago logada ao realizar o pagamento pelo link. Pagamentos feitos como "convidado" ou "guest" não têm essa cobertura.</p>
@@ -869,7 +871,7 @@
             <h4>O que acontece se eu precisar usar a Compra Garantida?</h4>
             <p><strong>• Abra uma reclamação:</strong> Se você não receber o produto, deve iniciar uma reclamação através da sua conta Mercado Pago.
             <p><strong>• Mercado Pago entra em contato com o vendedor:</strong> A plataforma tentará mediar a situação com o vendedor para encontrar uma solução.
-            <p><strong>• Devolução do dinheiro:</strong> Se a reclamação não for resolvida e for constatado que você não recebeu o produto, o Mercado Pago fará a devolução do valor da compra.
+            <p><strong>• Devolução do dinheiro:</strong> Se a reclamação não for resolvida e for <strong>constatado</strong> que você não recebeu o produto, o Mercado Pago fará a devolução do valor da compra.
             <h4>Casos em que a Compra Garantida não oferece cobertura:</h4>
             <p>▫︎ Pagamentos realizados sem estar logado na conta Mercado Pago.
             <p>▫︎ Compra de serviços, assinaturas ou produtos digitais (como streaming de vídeo, e-books, etc.).
@@ -886,7 +888,7 @@
             		<input type="checkbox" class="select-all-checkbox" id="agree-checkbox">
             		<span class="select-all-text">Aceitar</span>
             		    
-            		<button class="continue-btn" disabled>
+            		<button class="continue-btn" id="policy-continue-btn" disabled>
             		    Continuar
             		</button>                        
             	</div>
