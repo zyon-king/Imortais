@@ -332,7 +332,7 @@
             align-items: center; /* Centraliza verticalmente os blocos (checkbox/tudo, preços, botão) */
             justify-content: space-between; /* Distribui os blocos: esquerda, centro, direita */
             width: 100%;
-            padding: 15px 20px; /* Adicione padding horizontal para as bordas */
+            gap: .5em; /* Adicione padding horizontal para as bordas */
             background-color: #fff;
             box-sizing: border-box; /* Inclui padding na largura total */
         }
@@ -366,7 +366,7 @@
         .total-price {
             font-size: 1.5em; /* Valor maior para o total */
             font-weight: bold;
-            color: #333;
+            color: red;
             margin-bottom: 3px; /* Espaço entre o total e a linha de desconto */
             white-space: nowrap; /* Evita que o valor quebre linha, se for muito grande */
         }
@@ -385,7 +385,7 @@
 
         #discount-price {
             font-weight: bold;
-            color: green; /* Cor para o valor economizado */
+            color: grey;
         }
 
         /* BLOCo DIREITO: Botão Continuar */
@@ -393,7 +393,7 @@
             padding: 12px 20px;
             font-size: 1.1em;
             font-weight: bold;
-            border-radius: 25px; /* Cantos arredondados */
+            border-radius: 2px; /* Cantos arredondados */
             background-color: #007bff; /* Cor primária, ajuste conforme seu tema */
             color: white;
             border: none;
