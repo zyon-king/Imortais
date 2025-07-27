@@ -752,7 +752,7 @@
             <div class="store-section">
                 <div class="store-header">
                     <div class="store-icon">🦇</div>
-                    <span class="store-name">Opcao de Envio</span>
+                    <span class="store-name">Opção de Envio</span>
                     <button class="edit-btn" id="edit-btn">Editar</button>
                 </div>
                 <div class="show-adress" id="showAddress"> </div>                
@@ -807,7 +807,7 @@
                     <input type="text" id="cidade" placeholder="Cidade" readonly> </div>
                 <div class="input-half">
                     <input type="text" id="estado" placeholder="UF" readonly> </div>
-          	</div>
+            </div>
             <div class="form-group">
                 <input type="text" id="bairro" placeholder="Bairro" readonly> </div>
             <div class="form-group inline">
@@ -1209,6 +1209,7 @@
     // CEP fields
     const cepInput = document.getElementById('cep');
     const cidadeInput = document.getElementById('cidade');
+    const estadoInput = document.getElementById('estado');
     const bairroInput = document.getElementById('bairro');
     const logradouroInput = document.getElementById('logradouro');
     const numeroInput = document.getElementById('numero');
@@ -1237,6 +1238,7 @@
             emailInput,
             cepInput,
             cidadeInput,
+	    estadoInput,
             bairroInput,
             logradouroInput,
             numeroInput
@@ -1286,6 +1288,7 @@
                 const email = emailInput.value.trim();
                 const cep = cepInput.value.trim();
                 const cidade = cidadeInput.value.trim();
+		const estado = estadoInput.value.trim();
                 const bairro = bairroInput.value.trim();
                 const logradouro = logradouroInput.value.trim();
                 const numero = numeroInput.value.trim();
@@ -1301,22 +1304,23 @@
                 const isDefaultAddress = enderecoPadraoCheckbox ? enderecoPadraoCheckbox.checked : false;
 
                 // Construct the display string
-                let addressDisplay = `CPF: ${cpf}\n`;
-                addressDisplay += `Nome Completo: ${nomeCompleto}\n`;
-                addressDisplay += `E-mail: ${email}\n`;
-                addressDisplay += `Telefone: ${telefone}\n`;
-                addressDisplay += `CEP: ${cep}\n`;
-                addressDisplay += `Endereço: ${logradouro}, ${numero}\n`;
-                addressDisplay += `Bairro: ${bairro}\n`;
-                addressDisplay += `Cidade - UF: ${cidade}\n`;
-                if (complemento) { // Only add complement if it exists
-                    addressDisplay += `Complemento: ${complemento}\n`;
-                }
-                addressDisplay += `Tipo: ${tipoEndereco}\n`;
-                addressDisplay += `Endereço Padrão: ${isDefaultAddress ? 'Sim' : 'Não'}`;
-                
-                if (showAddressDiv) {
-                    showAddressDiv.textContent = addressDisplay;
+                let addressDisplay = `${cpf}<br>`;
+	            addressDisplay += `<strong>${nomeCompleto}</strong><br>`;
+	            addressDisplay += `${email}<br>`;
+	            addressDisplay += `${telefone}<br><br>`;
+	            addressDisplay += `${logradouro}, ${numero}<br>`;
+	            addressDisplay += `${bairro}<br>`;
+	            addressDisplay += `${cidade} - ${estado}<br>`;
+	            addressDisplay += `${cep}<br>`;
+	            if (complemento) {
+	                addressDisplay += `Complemento: ${complemento}<br>`;
+	            }
+	            addressDisplay += `Tipo: ${tipoEndereco}<br><br>`;
+	            addressDisplay += `Endereço Padrão: ${isDefaultAddress ? 'Sim' : 'Não'}`;
+	
+	            if (showAddressDiv) {
+	                // IMPORTANT: Use innerHTML to render HTML tags
+	                showAddressDiv.innerHTML = addressDisplay;
                     showAddressDiv.style.display = 'block'; // Make the div visible
                     
                     if (formOverlay) { // Check if formOverlay exists
@@ -1339,6 +1343,7 @@
     // Function to clear address fields
     function clearAddressFields() {
         cidadeInput.value = '';
+	estadoInput.value = '';
         bairroInput.value = '';
         logradouroInput.value = '';
 	}
@@ -1348,6 +1353,7 @@
 		clearAddressFields(); // Clear fields before fetching
 
         cidadeInput.readOnly = true;
+	estadoInput.readOnly = true;
         bairroInput.readOnly = true;
         logradouroInput.readOnly = true;
 	
@@ -1355,7 +1361,8 @@
 	
         if (cleanedCep.length !== 8) {
         	// Not a valid CEP length, clear and reset placeholders
-            cidadeInput.placeholder = 'Estado - Cidade';
+            cidadeInput.placeholder = 'Cidade';
+	    estadoInput.placeholder = 'UF';
             bairroInput.placeholder = 'Bairro';
             logradouroInput.placeholder = 'Nome da rua';
             return;
@@ -1369,10 +1376,12 @@
             	alert('CEP não encontrado.');
             	clearAddressFields();
             	cidadeInput.placeholder = 'CEP não encontrado';
+		estadoInput.placeholder = 'CEP não encontrado';
             	bairroInput.placeholder = 'CEP não encontrado';
             	logradouroInput.placeholder = 'CEP não encontrado';
             } else {
-                cidadeInput.value = `${data.uf} - ${data.localidade}`;
+                cidadeInput.value = data.localidade;
+		estadoInput.value = data.uf;
                 bairroInput.value = data.bairro;
                 logradouroInput.value = data.logradouro;
                 numeroInput.focus(); // Focus on the number field
@@ -1382,11 +1391,13 @@
             alert('Erro ao buscar o CEP. Tente novamente.');
             clearAddressFields();
             cidadeInput.placeholder = 'Erro na busca';
+	    estadoInput.placeholder = 'Erro na busca';
             bairroInput.placeholder = 'Erro na busca';
             logradouroInput.placeholder = 'Erro na busca';
-		} finally {
+	} finally {
         	// Reset placeholders to original after fetching
-        	if (cidadeInput.value === '') cidadeInput.placeholder = 'Estado - Cidade';
+        	if (cidadeInput.value === '') cidadeInput.placeholder = 'Cidade';		
+	    if (estadoInput.value === '') estadoInput.placeholder = 'UF';
             if (bairroInput.value === '') bairroInput.placeholder = 'Bairro';
             if (logradouroInput.value === '') logradouroInput.placeholder = 'Nome da rua';
 
