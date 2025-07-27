@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Layout Responsivo com Neblina em Toda a Tela</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lora:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+        <style>
+        :root {
+            --color-background: linear-gradient(45deg, rgba(0, 19, 89, 1) 0%, rgba(2, 10, 41, 1) 17%, rgba(0, 19, 89, 1) 40%, rgba(2, 10, 41, 1) 60%, rgba(0, 19, 89, 1) 80%, rgba(2, 10, 41, 1) 100%);
+            --color-text: #000000; /* Muted silver */
+            --color-primary-accent: linear-gradient(
+                45deg,
+                hsl(0deg 0% 0%) 0%,
+                hsl(240deg 10% 8%) 8%,
+                hsl(240deg 21% 14%) 17%,
+                hsl(240deg 35% 18%) 25%,
+                hsl(240deg 21% 41%) 33%,
+                hsl(240deg 21% 68%) 42%,
+                hsl(0deg 0% 100%) 50%,
+                hsl(240deg 21% 68%) 58%,
+                hsl(240deg 21% 41%) 67%,
+                hsl(240deg 35% 18%) 75%,
+                hsl(240deg 21% 14%) 83%,
+                hsl(240deg 10% 8%) 92%,
+                hsl(0deg 0% 0%) 100%
+              );
+            --color-secondary-accent: #7f8c8d;
+            --color-border: #1a1a1a;
+            --color-link: #00004d;
+            --color-link-hover: #D2DEFF;
+        }
+        /* Resetando alguns estilos padrões */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            position: relative; /* Necessário para o posicionamento do fog-overlay */
+            min-height: 100vh; /* Garante que o body ocupa a altura total da viewport */
+            overflow-x: hidden; /* Evita scroll horizontal indesejado */
+        }
+
+        /* Definindo o container principal */
+        .container {
+            background-image: white;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        /* Container para o conteúdo (imagem e texto) */
+        .content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            width: 100vw;
+            max-width: 1200px;
+            padding: 20px;
+            z-index: 2;
+        }
+        
+        .content .text {
+            flex-grow: 1; /* Allows the text to grow and fill available space */
+            max-width: 800px;
+            min-width: 400px; /* Optional: Set a minimum width to prevent it from becoming too narrow */
+        }
+
+        /* Imagem */
+        .image {
+            width: 48%; /* A imagem ocupa quase metade da largura */
+            max-width: 100%;
+            height: auto;            
+            box-shadow: 1px 1px 9px 2px rgba(0,0,0,0.75);
+        }
+
+        /* Texto */
+        .text {
+            color: var(--color-link);
+            width: 48%;
+            min-height: 100%;
+            justify-content: center;
+            text-align: justify;
+            padding: 1.5rem;
+        }
+        
+        #container-media h1,
+        #container-media h2,
+        #container-media h3 {
+            color: black;
+            text-align: center;
+        }
+
+        /* Título (h1) */
+        h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        /* Subtítulo (h2) */
+        h2 {
+            font-size: 1.5rem;
+            font-family: 'Cinzel', serif;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        /* Subtítulo (h3) */
+        h3 {
+            font-family: 'Cinzel', serif;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        /* Parágrafo */
+        p {
+            font-family: 'Georgia', serif;
+            font-size: 1.2rem;
+            line-height: 1.6;
+        }
+        
+        hr {
+          width: 20%; /* Define a largura da linha */
+          border: none; /* Remove a borda padrão do hr para maior controle */
+          height: 3px; /* Define a altura da linha */
+          background-color: black; /* Define a cor da linha */
+          margin: 20px auto; /* Centraliza a linha horizontalmente e adiciona margem */
+        }
+
+        br {
+          text-indent: 2em; /* ou use px, %, rem, etc. */
+          font-size: 1rem;
+        }
+
+        .instagram-media {
+            max-width: 50% !important;
+            width: 100% !important;
+            padding: 50px 50px;
+            margin: 0 auto !important; /* Centraliza o embed */
+        }
+        
+        #container-video {
+            background-image:  linear-gradient(135deg, #1e5799 0%,#000000 30%,#000000 30%,#1e5799 50%,#000000 70%,#1e5799 100%);
+            overflow: hidden; /* This will crop anything that overflows the 70vh height */
+            display: flex; /* Helps in centering the content vertically if needed */
+            justify-content: center;
+            align-items: center;
+        }
+        
+        #container-sinopse {
+            /*background-image:  linear-gradient(135deg, #1e5799 0%,#000000 30%,#000000 30%,#1e5799 50%,#000000 70%,#1e5799 100%);*/
+            background-image: url('https://raw.githubusercontent.com/zyon-king/Imortais/refs/heads/main/blue-dark-castle-room.png');
+        }
+        
+        #container-sinopse h1,
+        #container-sinopse h2,
+        #container-sinopse h3,
+        #container-sinopse p {
+            color: var(--color-link-hover);
+        }
+
+        /* Estilo para os botões */
+        .btn {
+            background-color: white;
+            color: #4B0082;
+			border: 2px solid #4B0082;
+            padding: 15px 10px;
+            font-size: 1rem;
+            text-decoration:none;
+            cursor: pointer;
+            border-radius: 20px;
+            transition: background-color 0.3s ease;
+            margin: 0.9rem;
+  			white-space: nowrap;
+            text-shadow: 0.5px 0.5px 1px rgba(0, 0, 0, 0.3); /* Sombra no texto do botão */
+        }
+        .btn:hover {
+            background-color: #e9eaff;
+          	transform: scale(1.03);
+        }
+
+        .btn:active {
+          transform: scale(0.98); /* Faz parecer que o botão afundou */
+          box-shadow: inset 0 2px 4px rgba(0,0,0,0.2); /* Sombra interna */
+        }
+        .button-89 {
+          --b: 2px;   /* espessura da borda */
+          --s: .45em; /* tamanho do canto */
+          --color: #000066;
+
+          padding: calc( .8em + var(--s)) calc(1.5em + var(--s));
+          color: var(--color);
+          --_p: var(--s);
+          background:
+            conic-gradient(from 90deg at var(--b) var(--b),#0000 90deg,var(--color) 0)
+            var(--_p) var(--_p)/calc(100% - var(--b) - 2*var(--_p)) calc(100% - var(--b) - 2*var(--_p));
+          transition: .3s linear, color 0s, background-color 0s;
+          outline: var(--b) solid #0000;
+          outline-offset: .6em;
+          font-size: 16px;
+          font-family: 'Cinzel', serif;
+          font-weight: 500.3; /* Deixa o texto do botão mais grosso */
+
+          border: 0;
+          cursor: pointer;
+
+          user-select: none;
+          -webkit-user-select: none;
+          touch-action: manipulation;
+        }
+
+        .button-89:hover,
+        .button-89:focus-visible {
+          --_p: 10px;
+          	outline-offset: .01em;
+            background-color: #e9eaff;
+          	transform: scale(1.03);
+        }
+
+        .button-89:active {
+          --_p: 0px;
+          	outline-offset: .05em;
+          transform: scale(0.96); /* Faz parecer que o botão afundou */
+          box-shadow: inset 0 2px 4px rgba(0,0,0,0.2); /* Sombra interna */
+        }
+        
+        .floating-buttons-container {
+          position: fixed;
+          top: 1px;
+          right: -1px;
+          display: flex;
+          flex-direction: column;
+          gap: 12px; /* espaçamento entre os botões */
+          z-index: 999;
+        }
+
+        .floating-button img {
+          width: 4em;
+          height: 3.8em;
+          cursor: pointer;
+          transition: transform 0.2s;
+        }
+
+        .floating-button img:hover {
+          transform: scale(1.1); /* efeito de zoom ao passar o mouse */
+        }
+
+        /* Estilo para telas pequenas (mobile) */
+        @media (max-width: 768px) {
+        }
+        
+        table {
+          text-align: center;
+          margin: 0 auto; /* Add this line */
+        }
+        
+        /* --- Specific CSS for Read More feature --- */
+        .more-text {
+          display: none; /* This hides the content initially */
+        }
+
+        .read-more-btn {
+          background: none; /* No background */
+          border: none; /* No border */
+          color: #007bff; /* Blue text color for the link */
+          cursor: pointer;
+          font-size: inherit; /* Inherit font size from parent */
+          padding: 0;
+          text-decoration: underline; /* Underline the text */
+          /* Remove outline on focus for better aesthetics */
+          outline: none;
+        }
+
+        .read-more-btn:hover {
+          color: #0056b3; /* Darker blue on hover */
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="container-start">
+        <div class="content">           
+            <img src="https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcQBS3CQXupdyvstNW6e3CuDJp-McDfUxVYBIsMT2kH5VYomuGubsiWbLC1S24gujTO8lkzRFUggGLKU5Ze1F0BHo61foXKJv71UPWXUB6irgDk7yrVv7PnHhw" alt="Imagem" class="image">
+            <div class="text" id="text-start">
+                <h1>Imortais Completos</h1>
+                <h2>O Recomeço</h2>
+                <p>O ano era 1889, e a atmosfera hipnotizante de Paris, a cidade das luzes, torna-se pano de fundo para a trama desenrolar-se em meio a um contexto de dualidade, onde a luta entre a luz e as trevas se torna iminente.</p>
+                <p>Não se tratava apenas de escolhas imprevisíveis, mas de profecias seladas com consequências inimagináveis. Venha mergulhar de cabeça nesta jornada, onde dois irmãos, cujo anseio por poder e respeito os conduz por um caminho sombrio sem volta, repleto de dilemas morais.</p>
+                <p>Tudo isso entrelaçado por uma narrativa cativante e repleta de reviravoltas. Então prepare-se, porque batalhas épicas estão prestes a começar.</p>
+                <table>
+                  <tr>
+                    <td colspan="2"><button class="button-89" role="button">Saiba Mais</button></td>
+                  </tr>
+                  <tr>
+                    <td colspan="2"><button class="btn">🛒 Adicionar ao Carrinho?</button></td>
+                  </tr>
+                </table>
+            </div>
+            
+        </div>
+    </div>
+    <div class="container" id="container-video">    
+        <blockquote class="instagram-media" data-instgrm-captioned data-instgrm-permalink="https://www.instagram.com/reel/C1-C_ojJ_qz/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style=" background:#FFF; border:0; border-radius:3px; box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15); margin: 1px; max-width:540px; min-width:326px; padding:0; width:70%; width:-webkit-calc(70% - 2px); width:calc(100% - 2px);">
+        <div style="padding:16px;">
+        <a href="https://www.instagram.com/reel/C1-C_ojJ_qz/?utm_source=ig_embed&amp;utm_campaign=loading" style=" background:#FFFFFF; line-height:0; padding:0 0; text-align:center; text-decoration:none; width:100%;" target="_blank">
+        <div style=" display: flex; flex-direction: row; align-items: center;">
+        <div style="background-color: #F4F4F4; border-radius: 50%; flex-grow: 0; height: 40px; margin-right: 14px; width: 40px;"></div>
+        <div style="display: flex; flex-direction: column; flex-grow: 1; justify-content: center;"> <div style=" background-color: #F4F4F4; border-radius: 4px; flex-grow: 0; height: 14px; margin-bottom: 6px; width: 100px;"></div>
+        <div style=" background-color: #F4F4F4; border-radius: 4px; flex-grow: 0; height: 14px; width: 60px;"></div></div></div>
+        <div style="padding: 19% 0;"></div>
+        <div style="display:block; height:50px; margin:0 auto 12px; width:50px;"></div>
+        <div style="padding-top: 8px;">
+        <div style=" color:#3897f0; font-family:Arial,sans-serif; font-size:14px; font-style:normal; font-weight:550; line-height:18px;">View this post on Instagram</div></div>
+        <div style="padding: 12.5% 0;"></div>
+        <div style="display: flex; flex-direction: row; margin-bottom: 14px; align-items: center;"><div> <div style="background-color: #F4F4F4; border-radius: 50%; height: 12.5px; width: 12.5px; transform: translateX(0px) translateY(7px);"></div> 
+        <div style="background-color: #F4F4F4; height: 12.5px; transform: rotate(-45deg) translateX(3px) translateY(1px); width: 12.5px; flex-grow: 0; margin-right: 14px; margin-left: 2px;"></div> <div style="background-color: #F4F4F4; border-radius: 50%; height: 12.5px; width: 12.5px; transform: translateX(9px) translateY(-18px);"></div></div>
+        <div style="margin-left: 8px;"> 
+        <div style=" background-color: #F4F4F4; border-radius: 50%; flex-grow: 0; height: 20px; width: 20px;"></div> 
+        <div style=" width: 0; height: 0; border-top: 2px solid transparent; border-left: 6px solid #f4f4f4; border-bottom: 2px solid transparent; transform: translateX(16px) translateY(-4px) rotate(30deg)"></div></div>
+        <div style="margin-left: auto;"> <div style=" width: 0px; border-top: 8px solid #F4F4F4; border-right: 8px solid transparent; transform: translateY(16px);"></div> 
+        <div style=" background-color: #F4F4F4; flex-grow: 0; height: 12px; width: 16px; transform: translateY(-4px);"></div> 
+        <div style=" width: 0; height: 0; border-top: 8px solid #F4F4F4; border-left: 8px solid transparent; transform: translateY(-4px) translateX(8px);"></div></div></div> 
+        <div style="display: flex; flex-direction: column; flex-grow: 1; justify-content: center; margin-bottom: 24px;"> 
+        <div style=" background-color: #F4F4F4; border-radius: 4px; flex-grow: 0; height: 14px; margin-bottom: 6px; width: 224px;"></div> 
+        <div style=" background-color: #F4F4F4; border-radius: 4px; flex-grow: 0; height: 14px; width: 144px;"></div></div></a>
+        <p style=" color:#c9c8cd; font-family:Arial,sans-serif; font-size:14px; line-height:17px; margin-bottom:0; margin-top:8px; overflow:hidden; padding:8px 0 7px; text-align:center; text-overflow:ellipsis; white-space:nowrap;"><a href="https://www.instagram.com/reel/C1-C_ojJ_qz/?utm_source=ig_embed&amp;utm_campaign=loading" style=" color:#c9c8cd; font-family:Arial,sans-serif; font-size:14px; font-style:normal; font-weight:normal; line-height:17px; text-decoration:none;" target="_blank">A post shared by imortaiscompletosoficial (@imortaiscompletosoficial)</a></p></div></blockquote>
+        <script async src="//www.instagram.com/embed.js"></script>        
+    </div>
+    
+    <div class="container" id="container-media">
+    
+    	<div class="content">
+            
+            <div class="text" style="background-color: #ecf1f9">
+                <h2>꧁Legado e Maldição꧂</h2>
+                <h3>"Você não precisa me ver para me sentir. Eu estive com você o tempo todo."</h3><br>
+                <p>Essa frase ressoa de um jeito bem particular pra mim. Ela me transporta imediatamente para uma fase da vida onde eu buscava uma conexão mais profunda e autêntica, sabe? Quando percebi que as presenças mais verdadeiras nem sempre são as mais visíveis, mas sim as que se fazem sentir constantemente, como uma força silenciosa me guiando ou uma memória que nunca se apaga. É a certeza de que alguém essencial sempre esteve lá, mesmo que eu não percebesse na época.</p>
+                <hr>
+                <p>Amorim, Ray T.</p>
+                <p>Brasil | Julho, 2025.</p>
+              	
+            </div>
+            
+            <div class="text" style="background-color: #ecf1f9">
+                <h2>꧁Dualidade e Conflito꧂</h2>
+                <h3>Eles são gêmeos é verdade e se amam como tal. Até que o poder os consuma no final.</h3><br>
+                <p>Mesmo quando estive do outro lado do mundo, essa frase já me fazia pensar em como as maiores paixões, até mesmo o amor fraternal, podem se tornar destrutivas quando a busca por algo maior (como o poder), entra em cena. É um lembrete vívido da fragilidade humana, independentemente de onde estamos.</p>
+                <hr>
+                <p>Pinheiro, Ariane S.</p>
+                <p>United States | Fevereiro, 2024.</p>
+            </div>
+            
+            <div class="text" style="background-color: #ecf1f9">
+                <h2>꧁Profecias e Reviravoltas꧂</h2>
+                <h3>Para cumprir a profecia eles renascerão mais poderosos. E com uma sede... que somente o poder pode saciar.</h3><br>
+                <p>Sempre que eu chego nessa parte do livro sou atingida em cheio, fico até arrepiada. Sabe quando a gente falha, mas encontra uma força interior para se reerguer? A "sede de poder" aqui não é só por controle, mas por superação. É sobre a fome de provar a si mesmo que, mesmo depois de uma queda feia, a gente pode voltar mais forte e conquistar algo ainda maior. É a essência da resiliência e da vitória sobre as próprias limitações.</p>
+                <hr>
+                <p>Leitor misterioso.</p>
+                <p>Brasil | Julho, 2024.</p>
+            </div>
+            
+            <div class="text" style="background-color: #ecf1f9">
+                <h2>꧁Batalhas Épicas꧂</h2>
+                <h3>Dois jovens irmãos que lutam para ascender ao poder e se tornarem os imortais mais poderosos de todos os tempos.</h3><br>
+                <p>É tipo a gente, que é jovem, e todo mundo já nos olha torto, acha que não temos experiência ou capacidade. A gente tem que provar o tempo todo que merece um espaço, que tem ideias, que é capaz de conquistar coisas grandes. Essa "ascensão ao poder" e o desejo de ser "o mais poderoso" não é só sobre dominar, é sobre ser reconhecido, sobre mostrar que a idade ou as aparências não definem o seu potencial. É a nossa própria batalha contra julgamentos de quem nos subestima só por sermos jovens.</p>
+                <hr>
+                <p>Leitor misterioso.</p>
+                <p>Japão | Abril, 2025.</p>
+            </div>
+            
+        </div>
+    </div>
+
+    <div class="container" id="container-sinopse">
+        <div class="content">
+        
+            <div class="text" id="text-sinopse">
+                <h1>Resenha</h1>
+                <h2>Imortais Completos</h2>
+                <h3>O Recomeço</h3>
+                <p>"Imortais Completos – O Recomeço", escrito por Alexandre Lamim em parceria com Celonice A. Lamim, é uma envolvente obra de fantasia que mergulha o leitor em um universo sombrio, elegante e absolutamente viciante, onde vampiros, lobisomens e profecias entrelaçam-se numa trama cheia de reviravoltas, ação e emoção.<br><br>
+
+A narrativa inicia com uma cena dramática e arrebatadora, que já entrega o tom intenso da história: um guerreiro ferido, ajoelhado, testemunha a perda irreparável de alguém amado. A dor e o sentimento de vingança que o dominam reverberam ao longo de toda a obra. A partir daí, o leitor é conduzido ao século XIX, em meio às vielas escuras de uma Paris em
+                <span class="more-text" id="hidden-synopsis">
+                     transformação, para acompanhar a jornada dos irmãos Vincent e Victor Fourier — jovens da aristocracia francesa, desajustados com as normas sociais e desejosos de algo maior: respeito, poder e liberdade.<br><br>
+
+A escrita de Lamim é vívida, cinematográfica. Cada cenário é meticulosamente descrito, transportando o leitor para mansões suntuosas, tavernas misteriosas e becos perigosos. Os personagens, especialmente os irmãos gêmeos, são complexos, com motivações profundas e muitas vezes conflitantes. A transformação em vampiros marca não apenas uma mudança física, mas uma verdadeira quebra de paradigmas em suas personalidades e destinos.<br><br>
+
+Um dos grandes trunfos da obra é a construção do universo mitológico. As regras entre os clãs, os rituais de batismo, o papel dos padrinhos, o conselho de anciões, a presença ameaçadora dos lobisomens e a figura lendária do Conde Drácula — tudo é costurado com habilidade e coerência. Além disso, o livro insere profecias enigmáticas e jornadas de autoconhecimento que dão à trama um caráter épico e ao mesmo tempo intimista.<br><br>
+
+Outro ponto que merece destaque é a relação entre os irmãos. Embora unidos pelo sangue, Vincent e Victor seguem caminhos distintos dentro do novo mundo em que são inseridos. A oposição entre os dois, com um buscando poder absoluto e o outro ansiando por respeito e equilíbrio, instiga o leitor e cria um dinamismo narrativo cativante.<br><br>
+
+"Imortais Completos – O Recomeço" não é apenas uma história de vampiros — é uma saga sobre identidade, escolhas e transformação. A mistura entre fantasia, drama, ação e uma pitada de crítica social garante à obra um lugar de destaque dentro da literatura fantástica nacional. Com capítulos bem estruturados, ritmo envolvente e personagens marcantes, o livro conquista tanto fãs do gênero quanto leitores em busca de uma aventura arrebatadora e inesquecível.
+                </span>
+                <button class="read-more-btn" id="read-more-btn">Leia Mais</button>
+            	</p>
+        
+                <table>
+                  <tr>
+                    <td colspan="2"><button class="btn">🛒 Adicionar ao carrinho?</button></td>
+                  </tr>
+                </table>
+            
+        	</div>
+            
+        </div>
+        
+    </div>
+    
+    <script>
+	/// --- Overlays ---
+    const openOverlayBtns = document.querySelectorAll('.openOverlay');
+    const myOverlay = document.getElementById('myOverlay');
+    const backBtnCart = document.getElementById('back-btn-cart');
+    const checkoutOverlay = document.getElementById('checkout');
+    const backBtnCheckout = document.getElementById('back-btn-checkout'); // NEW: Get checkout's back button
+    const continueBtn = document.querySelector('.continue-btn');
+
+    // --- Funcionalidade do Footer Bar (mantida como estava) ---
+    const footerBar = document.getElementById("footerBar");
+    let timeoutId;
+
+    footerBar.style.top = '2vh';
+
+    function handleScrollActivity() {
+        footerBar.classList.add("active");
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => {
+            footerBar.classList.remove("active");
+        }, 500);
+    }
+    window.addEventListener("scroll", handleScrollActivity);
+
+    // --- Abrir Overlay de Carrinho ---
+    openOverlayBtns.forEach(button => {
+        button.addEventListener('click', () => {
+            myOverlay.classList.add('active');
+            window.scrollTo({
+                top: 0,            // Scroll to the top (0 pixels from the top)
+                behavior: 'smooth' // Makes the scroll animated and smooth
+            });
+        });
+    });
+
+    // --- Fechar Overlay de Carrinho (backBtnCart click) ---
+    // This listener handles the back button IN THE CART OVERLAY
+    if (backBtnCart) {
+        backBtnCart.addEventListener('click', () => {
+            myOverlay.classList.remove('active'); // Simply close the cart
+        });
+    }
+
+    // --- Fechar Overlay clicando fora do myOverlay (cart) ---
+    myOverlay.addEventListener('click', (event) => {
+        if (event.target === myOverlay) {
+            myOverlay.classList.remove('active');
+        }
+    });
+
+	// --- Fechar Overlay de Checkout (backBtnCheckout click) ---
+    if (backBtnCheckout) {
+        backBtnCheckout.addEventListener('click', () => {
+            // When clicking back from checkout, you likely want to go back to the cart,
+            // not just close everything.
+            if (checkoutOverlay) {
+                checkoutOverlay.classList.remove('active'); // Close checkout
+            }
+            myOverlay.classList.add('active'); // Open cart again
+        });
+    }
+
+    // --- Fechar Overlay clicando fora do myOverlay (cart) ---
+    checkoutOverlay.addEventListener('click', (event) => {
+        if (event.target === checkoutOverlay) {
+            checkoutOverlay.classList.remove('active');
+        }
+    });
+
+    // --- Funcionalidade do Botão 'Continuar' (Abrir Checkout) ---
+    if (continueBtn) { // Verifica se o botão existe
+        continueBtn.addEventListener('click', () => {
+            myOverlay.classList.remove('active'); // Esconde o overlay do carrinho
+            if (checkoutOverlay) { // Verifica se o overlay de checkout existe
+                checkoutOverlay.classList.add('active'); // Mostra o overlay de checkout
+            }
+        });
+    }
+
+    // --- Fechar Overlays com a Tecla ESC ---
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+            if (myOverlay.classList.contains('active')) {
+                myOverlay.classList.remove('active');
+            }
+            if (checkoutOverlay && checkoutOverlay.classList.contains('active')) {
+                checkoutOverlay.classList.remove('active');
+            }
+        }
+    });
+    
+    // --- Funcionalidades do Carrinho ---
+    const productCheckboxes = document.querySelectorAll('.product-checkbox');
+    const storeCheckboxes = document.querySelectorAll('.store-checkbox');
+    const selectAllCheckbox = document.querySelector('.select-all-checkbox');
+    const noSelectionElement = document.querySelector('.no-selection');
+
+    // Obtenha referências aos elementos de desconto
+    const discountLabel = document.getElementById('discount-label');
+    const discountPrice = document.getElementById('discount-price');
+    // Obtenha referência ao elemento do preço do frete
+    const shippingPriceElement = document.getElementById('shipping-price');
+
+    // Esconda-os por padrão ao carregar a página
+    if (discountLabel) discountLabel.style.display = 'none';
+    if (discountPrice) discountPrice.style.display = 'none';
+
+    // Desmarcar todos os checkboxes ao carregar a página
+    productCheckboxes.forEach(checkbox => {
+        checkbox.checked = false;
+    });
+    storeCheckboxes.forEach(checkbox => {
+        checkbox.checked = false;
+    });
+    if (selectAllCheckbox) {
+        selectAllCheckbox.checked = false;
+    }
+
+    // Função para calcular e atualizar o total e a contagem de itens selecionados
+    function updateTotal() {
+        let total = 0;
+        let count = 0;
+        let totalDiscount = 0;
+
+        productCheckboxes.forEach(checkbox => {
+        	if (checkbox.checked) {
+              const productItem = checkbox.closest('.product-item');
+              if (productItem) {
+                const priceElement = productItem.querySelector('.product-price');
+                const oldPriceElement = productItem.querySelector('.product-old-price');
+                const quantityInputElement = productItem.querySelector('.quantity-input');
+
+                if (priceElement && quantityInputElement) {
+                    const priceText = priceElement.textContent;
+                    const price = parseFloat(priceText.replace('R$', '').replace(',', '.').trim());
+                    const quantity = parseInt(quantityInputElement.value);
+
+                    if (!isNaN(price) && !isNaN(quantity)) {
+                        total += price * quantity;
+                        count += quantity;
+
+                        if (oldPriceElement) {
+                            const oldPriceText = oldPriceElement.textContent;
+                            const oldPrice = parseFloat(oldPriceText.replace('R$', '').replace(',', '.').trim());
+                            if (!isNaN(oldPrice)) {
+                                totalDiscount += (oldPrice - price) * quantity;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // --- Adicionar o preço do frete se houver itens selecionados ---
+    if (count > 0 && shippingPriceElement) {
+        const shippingText = shippingPriceElement.textContent;
+        const shippingValue = parseFloat(shippingText.replace('R$', '').replace(',', '.').trim());
+        if (!isNaN(shippingValue)) {
+            total += shippingValue;
+        }
+        // Optionally, make the shipping price visible if it's hidden by default
+        shippingPriceElement.closest('.shipping').style.display = 'flex'; // Or 'block', adjust as needed
+    }
+    // --- Fim da lógica do frete ---
+
+    document.querySelector('.total-price').textContent = `R$${total.toFixed(2).replace('.', ',')}`;
+    document.querySelector('.continue-btn').textContent = `Continuar (${count})`;
+
+    const continueButton = document.querySelector('.continue-btn');
+    if (continueButton) {
+        if (validateForm() && count > 0) {
+            document.querySelector('.continue-btn').disabled = false;
+        } else {
+            document.querySelector('.continue-btn').disabled = true;
+        }
+    }
+
+    // --- LÓGICA DO VALOR ECONOMIZADO ---
+    if (count > 0 && totalDiscount > 0) {
+        if (discountLabel) discountLabel.style.display = 'inline-block';
+        if (discountPrice) {
+            discountPrice.textContent = `R$${totalDiscount.toFixed(2).replace('.', ',')}`;
+            discountPrice.style.display = 'inline-block';
+        }
+    } else {
+        if (discountLabel) discountLabel.style.display = 'none';
+        if (discountPrice) discountPrice.style.display = 'none';
+    }
+    // --- FIM DA LÓGICA DO VALOR ECONOMIZADO ---
+
+    if (selectAllCheckbox) {
+        const allProductsChecked = Array.from(productCheckboxes).every(cb => cb.checked);
+        selectAllCheckbox.checked = allProductsChecked;
+    }
+}
+
+    // Função para verificar e atualizar o estado do noSelectionElement
+    function updateNoSelectionDisplay() {
+        const anyProductChecked = Array.from(productCheckboxes).some(cb => cb.checked);
+        if (noSelectionElement) {
+            if (anyProductChecked) {
+                noSelectionElement.style.display = 'none';
+            } else {
+                noSelectionElement.style.display = 'flex';
+            }
+        }
+    }
+
+    // Adiciona event listeners para os botões de quantidade
+    document.querySelectorAll('.quantity-controls .quantity-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const productItem = this.closest('.product-item');
+            const quantityInput = productItem.querySelector('.quantity-input');
+            const productCheckbox = productItem.querySelector('.product-checkbox');
+            let currentQuantity = parseInt(quantityInput.value);
+
+            if (this.textContent === '+') {
+                currentQuantity++;
+                if (productCheckbox) {
+                    productCheckbox.checked = true;
+                }
+            } else if (this.textContent === '−') {
+                if (currentQuantity > 1) {
+                    currentQuantity--;
+                }
+            }
+            quantityInput.value = currentQuantity;
+
+            updateTotal();
+            updateNoSelectionDisplay();
+        });
+    });
+
+    // Configura listeners para os checkboxes de loja
+    function setupStoreCheckboxesListeners() {
+        storeCheckboxes.forEach(storeCheckbox => {
+            storeCheckbox.addEventListener('change', function() {
+                const isStoreChecked = this.checked;
+                const storeSection = this.closest('.store-section');
+                if (storeSection) {
+                    storeSection.querySelectorAll('.product-checkbox').forEach(productCb => {
+                        productCb.checked = isStoreChecked;
+                    });
+                }
+                updateTotal();
+                updateNoSelectionDisplay();
+            });
+        });
+    }
+
+    // Configura listeners para os checkboxes de produto
+    function setupProductCheckboxesListeners() {
+        productCheckboxes.forEach(productCheckbox => {
+            productCheckbox.addEventListener('change', function() {
+                updateTotal();
+                updateNoSelectionDisplay();
+                const storeSection = this.closest('.store-section');
+                if (storeSection) {
+                    const allProductsInStore = storeSection.querySelectorAll('.product-checkbox');
+                    const allCheckedInStore = Array.from(allProductsInStore).every(cb => cb.checked);
+                    const storeCb = storeSection.querySelector('.store-checkbox');
+                    if (storeCb) {
+                        storeCb.checked = allCheckedInStore;
+                    }
+                }
+            });
+        });
+    }
+
+    // Funcionalidade do checkbox "Tudo"
+    if (selectAllCheckbox) {
+        selectAllCheckbox.addEventListener('change', function() {
+            const isChecked = this.checked;
+            productCheckboxes.forEach(checkbox => {
+                checkbox.checked = isChecked;
+            });
+            storeCheckboxes.forEach(checkbox => {
+                checkbox.checked = isChecked;
+            });
+            updateTotal();
+            updateNoSelectionDisplay();
+        });
+    }
+        
+    // --- ============ ---
+    // --- FORM OVERLAY ---
+    // --- ============ ---
+    const openFormBtns = document.querySelectorAll('.edit-btn'); // Changed to openFormBtns (plural)
+    const formOverlay = document.getElementById('form-overlay');
+    const backBtnForm = document.getElementById('back-btn-form');
+
+    // --- Abrir Form (edit-btn click) ---
+    // Loop through each button with the class 'edit-btn'
+    openFormBtns.forEach(button => {
+        button.addEventListener('click', () => {
+            myOverlay.classList.remove('active'); // Hide the cart overlay
+            if (formOverlay) { // Check if the form overlay exists
+                formOverlay.classList.add('active'); // Show the form overlay
+            }
+        });
+    });
+
+    // --- Fechar Form (backBtnForm click) ---
+    if (backBtnForm) {
+        backBtnForm.addEventListener('click', () => {
+            if (formOverlay) {
+                formOverlay.classList.remove('active'); // Close form overlay
+            }
+            myOverlay.classList.add('active'); // Open cart again
+        });
+    }
+    
+    // --- Fechar Overlay clicando fora do formOverlay ---
+    if (formOverlay) { // Make sure formOverlay exists before adding listener
+        formOverlay.addEventListener('click', (event) => {
+            if (event.target === formOverlay) {
+                formOverlay.classList.remove('active');
+                // Optionally, if you want to go back to the cart after closing the form,
+                // you can uncomment the line below:
+                // myOverlay.classList.add('active');
+            }
+        });
+    }
+
+	const radioButtons = document.querySelectorAll('.radio-group .radio-button');
+		if (radioButtons) {
+			radioButtons.forEach(button => {
+				button.addEventListener('click', function() {
+					radioButtons.forEach(btn => btn.classList.remove('selected'));
+					this.classList.add('selected');
+			});
+		});
+	}
+
+    // CEP fields
+    const cepInput = document.getElementById('cep');
+    const cidadeInput = document.getElementById('cidade');
+    const estadoInput = document.getElementById('estado');
+    const bairroInput = document.getElementById('bairro');
+    const logradouroInput = document.getElementById('logradouro');
+    const numeroInput = document.getElementById('numero');
+    const complementoInput = document.getElementById('complemento');
+    
+    // Get references to form elements
+    const cpfInput = document.getElementById('cpf');
+    const nomeCompletoInput = document.getElementById('nomeCompleto');
+    const telefoneInput = document.getElementById('telefone');
+    const emailInput = document.getElementById('email');
+    // CEP fields are already defined: cepInput, cidadeInput, bairroInput, logradouroInput, numeroInput, complementoInput
+
+    const saveButton = document.getElementById('save-button');
+    const showAddressDiv = document.getElementById('showAddress');
+    const saveWorkRadio = document.getElementById('saveWork');
+    const saveHomeRadio = document.getElementById('saveHome');
+    const enderecoPadraoCheckbox = document.getElementById('enderecoPadrao');
+
+    // Function to validate if all required fields are filled
+    function validateForm() {
+        // List of required input fields (adjust as needed)
+        const requiredFields = [
+            cpfInput,
+            nomeCompletoInput,
+            telefoneInput,
+            emailInput,
+            cepInput,
+            cidadeInput,
+	    estadoInput,
+            bairroInput,
+            logradouroInput,
+            numeroInput
+        ];
+
+        let allFilled = true;
+        requiredFields.forEach(field => {
+            if (!field.value.trim()) { // Check if value is empty or just whitespace
+                allFilled = false;
+                // Optional: Add a class to highlight empty fields
+                // field.classList.add('is-invalid');
+            } else {
+                // field.classList.remove('is-invalid');
+            }
+        });
+
+        // Enable/disable the save button based on validation
+        if (saveButton) {
+            if (allFilled) {
+                saveButton.classList.add('active'); // Apply active style
+                saveButton.disabled = false;
+            } else {
+                saveButton.classList.remove('active'); // Remove active style
+                saveButton.disabled = true;
+            }
+        }
+
+        return allFilled;
+    }
+	// Add event listeners to all relevant input fields to re-validate on change
+	document.querySelectorAll('.form-section input, .form-section textarea').forEach(input => {
+	    input.addEventListener('input', () => { // Changed to an arrow function for conciseness
+	        validateForm(); // Re-validate the form itself
+	        updateTotal();  // <-- ADD THIS LINE: Re-evaluate the "Continuar" button's state
+	    });
+	});
+
+    // Function to capture and display address
+    const shippingLabel = document.getElementById('shipping-label');
+    
+    if (saveButton) {
+        saveButton.addEventListener('click', (event) => {
+            event.preventDefault(); // Prevent default form submission if it were a <form>
+	
+            if (validateForm()) { // Only proceed if the form is valid
+            	shippingLabel.style.display = 'none';
+                
+                const cpf = cpfInput.value.trim();
+                const nomeCompleto = nomeCompletoInput.value.trim();
+                const telefone = telefoneInput.value.trim();
+                const email = emailInput.value.trim();
+                const cep = cepInput.value.trim();
+                const cidade = cidadeInput.value.trim();
+		const estado = estadoInput.value.trim();
+                const bairro = bairroInput.value.trim();
+                const logradouro = logradouroInput.value.trim();
+                const numero = numeroInput.value.trim();
+                const complemento = complementoInput.value.trim(); // Optional field
+
+                let tipoEndereco = '';
+                if (saveWorkRadio && saveWorkRadio.classList.contains('selected')) {
+                    tipoEndereco = 'Trabalho';
+                } else if (saveHomeRadio && saveHomeRadio.classList.contains('selected')) {
+                    tipoEndereco = 'Casa';
+                }
+
+                const isDefaultAddress = enderecoPadraoCheckbox ? enderecoPadraoCheckbox.checked : false;
+
+                // Construct the display string
+                let addressDisplay = `${cpf}<br>`;
+	            addressDisplay += `<strong>${nomeCompleto}</strong><br>`;
+	            addressDisplay += `${email}<br>`;
+	            addressDisplay += `${telefone}<br><br>`;
+	            addressDisplay += `${logradouro}, ${numero}<br>`;
+	            addressDisplay += `${bairro}<br>`;
+	            addressDisplay += `${cidade} - ${estado}<br>`;
+	            addressDisplay += `${cep}<br>`;
+		    addressDisplay += `Complemento: ${complemento}<br><br>`;
+	            addressDisplay += `Tipo: ${tipoEndereco}<br>`;
+	            addressDisplay += `Endereço Padrão: ${isDefaultAddress ? 'Sim' : 'Não'}`;
+	
+	            if (showAddressDiv) {
+	                // IMPORTANT: Use innerHTML to render HTML tags
+	                showAddressDiv.innerHTML = addressDisplay;
+                    showAddressDiv.style.display = 'block'; // Make the div visible
+                    
+                    if (formOverlay) { // Check if formOverlay exists
+                        formOverlay.classList.remove('active'); // Hide the form overlay
+                    }
+
+                    if (myOverlay) { // Check if formOverlay exists
+                        myOverlay.classList.add('active'); // Hide the form overlay
+                    }
+                }
+
+                alert('Endereço salvo com sucesso! Veja os detalhes abaixo.'); // Feedback to user
+
+            } else {
+                alert('Por favor, preencha todos os campos obrigatórios.');
+            }
+        });
+    }
+
+    // Function to clear address fields
+    function clearAddressFields() {
+        cidadeInput.value = '';
+	estadoInput.value = '';
+        bairroInput.value = '';
+        logradouroInput.value = '';
+	}
+
+	// Function to fetch address from ViaCEP
+	async function fetchAddressByCEP(cep) {
+		clearAddressFields(); // Clear fields before fetching
+
+        cidadeInput.readOnly = true;
+	estadoInput.readOnly = true;
+        bairroInput.readOnly = true;
+        logradouroInput.readOnly = true;
+	
+        const cleanedCep = cep.replace(/\D/g, ''); // Remove non-digits
+	
+        if (cleanedCep.length !== 8) {
+        	// Not a valid CEP length, clear and reset placeholders
+            cidadeInput.placeholder = 'Cidade';
+	    estadoInput.placeholder = 'UF';
+            bairroInput.placeholder = 'Bairro';
+            logradouroInput.placeholder = 'Nome da rua';
+            return;
+        }
+			
+        try {
+			const response = await fetch(`https://viacep.com.br/ws/${cleanedCep}/json/`);
+			const data = await response.json();
+
+			if (data.erro) {
+            	alert('CEP não encontrado.');
+            	clearAddressFields();
+            	cidadeInput.placeholder = 'CEP não encontrado';
+		estadoInput.placeholder = 'CEP não encontrado';
+            	bairroInput.placeholder = 'CEP não encontrado';
+            	logradouroInput.placeholder = 'CEP não encontrado';
+            } else {
+                cidadeInput.value = data.localidade;
+		estadoInput.value = data.uf;
+                bairroInput.value = data.bairro;
+                logradouroInput.value = data.logradouro;
+                numeroInput.focus(); // Focus on the number field
+            }
+        } catch (error) {
+            console.error('Erro ao buscar CEP:', error);
+            alert('Erro ao buscar o CEP. Tente novamente.');
+            clearAddressFields();
+            cidadeInput.placeholder = 'Erro na busca';
+	    estadoInput.placeholder = 'Erro na busca';
+            bairroInput.placeholder = 'Erro na busca';
+            logradouroInput.placeholder = 'Erro na busca';
+	} finally {
+        	// Reset placeholders to original after fetching
+        	if (cidadeInput.value === '') cidadeInput.placeholder = 'Cidade';		
+	    if (estadoInput.value === '') estadoInput.placeholder = 'UF';
+            if (bairroInput.value === '') bairroInput.placeholder = 'Bairro';
+            if (logradouroInput.value === '') logradouroInput.placeholder = 'Nome da rua';
+
+            cidadeInput.readOnly = false;
+            bairroInput.readOnly = false;
+            logradouroInput.readOnly = false;
+		}
+	}// <--- Function to fetch address from ViaCEP
+    
+    // Add an event listener for CPF input
+    if (cpfInput) {
+        cpfInput.addEventListener('input', function (e) {
+            let value = e.target.value.replace(/\D/g, ''); // Remove all non-digit characters
+
+            // Apply CPF mask: 000.000.000-00
+            if (value.length > 9) {
+                value = value.substring(0, 3) + '.' + value.substring(3, 6) + '.' + value.substring(6, 9) + '-' + value.substring(9, 11);
+            } else if (value.length > 6) {
+                value = value.substring(0, 3) + '.' + value.substring(3, 6) + '.' + value.substring(6, 9);
+            } else if (value.length > 3) {
+                value = value.substring(0, 3) + '.' + value.substring(3, 6);
+            }
+            e.target.value = value;
+            validateForm(); // Re-validate the form after input
+        });
+    }
+
+    // Add an event listener for nomeCompletoInput
+    if (nomeCompletoInput) {
+        nomeCompletoInput.addEventListener('input', function (e) {
+            let value = e.target.value;
+            // Capitalize the first letter of each word and remove extra spaces
+            value = value.replace(/\s\s+/g, ' ') // Replace multiple spaces with a single space
+                         .split(' ') // Split the string into an array of words
+                         .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()) // Capitalize first letter
+                         .join(' '); // Join the words back into a string
+            e.target.value = value.trim(); // Remove leading/trailing whitespace
+            validateForm(); // Re-validate the form after input
+        });
+    }
+
+    // Add an event listener for telefoneInput
+    if (telefoneInput) {
+        telefoneInput.addEventListener('input', function (e) {
+            let value = e.target.value.replace(/\D/g, ''); // Remove all non-digit characters
+
+            if (value.length > 11) { // For international or very long numbers
+                // Keep the first digits as country code and then format
+                // This is a simplified approach, a more robust solution might involve a library
+                value = '+' + value.substring(0,2) + ' (' + value.substring(2,4) + ') ' + value.substring(4,9) + '-' + value.substring(9,13);
+            } else if (value.length > 10) { // (XX) XXXXX-XXXX (mobile with DDD)
+                value = '(' + value.substring(0,2) + ') ' + value.substring(2,7) + '-' + value.substring(7,11);
+            } else if (value.length > 9) { // (XX) XXXX-XXXX (landline with DDD)
+                value = '(' + value.substring(0,2) + ') ' + value.substring(2,6) + '-' + value.substring(6,10);
+            } else if (value.length > 5) { // XXXX-XXXX (landline without DDD)
+                value = value.substring(0,5) + '-' + value.substring(5,9);
+            } else if (value.length > 4) { // XXXX-X (incomplete landline)
+                 value = value.substring(0,4) + '-' + value.substring(4);
+            }
+            e.target.value = value;
+            validateForm(); // Re-validate the form after input
+        });
+    }
+    
+    // Event listener for CEP input (fires on every change)
+    if (cepInput) {
+        // Add a mask to the CEP input
+        cepInput.addEventListener('input', function (e) {
+            let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+            if (value.length > 5) {
+                value = value.substring(0, 5) + '-' + value.substring(5, 8);
+            }
+            e.target.value = value;
+
+            // --- NEW: Trigger search immediately if 8 digits are typed ---
+            const cleanedCep = value.replace(/\D/g, ''); // Clean CEP again for the check
+            if (cleanedCep.length === 8) {
+                fetchAddressByCEP(cleanedCep);
+            } else {
+                // Optionally clear fields if CEP becomes invalid (e.g., user backspaces)
+                clearAddressFields();
+            }
+        });
+    }
+    
+    // Policy code-block
+    const policyAgreeCheckbox = document.getElementById('policy-agree-checkbox');
+    const policyAgreeButton = document.getElementById('policy-agree-btn');
+
+    // Add an event listener to the checkbox
+    policyAgreeCheckbox.addEventListener('change', function() {
+        // Set the disabled property of the button based on the checkbox's checked state
+        policyAgreeButton.disabled = !this.checked;
+    });
+
+    // Optionally, call it once on page load to set initial state
+    // This ensures the button is disabled if the checkbox isn't checked by default
+    policyAgreeButton.disabled = !policyAgreeCheckbox.checked;
+    
+    
+  	// ==================
+  	// ---- ReadMore ----
+  	// ==================
+	function initializeReadMore() {
+		const readMoreBtn = document.getElementById('read-more-btn');
+       	const hiddenSynopsis = document.getElementById('hidden-synopsis');
+        if (readMoreBtn && hiddenSynopsis) {
+        	readMoreBtn.addEventListener('click', function() {
+            	if (hiddenSynopsis.style.display === 'none' || hiddenSynopsis.style.display === '') {
+                	hiddenSynopsis.style.display = 'inline'; // Or 'block' if you want it on a new line
+             		readMoreBtn.textContent = 'Mostrar Menos'; // Change button text
+           		}
+                else {
+             		hiddenSynopsis.style.display = 'none';
+             		readMoreBtn.textContent = 'Leia Mais'; // Change button text back
+           		}
+        	});
+		}
+    }
+        
+   	// --- Inicialização ao carregar a página ---
+    document.addEventListener('DOMContentLoaded', () => {
+    	initializeReadMore()
+        setupStoreCheckboxesListeners();
+        setupProductCheckboxesListeners();
+        updateTotal();
+        updateNoSelectionDisplay();
+    });
+    </script>
+</body>
+</html>
