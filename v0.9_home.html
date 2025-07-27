@@ -1033,43 +1033,45 @@
     });
 
     // --- Funcionalidades do Carrinho ---
-    const productCheckboxes = document.querySelectorAll('.product-checkbox');
-    const storeCheckboxes = document.querySelectorAll('.store-checkbox');
-    const selectAllCheckbox = document.querySelector('.select-all-checkbox');
-    const noSelectionElement = document.querySelector('.no-selection');
-    
-    // Obtenha referências aos elementos de desconto
-    const discountLabel = document.getElementById('discount-label');
-    const discountPrice = document.getElementById('discount-price');
+// --- Funcionalidades do Carrinho ---
+const productCheckboxes = document.querySelectorAll('.product-checkbox');
+const storeCheckboxes = document.querySelectorAll('.store-checkbox');
+const selectAllCheckbox = document.querySelector('.select-all-checkbox');
+const noSelectionElement = document.querySelector('.no-selection');
 
-    // Esconda-os por padrão ao carregar a página
-    if (discountLabel) discountLabel.style.display = 'none';
-    if (discountPrice) discountPrice.style.display = 'none';
+// Obtenha referências aos elementos de desconto
+const discountLabel = document.getElementById('discount-label');
+const discountPrice = document.getElementById('discount-price');
+// Obtenha referência ao elemento do preço do frete
+const shippingPriceElement = document.getElementById('shipping-price');
 
-    // Desmarcar todos os checkboxes ao carregar a página
-    productCheckboxes.forEach(checkbox => {
-        checkbox.checked = false;
-    });
-    storeCheckboxes.forEach(checkbox => {
-        checkbox.checked = false;
-    });
-    if (selectAllCheckbox) {
-        selectAllCheckbox.checked = false;
-    }
+// Esconda-os por padrão ao carregar a página
+if (discountLabel) discountLabel.style.display = 'none';
+if (discountPrice) discountPrice.style.display = 'none';
 
-    // Função para calcular e atualizar o total e a contagem de itens selecionados
+// Desmarcar todos os checkboxes ao carregar a página
+productCheckboxes.forEach(checkbox => {
+    checkbox.checked = false;
+});
+storeCheckboxes.forEach(checkbox => {
+    checkbox.checked = false;
+});
+if (selectAllCheckbox) {
+    selectAllCheckbox.checked = false;
+}
+
+// Função para calcular e atualizar o total e a contagem de itens selecionados
 function updateTotal() {
     let total = 0;
     let count = 0;
-    let totalOldPrice = 0; // This variable is declared but not used for discount calculation
-    let totalDiscount = 0; // Initialize totalDiscount
+    let totalDiscount = 0;
 
     productCheckboxes.forEach(checkbox => {
         if (checkbox.checked) {
             const productItem = checkbox.closest('.product-item');
             if (productItem) {
                 const priceElement = productItem.querySelector('.product-price');
-                const oldPriceElement = productItem.querySelector('.product-old-price'); // Get the old price element
+                const oldPriceElement = productItem.querySelector('.product-old-price');
                 const quantityInputElement = productItem.querySelector('.quantity-input');
 
                 if (priceElement && quantityInputElement) {
@@ -1081,12 +1083,11 @@ function updateTotal() {
                         total += price * quantity;
                         count += quantity;
 
-                        // Calculate discount if old price exists
                         if (oldPriceElement) {
                             const oldPriceText = oldPriceElement.textContent;
                             const oldPrice = parseFloat(oldPriceText.replace('R$', '').replace(',', '.').trim());
                             if (!isNaN(oldPrice)) {
-                                totalDiscount += (oldPrice - price) * quantity; // Add the discount for this item
+                                totalDiscount += (oldPrice - price) * quantity;
                             }
                         }
                     }
@@ -1094,6 +1095,18 @@ function updateTotal() {
             }
         }
     });
+
+    // --- Adicionar o preço do frete se houver itens selecionados ---
+    if (count > 0 && shippingPriceElement) {
+        const shippingText = shippingPriceElement.textContent;
+        const shippingValue = parseFloat(shippingText.replace('R$', '').replace(',', '.').trim());
+        if (!isNaN(shippingValue)) {
+            total += shippingValue;
+        }
+        // Optionally, make the shipping price visible if it's hidden by default
+        shippingPriceElement.closest('.shipping').style.display = 'flex'; // Or 'block', adjust as needed
+    }
+    // --- Fim da lógica do frete ---
 
     document.querySelector('.total-price').textContent = `R$${total.toFixed(2).replace('.', ',')}`;
     document.querySelector('.continue-btn').textContent = `Continuar (${count})`;
@@ -1108,11 +1121,10 @@ function updateTotal() {
     }
 
     // --- LÓGICA DO VALOR ECONOMIZADO ---
-    // Show discount only if items are selected AND there's a discount
     if (count > 0 && totalDiscount > 0) {
         if (discountLabel) discountLabel.style.display = 'inline-block';
         if (discountPrice) {
-            discountPrice.textContent = `R$ ${totalDiscount.toFixed(2).replace('.', ',')}`;
+            discountPrice.textContent = `R$${totalDiscount.toFixed(2).replace('.', ',')}`;
             discountPrice.style.display = 'inline-block';
         }
     } else {
