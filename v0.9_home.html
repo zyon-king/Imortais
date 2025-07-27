@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Layout Responsivo com Neblina em Toda a Tela</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lora:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+        <style>
+        :root {
+            --color-background: linear-gradient(45deg, rgba(0, 19, 89, 1) 0%, rgba(2, 10, 41, 1) 17%, rgba(0, 19, 89, 1) 40%, rgba(2, 10, 41, 1) 60%, rgba(0, 19, 89, 1) 80%, rgba(2, 10, 41, 1) 100%);
+            --color-text: #000000; /* Muted silver */
+            --color-primary-accent: linear-gradient(
+                45deg,
+                hsl(0deg 0% 0%) 0%,
+                hsl(240deg 10% 8%) 8%,
+                hsl(240deg 21% 14%) 17%,
+                hsl(240deg 35% 18%) 25%,
+                hsl(240deg 21% 41%) 33%,
+                hsl(240deg 21% 68%) 42%,
+                hsl(0deg 0% 100%) 50%,
+                hsl(240deg 21% 68%) 58%,
+                hsl(240deg 21% 41%) 67%,
+                hsl(240deg 35% 18%) 75%,
+                hsl(240deg 21% 14%) 83%,
+                hsl(240deg 10% 8%) 92%,
+                hsl(0deg 0% 0%) 100%
+              );
+            --color-secondary-accent: #7f8c8d;
+            --color-border: #1a1a1a;
+            --color-link: #00004d;
+            --color-link-hover: #D2DEFF;
+        }
+        /* Resetando alguns estilos padrões */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            position: relative; /* Necessário para o posicionamento do fog-overlay */
+            min-height: 100vh; /* Garante que o body ocupa a altura total da viewport */
+            overflow-x: hidden; /* Evita scroll horizontal indesejado */
+        }
+
+        /* Definindo o container principal */
+        .container {
+            background-image: white;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        /* Container para o conteúdo (imagem e texto) */
+        .content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            width: 100vw;
+            max-width: 1200px;
+            padding: 20px;
+            z-index: 2;
+        }
+        
+        .content .text {
+            flex-grow: 1; /* Allows the text to grow and fill available space */
+            max-width: 800px;
+            min-width: 400px; /* Optional: Set a minimum width to prevent it from becoming too narrow */
+        }
+
+        /* Imagem */
+        .image {
+            width: 48%; /* A imagem ocupa quase metade da largura */
+            max-width: 100%;
+            height: auto;            
+            box-shadow: 1px 1px 9px 2px rgba(0,0,0,0.75);
+        }
+
+        /* Texto */
+        .text {
+            color: var(--color-link);
+            width: 48%;
+            min-height: 100%;
+            justify-content: center;
+            text-align: justify;
+            padding: 1.5rem;
+        }
+        
+        #container-media h1,
+        #container-media h2,
+        #container-media h3 {
+            color: black;
+            text-align: center;
+        }
+
+        /* Título (h1) */
+        h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        /* Subtítulo (h2) */
+        h2 {
+            font-size: 1.5rem;
+            font-family: 'Cinzel', serif;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        /* Subtítulo (h3) */
+        h3 {
+            font-family: 'Cinzel', serif;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        /* Parágrafo */
+        p {
+            font-family: 'Georgia', serif;
+            font-size: 1.2rem;
+            line-height: 1.6;
+        }
+        
+        hr {
+          width: 20%; /* Define a largura da linha */
+          border: none; /* Remove a borda padrão do hr para maior controle */
+          height: 3px; /* Define a altura da linha */
+          background-color: black; /* Define a cor da linha */
+          margin: 20px auto; /* Centraliza a linha horizontalmente e adiciona margem */
+        }
+
+        br {
+          text-indent: 2em; /* ou use px, %, rem, etc. */
+          font-size: 1rem;
+        }
+
+        .instagram-media {
+            max-width: 50% !important;
+            width: 100% !important;
+            padding: 50px 50px;
+            margin: 0 auto !important; /* Centraliza o embed */
+        }
+        
+        #container-video {
+            background-image:  linear-gradient(135deg, #1e5799 0%,#000000 30%,#000000 30%,#1e5799 50%,#000000 70%,#1e5799 100%);
+            overflow: hidden; /* This will crop anything that overflows the 70vh height */
+            display: flex; /* Helps in centering the content vertically if needed */
+            justify-content: center;
+            align-items: center;
+        }
+        
+        #container-sinopse {
+            /*background-image:  linear-gradient(135deg, #1e5799 0%,#000000 30%,#000000 30%,#1e5799 50%,#000000 70%,#1e5799 100%);*/
+            background-image: url('https://raw.githubusercontent.com/zyon-king/Imortais/refs/heads/main/blue-dark-castle-room.png');
+        }
+        
+        #container-sinopse h1,
+        #container-sinopse h2,
+        #container-sinopse h3,
+        #container-sinopse p {
+            color: var(--color-link-hover);
+        }
+
+        /* Estilo para os botões */
+        .btn {
+            background-color: white;
+            color: #4B0082;
+			border: 2px solid #4B0082;
+            padding: 15px 10px;
+            font-size: 1rem;
+            text-decoration:none;
+            cursor: pointer;
+            border-radius: 20px;
+            transition: background-color 0.3s ease;
+            margin: 0.9rem;
+  			white-space: nowrap;
+            text-shadow: 0.5px 0.5px 1px rgba(0, 0, 0, 0.3); /* Sombra no texto do botão */
+        }
+        .btn:hover {
+            background-color: #e9eaff;
+          	transform: scale(1.03);
+        }
+
+        .btn:active {
+          transform: scale(0.98); /* Faz parecer que o botão afundou */
+          box-shadow: inset 0 2px 4px rgba(0,0,0,0.2); /* Sombra interna */
+        }
+        .button-89 {
+          --b: 2px;   /* espessura da borda */
+          --s: .45em; /* tamanho do canto */
+          --color: #000066;
+
+          padding: calc( .8em + var(--s)) calc(1.5em + var(--s));
+          color: var(--color);
+          --_p: var(--s);
+          background:
+            conic-gradient(from 90deg at var(--b) var(--b),#0000 90deg,var(--color) 0)
+            var(--_p) var(--_p)/calc(100% - var(--b) - 2*var(--_p)) calc(100% - var(--b) - 2*var(--_p));
+          transition: .3s linear, color 0s, background-color 0s;
+          outline: var(--b) solid #0000;
+          outline-offset: .6em;
+          font-size: 16px;
+          font-family: 'Cinzel', serif;
+          font-weight: 500.3; /* Deixa o texto do botão mais grosso */
+
+          border: 0;
+          cursor: pointer;
+
+          user-select: none;
+          -webkit-user-select: none;
+          touch-action: manipulation;
+        }
+
+        .button-89:hover,
+        .button-89:focus-visible {
+          --_p: 10px;
+          	outline-offset: .01em;
+            background-color: #e9eaff;
+          	transform: scale(1.03);
+        }
+
+        .button-89:active {
+          --_p: 0px;
+          	outline-offset: .05em;
+          transform: scale(0.96); /* Faz parecer que o botão afundou */
+          box-shadow: inset 0 2px 4px rgba(0,0,0,0.2); /* Sombra interna */
+        }
+        
+        .floating-buttons-container {
+          position: fixed;
+          top: 1px;
+          right: -1px;
+          display: flex;
+          flex-direction: column;
+          gap: 12px; /* espaçamento entre os botões */
+          z-index: 999;
+        }
+
+        .floating-button img {
+          width: 4em;
+          height: 3.8em;
+          cursor: pointer;
+          transition: transform 0.2s;
+        }
+
+        .floating-button img:hover {
+          transform: scale(1.1); /* efeito de zoom ao passar o mouse */
+        }
+
+        /* Estilo para telas pequenas (mobile) */
+        @media (max-width: 768px) {
+        }
+        
+        table {
+          text-align: center;
+          margin: 0 auto; /* Add this line */
+        }
+        
+        /* --- Specific CSS for Read More feature --- */
+        .more-text {
+          display: none; /* This hides the content initially */
+        }
+
+        .read-more-btn {
+          background: none; /* No background */
+          border: none; /* No border */
+          color: #007bff; /* Blue text color for the link */
+          cursor: pointer;
+          font-size: inherit; /* Inherit font size from parent */
+          padding: 0;
+          text-decoration: underline; /* Underline the text */
+          /* Remove outline on focus for better aesthetics */
+          outline: none;
+        }
+
+        .read-more-btn:hover {
+          color: #0056b3; /* Darker blue on hover */
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="container-start">
+        <div class="content">           
+            <img src="https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcQBS3CQXupdyvstNW6e3CuDJp-McDfUxVYBIsMT2kH5VYomuGubsiWbLC1S24gujTO8lkzRFUggGLKU5Ze1F0BHo61foXKJv71UPWXUB6irgDk7yrVv7PnHhw" alt="Imagem" class="image">
+            <div class="text" id="text-start">
+                <h1>Imortais Completos</h1>
+                <h2>O Recomeço</h2>
+                <p>O ano era 1889, e a atmosfera hipnotizante de Paris, a cidade das luzes, torna-se pano de fundo para a trama desenrolar-se em meio a um contexto de dualidade, onde a luta entre a luz e as trevas se torna iminente.</p>
+                <p>Não se tratava apenas de escolhas imprevisíveis, mas de profecias seladas com consequências inimagináveis. Venha mergulhar de cabeça nesta jornada, onde dois irmãos, cujo anseio por poder e respeito os conduz por um caminho sombrio sem volta, repleto de dilemas morais.</p>
+                <p>Tudo isso entrelaçado por uma narrativa cativante e repleta de reviravoltas. Então prepare-se, porque batalhas épicas estão prestes a começar.</p>
+                <table>
+                  <tr>
+                    <td colspan="2"><button class="button-89" role="button">Saiba Mais</button></td>
+                  </tr>
+                  <tr>
+                    <td colspan="2"><button class="btn">🛒 Adicionar ao Carrinho?</button></td>
+                  </tr>
+                </table>
+            </div>
+            
+        </div>
+    </div>
+    <div class="container" id="container-video">    
+        <blockquote class="instagram-media" data-instgrm-captioned data-instgrm-permalink="https://www.instagram.com/reel/C1-C_ojJ_qz/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style=" background:#FFF; border:0; border-radius:3px; box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15); margin: 1px; max-width:540px; min-width:326px; padding:0; width:70%; width:-webkit-calc(70% - 2px); width:calc(100% - 2px);">
+        <div style="padding:16px;">
+        <a href="https://www.instagram.com/reel/C1-C_ojJ_qz/?utm_source=ig_embed&amp;utm_campaign=loading" style=" background:#FFFFFF; line-height:0; padding:0 0; text-align:center; text-decoration:none; width:100%;" target="_blank">
+        <div style=" display: flex; flex-direction: row; align-items: center;">
+        <div style="background-color: #F4F4F4; border-radius: 50%; flex-grow: 0; height: 40px; margin-right: 14px; width: 40px;"></div>
+        <div style="display: flex; flex-direction: column; flex-grow: 1; justify-content: center;"> <div style=" background-color: #F4F4F4; border-radius: 4px; flex-grow: 0; height: 14px; margin-bottom: 6px; width: 100px;"></div>
+        <div style=" background-color: #F4F4F4; border-radius: 4px; flex-grow: 0; height: 14px; width: 60px;"></div></div></div>
+        <div style="padding: 19% 0;"></div>
+        <div style="display:block; height:50px; margin:0 auto 12px; width:50px;"></div>
+        <div style="padding-top: 8px;">
+        <div style=" color:#3897f0; font-family:Arial,sans-serif; font-size:14px; font-style:normal; font-weight:550; line-height:18px;">View this post on Instagram</div></div>
+        <div style="padding: 12.5% 0;"></div>
+        <div style="display: flex; flex-direction: row; margin-bottom: 14px; align-items: center;"><div> <div style="background-color: #F4F4F4; border-radius: 50%; height: 12.5px; width: 12.5px; transform: translateX(0px) translateY(7px);"></div> 
+        <div style="background-color: #F4F4F4; height: 12.5px; transform: rotate(-45deg) translateX(3px) translateY(1px); width: 12.5px; flex-grow: 0; margin-right: 14px; margin-left: 2px;"></div> <div style="background-color: #F4F4F4; border-radius: 50%; height: 12.5px; width: 12.5px; transform: translateX(9px) translateY(-18px);"></div></div>
+        <div style="margin-left: 8px;"> 
+        <div style=" background-color: #F4F4F4; border-radius: 50%; flex-grow: 0; height: 20px; width: 20px;"></div> 
+        <div style=" width: 0; height: 0; border-top: 2px solid transparent; border-left: 6px solid #f4f4f4; border-bottom: 2px solid transparent; transform: translateX(16px) translateY(-4px) rotate(30deg)"></div></div>
+        <div style="margin-left: auto;"> <div style=" width: 0px; border-top: 8px solid #F4F4F4; border-right: 8px solid transparent; transform: translateY(16px);"></div> 
+        <div style=" background-color: #F4F4F4; flex-grow: 0; height: 12px; width: 16px; transform: translateY(-4px);"></div> 
+        <div style=" width: 0; height: 0; border-top: 8px solid #F4F4F4; border-left: 8px solid transparent; transform: translateY(-4px) translateX(8px);"></div></div></div> 
+        <div style="display: flex; flex-direction: column; flex-grow: 1; justify-content: center; margin-bottom: 24px;"> 
+        <div style=" background-color: #F4F4F4; border-radius: 4px; flex-grow: 0; height: 14px; margin-bottom: 6px; width: 224px;"></div> 
+        <div style=" background-color: #F4F4F4; border-radius: 4px; flex-grow: 0; height: 14px; width: 144px;"></div></div></a>
+        <p style=" color:#c9c8cd; font-family:Arial,sans-serif; font-size:14px; line-height:17px; margin-bottom:0; margin-top:8px; overflow:hidden; padding:8px 0 7px; text-align:center; text-overflow:ellipsis; white-space:nowrap;"><a href="https://www.instagram.com/reel/C1-C_ojJ_qz/?utm_source=ig_embed&amp;utm_campaign=loading" style=" color:#c9c8cd; font-family:Arial,sans-serif; font-size:14px; font-style:normal; font-weight:normal; line-height:17px; text-decoration:none;" target="_blank">A post shared by imortaiscompletosoficial (@imortaiscompletosoficial)</a></p></div></blockquote>
+        <script async src="//www.instagram.com/embed.js"></script>        
+    </div>
+    
+    <div class="container" id="container-media">
+    
+    	<div class="content">
+            
+            <div class="text" style="background-color: #ecf1f9">
+                <h2>꧁Legado e Maldição꧂</h2>
+                <h3>"Você não precisa me ver para me sentir. Eu estive com você o tempo todo."</h3><br>
+                <p>Essa frase ressoa de um jeito bem particular pra mim. Ela me transporta imediatamente para uma fase da vida onde eu buscava uma conexão mais profunda e autêntica, sabe? Quando percebi que as presenças mais verdadeiras nem sempre são as mais visíveis, mas sim as que se fazem sentir constantemente, como uma força silenciosa me guiando ou uma memória que nunca se apaga. É a certeza de que alguém essencial sempre esteve lá, mesmo que eu não percebesse na época.</p>
+                <hr>
+                <p>Amorim, Ray T.</p>
+                <p>Brasil | Julho, 2025.</p>
+              	
+            </div>
+            
+            <div class="text" style="background-color: #ecf1f9">
+                <h2>꧁Dualidade e Conflito꧂</h2>
+                <h3>Eles são gêmeos é verdade e se amam como tal. Até que o poder os consuma no final.</h3><br>
+                <p>Mesmo quando estive do outro lado do mundo, essa frase já me fazia pensar em como as maiores paixões, até mesmo o amor fraternal, podem se tornar destrutivas quando a busca por algo maior (como o poder), entra em cena. É um lembrete vívido da fragilidade humana, independentemente de onde estamos.</p>
+                <hr>
+                <p>Pinheiro, Ariane S.</p>
+                <p>United States | Fevereiro, 2024.</p>
+            </div>
+            
+            <div class="text" style="background-color: #ecf1f9">
+                <h2>꧁Profecias e Reviravoltas꧂</h2>
+                <h3>Para cumprir a profecia eles renascerão mais poderosos. E com uma sede... que somente o poder pode saciar.</h3><br>
+                <p>Sempre que eu chego nessa parte do livro sou atingida em cheio, fico até arrepiada. Sabe quando a gente falha, mas encontra uma força interior para se reerguer? A "sede de poder" aqui não é só por controle, mas por superação. É sobre a fome de provar a si mesmo que, mesmo depois de uma queda feia, a gente pode voltar mais forte e conquistar algo ainda maior. É a essência da resiliência e da vitória sobre as próprias limitações.</p>
+                <hr>
+                <p>Leitor misterioso.</p>
+                <p>Brasil | Julho, 2024.</p>
+            </div>
+            
+            <div class="text" style="background-color: #ecf1f9">
+                <h2>꧁Batalhas Épicas꧂</h2>
+                <h3>Dois jovens irmãos que lutam para ascender ao poder e se tornarem os imortais mais poderosos de todos os tempos.</h3><br>
+                <p>É tipo a gente, que é jovem, e todo mundo já nos olha torto, acha que não temos experiência ou capacidade. A gente tem que provar o tempo todo que merece um espaço, que tem ideias, que é capaz de conquistar coisas grandes. Essa "ascensão ao poder" e o desejo de ser "o mais poderoso" não é só sobre dominar, é sobre ser reconhecido, sobre mostrar que a idade ou as aparências não definem o seu potencial. É a nossa própria batalha contra julgamentos de quem nos subestima só por sermos jovens.</p>
+                <hr>
+                <p>Leitor misterioso.</p>
+                <p>Japão | Abril, 2025.</p>
+            </div>
+            
+        </div>
+    </div>
+
+    <div class="container" id="container-sinopse">
+        <div class="content">
+        
+            <div class="text" id="text-sinopse">
+                <h1>Resenha</h1>
+                <h2>Imortais Completos</h2>
+                <h3>O Recomeço</h3>
+                <p>"Imortais Completos – O Recomeço", escrito por Alexandre Lamim em parceria com Celonice A. Lamim, é uma envolvente obra de fantasia que mergulha o leitor em um universo sombrio, elegante e absolutamente viciante, onde vampiros, lobisomens e profecias entrelaçam-se numa trama cheia de reviravoltas, ação e emoção.<br><br>
+
+A narrativa inicia com uma cena dramática e arrebatadora, que já entrega o tom intenso da história: um guerreiro ferido, ajoelhado, testemunha a perda irreparável de alguém amado. A dor e o sentimento de vingança que o dominam reverberam ao longo de toda a obra. A partir daí, o leitor é conduzido ao século XIX, em meio às vielas escuras de uma Paris em
+                <span class="more-text" id="hidden-synopsis">
+                     transformação, para acompanhar a jornada dos irmãos Vincent e Victor Fourier — jovens da aristocracia francesa, desajustados com as normas sociais e desejosos de algo maior: respeito, poder e liberdade.<br><br>
+
+A escrita de Lamim é vívida, cinematográfica. Cada cenário é meticulosamente descrito, transportando o leitor para mansões suntuosas, tavernas misteriosas e becos perigosos. Os personagens, especialmente os irmãos gêmeos, são complexos, com motivações profundas e muitas vezes conflitantes. A transformação em vampiros marca não apenas uma mudança física, mas uma verdadeira quebra de paradigmas em suas personalidades e destinos.<br><br>
+
+Um dos grandes trunfos da obra é a construção do universo mitológico. As regras entre os clãs, os rituais de batismo, o papel dos padrinhos, o conselho de anciões, a presença ameaçadora dos lobisomens e a figura lendária do Conde Drácula — tudo é costurado com habilidade e coerência. Além disso, o livro insere profecias enigmáticas e jornadas de autoconhecimento que dão à trama um caráter épico e ao mesmo tempo intimista.<br><br>
+
+Outro ponto que merece destaque é a relação entre os irmãos. Embora unidos pelo sangue, Vincent e Victor seguem caminhos distintos dentro do novo mundo em que são inseridos. A oposição entre os dois, com um buscando poder absoluto e o outro ansiando por respeito e equilíbrio, instiga o leitor e cria um dinamismo narrativo cativante.<br><br>
+
+"Imortais Completos – O Recomeço" não é apenas uma história de vampiros — é uma saga sobre identidade, escolhas e transformação. A mistura entre fantasia, drama, ação e uma pitada de crítica social garante à obra um lugar de destaque dentro da literatura fantástica nacional. Com capítulos bem estruturados, ritmo envolvente e personagens marcantes, o livro conquista tanto fãs do gênero quanto leitores em busca de uma aventura arrebatadora e inesquecível.
+                </span>
+                <button class="read-more-btn" id="read-more-btn">Leia Mais</button>
+            	</p>
+        
+                <table>
+                  <tr>
+                    <td colspan="2"><button class="btn">🛒 Adicionar ao carrinho?</button></td>
+                  </tr>
+                </table>
+            
+        	</div>
+            
+        </div>
+        <div class="container container-small" id="fog-container"></div>
+    </div>
+    <div class="floating-buttons-container">
+    <div class="floating-button">
+        <img src="https://static.wixstatic.com/media/ce6c69_f2fe9ae3fe2d445696e7d067be71e604~mv2.png" alt="Instagram">
+      </div>
+      <div class="floating-button">
+        <img src="https://raw.githubusercontent.com/zyon-king/Imortais/refs/heads/main/botao-comprar.png" alt="Button 2">
+      </div>
+    </div>  
+        <script>       
+        function initializeReadMore() {
+          const readMoreBtn = document.getElementById('read-more-btn');
+          const hiddenSynopsis = document.getElementById('hidden-synopsis');
+
+          if (readMoreBtn && hiddenSynopsis) {
+            readMoreBtn.addEventListener('click', function() {
+              if (hiddenSynopsis.style.display === 'none' || hiddenSynopsis.style.display === '') {
+                hiddenSynopsis.style.display = 'inline'; // Or 'block' if you want it on a new line
+                readMoreBtn.textContent = 'Mostrar Menos'; // Change button text
+              } else {
+                hiddenSynopsis.style.display = 'none';
+                readMoreBtn.textContent = 'Leia Mais'; // Change button text back
+              }
+            });
+          }
+        }
+        
+        // Call the function once the DOM is fully loaded
+		document.addEventListener('DOMContentLoaded', initializeReadMore);
+    </script>
+</body>
+</html>
