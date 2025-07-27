@@ -118,6 +118,7 @@
             margin-top: .2em;
             padding: 1em;
             border-radius: 0; /* Remove border-radius for cleaner look */
+            box-shadow: 0 0 5px rgba(0,0,0,0.1); /* Sombra suave para destacar */
         }
 
         .store-header, .shipping {
@@ -326,38 +327,80 @@
             font-size: 0.95em;
             color: #333;
         }
-        
         .total-section {
+            display: flex; /* Torna os filhos diretos (grupos) flexíveis */
+            align-items: center; /* Centraliza verticalmente os blocos (checkbox/tudo, preços, botão) */
+            justify-content: space-between; /* Distribui os blocos: esquerda, centro, direita */
+            width: 100%;
+            padding: 15px 20px; /* Adicione padding horizontal para as bordas */
+            background-color: #fff;
+            box-sizing: border-box; /* Inclui padding na largura total */
+        }
+
+        /* BLOCo ESQUERDO: Checkbox e "Tudo" */
+        .select-all-group {
+            display: flex; /* Faz o checkbox e o texto ficarem lado a lado */
+            align-items: center; /* Alinha-os verticalmente */
+            /* Nenhuma largura específica aqui, eles ocuparão o espaço necessário */
+        }
+
+        .select-all-checkbox {
+            margin-right: 8px; /* Espaçamento entre o checkbox e o texto */
+            /* Remova qualquer width:100% que possa estar aqui */
+        }
+
+        .select-all-text {
+            font-size: 1em;
+            color: #333;
+        }
+
+        /* BLOCo CENTRAL: Valor Total e Desconto */
+        .price-summary-group {
             display: flex;
-            align-items: center;
-            justify-content: center;
+            flex-direction: column; /* Empilha o total e o desconto verticalmente */
+            align-items: flex-end; /* Alinha o conteúdo (texto) à direita dentro deste grupo */
+            /* flex-grow: 1; se quiser que ocupe mais espaço central, mas cuidado com o layout */
+            /* width: auto; ou min-content */
         }
 
         .total-price {
-            font-size: 1.3em;
+            font-size: 1.5em; /* Valor maior para o total */
             font-weight: bold;
-            color: #ee4d2d;
-            margin: em;
-        }
-        
-        .select-all-checkbox {
-            margin-left: 1em;
-        }
-        
-        .select-all-text {
-            margin-right: 8em;
+            color: #333;
+            margin-bottom: 3px; /* Espaço entre o total e a linha de desconto */
+            white-space: nowrap; /* Evita que o valor quebre linha, se for muito grande */
         }
 
+        .discount-info {
+            display: flex; /* Faz o texto e o valor de desconto ficarem lado a lado */
+            align-items: center; /* Alinha-os verticalmente */
+            font-size: 0.85em; /* Tamanho menor para o desconto */
+            color: #666;
+            white-space: nowrap; /* Evita que a linha de desconto quebre */
+        }
+
+        #discount-label {
+            margin-right: 5px; /* Espaçamento entre o texto e o valor do desconto */
+        }
+
+        #discount-price {
+            font-weight: bold;
+            color: green; /* Cor para o valor economizado */
+        }
+
+        /* BLOCo DIREITO: Botão Continuar */
         .continue-btn {
-            background-color: #ee4d2d;
+            padding: 12px 20px;
+            font-size: 1.1em;
+            font-weight: bold;
+            border-radius: 25px; /* Cantos arredondados */
+            background-color: #007bff; /* Cor primária, ajuste conforme seu tema */
             color: white;
-            padding: 12px 25px;
-            margin-left: 1em;
             border: none;
-            border-radius: 3px;
-            font-size: 1em;
             cursor: pointer;
             transition: background-color 0.3s ease;
+            min-width: 150px; /* Garante uma largura mínima para o botão */
+            text-align: center; /* Centraliza o texto dentro do botão */
         }
 
         .continue-btn:disabled {
@@ -748,21 +791,29 @@
             </div>
             
             <div class="bottom-section">
-            	<div class="no-selection">
-					ℹ️ Nenhum item selecionado
-            	</div>
-            	        
-            	<div class="total-section">    
-            		<input type="checkbox" class="select-all-checkbox">
-            		<span class="select-all-text">Tudo</span>
-            		    
-            		<div class="total-price" id="cart-total-price">R$0,00</div>
-            		<button class="continue-btn" disabled>
-            		    Continuar (0)
-            		</button>                        
-            	</div>
-            	
-            </div>
+              <div class="no-selection">
+                  ℹ️ Nenhum item selecionado
+              </div>
+
+              <div class="total-section">
+                  <div class="select-all-group">
+                      <input type="checkbox" class="select-all-checkbox">
+                      <span class="select-all-text">Tudo</span>
+                  </div>
+
+                  <div class="price-summary-group">
+                      <div class="total-price" id="cart-total-price">R$0,00</div>
+                      <div class="discount-info">
+                          <span id="discount-label">Você economizou</span>
+                          <span id="discount-price">R$0,00</span>
+                      </div>
+                  </div>
+
+                  <button class="continue-btn" disabled>
+                      Continuar (0)
+                  </button>
+              </div>
+          </div>
             
         </div><!-Content-->
     </div>
