@@ -90,7 +90,7 @@
             font-size: 1.2em;
             margin-right: 15px;
             cursor: pointer;
-            color: #2da9ee;
+            color: #007bff;
             transition: transform 0.5s ease-in-out;
         }
 
@@ -313,7 +313,6 @@
             margin-bottom: 15px;
             padding-bottom: 10px;
             font-size: 1em;
-            font-weight: bold;
             color: #ee4d2d;
             border-bottom: 1px solid #f0f0f0;
         }
@@ -781,7 +780,7 @@
                     <span class="store-name">Opção de Envio</span>
                     <button class="edit-btn" id="edit-btn">Editar</button>
                 </div>
-                <div id="shipping-label" style="font-size: 0.9em; color: red;">
+                <div id="shipping-label" style="font-size: 0.9em; color: #ee4d2d;">
                 	ℹ️ Clique em editar para preencher seus <strong>Dados Pessoais e Endereço de Entrega.</strong>
                 </div>
                 <div class="show-adress" id="showAddress">
@@ -916,10 +915,10 @@
 				<div class="total-section">
                 
                   <div class="select-all-group">
-                      <input type="checkbox" class="select-all-checkbox">
+                      <input type="checkbox" class="select-all-checkbox" id="policy-agree-checkbox">
                       <span class="select-all-text">Aceitar</span>
                   </div>
-                  <button class="continue-btn" disabled>
+                  <button class="continue-btn" id="policy-agree-btn" disabled>
                       Continuar
                   </button>
                  
@@ -973,6 +972,10 @@
     openOverlayBtns.forEach(button => {
         button.addEventListener('click', () => {
             myOverlay.classList.add('active');
+            window.scrollTo({
+                top: 0,            // Scroll to the top (0 pixels from the top)
+                behavior: 'smooth' // Makes the scroll animated and smooth
+            });
         });
     });
 
@@ -1556,6 +1559,20 @@ function updateTotal() {
         });
     }
     
+    // Policy code-block
+    const policyAgreeCheckbox = document.getElementById('policy-agree-checkbox');
+    const policyAgreeButton = document.getElementById('policy-agree-btn');
+
+    // Add an event listener to the checkbox
+    policyAgreeCheckbox.addEventListener('change', function() {
+        // Set the disabled property of the button based on the checkbox's checked state
+        policyAgreeButton.disabled = !this.checked;
+    });
+
+    // Optionally, call it once on page load to set initial state
+    // This ensures the button is disabled if the checkbox isn't checked by default
+    policyAgreeButton.disabled = !policyAgreeCheckbox.checked;
+
     // --- Inicialização ao carregar a página ---
     document.addEventListener('DOMContentLoaded', () => {
         setupStoreCheckboxesListeners();
