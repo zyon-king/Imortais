@@ -1032,11 +1032,19 @@
         }
     });
 
-    // --- Funcionalidades do Carrinho (mantidas como estavam e corrigidas anteriormente) ---
+    // --- Funcionalidades do Carrinho ---
     const productCheckboxes = document.querySelectorAll('.product-checkbox');
     const storeCheckboxes = document.querySelectorAll('.store-checkbox');
     const selectAllCheckbox = document.querySelector('.select-all-checkbox');
     const noSelectionElement = document.querySelector('.no-selection');
+    
+    // Obtenha referências aos elementos de desconto
+    const discountLabel = document.getElementById('discount-label');
+    const discountPrice = document.getElementById('discount-price');
+
+    // Esconda-os por padrão ao carregar a página
+    if (discountLabel) discountLabel.style.display = 'none';
+    if (discountPrice) discountPrice.style.display = 'none';
 
     // Desmarcar todos os checkboxes ao carregar a página
     productCheckboxes.forEach(checkbox => {
@@ -1050,48 +1058,74 @@
     }
 
     // Função para calcular e atualizar o total e a contagem de itens selecionados
-    function updateTotal() {
-        let total = 0;
-        let count = 0;
+function updateTotal() {
+    let total = 0;
+    let count = 0;
+    let totalOldPrice = 0; // This variable is declared but not used for discount calculation
+    let totalDiscount = 0; // Initialize totalDiscount
 
-        productCheckboxes.forEach(checkbox => {
-            if (checkbox.checked) {
-                const productItem = checkbox.closest('.product-item');
-                if (productItem) {
-                    const priceElement = productItem.querySelector('.product-price');
-                    const quantityInputElement = productItem.querySelector('.quantity-input');
+    productCheckboxes.forEach(checkbox => {
+        if (checkbox.checked) {
+            const productItem = checkbox.closest('.product-item');
+            if (productItem) {
+                const priceElement = productItem.querySelector('.product-price');
+                const oldPriceElement = productItem.querySelector('.product-old-price'); // Get the old price element
+                const quantityInputElement = productItem.querySelector('.quantity-input');
 
-                    if (priceElement && quantityInputElement) {
-                        const priceText = priceElement.textContent;
-                        const price = parseFloat(priceText.replace('R$', '').replace(',', '.').trim());
-                        const quantity = parseInt(quantityInputElement.value);
+                if (priceElement && quantityInputElement) {
+                    const priceText = priceElement.textContent;
+                    const price = parseFloat(priceText.replace('R$', '').replace(',', '.').trim());
+                    const quantity = parseInt(quantityInputElement.value);
 
-                        if (!isNaN(price) && !isNaN(quantity)) {
-                            total += price * quantity;
-                            count += quantity;
+                    if (!isNaN(price) && !isNaN(quantity)) {
+                        total += price * quantity;
+                        count += quantity;
+
+                        // Calculate discount if old price exists
+                        if (oldPriceElement) {
+                            const oldPriceText = oldPriceElement.textContent;
+                            const oldPrice = parseFloat(oldPriceText.replace('R$', '').replace(',', '.').trim());
+                            if (!isNaN(oldPrice)) {
+                                totalDiscount += (oldPrice - price) * quantity; // Add the discount for this item
+                            }
                         }
                     }
                 }
             }
-        });
+        }
+    });
 
-        document.querySelector('.total-price').textContent = `R$${total.toFixed(2).replace('.', ',')}`;
-        document.querySelector('.continue-btn').textContent = `Continuar (${count})`;
-	    
-	const continueButton = document.querySelector('.continue-btn');
-	if (continueButton) { // Always good to check if the button exists	    
-		if (validateForm() && count > 0) {
-		    document.querySelector('.continue-btn').disabled = false;
-		} else { // You'll need an else block to disable it if conditions aren't met
-		    document.querySelector('.continue-btn').disabled = true;
-		}
-	}
+    document.querySelector('.total-price').textContent = `R$${total.toFixed(2).replace('.', ',')}`;
+    document.querySelector('.continue-btn').textContent = `Continuar (${count})`;
 
-        if (selectAllCheckbox) {
-            const allProductsChecked = Array.from(productCheckboxes).every(cb => cb.checked);
-            selectAllCheckbox.checked = allProductsChecked;
+    const continueButton = document.querySelector('.continue-btn');
+    if (continueButton) {
+        if (validateForm() && count > 0) {
+            document.querySelector('.continue-btn').disabled = false;
+        } else {
+            document.querySelector('.continue-btn').disabled = true;
         }
     }
+
+    // --- LÓGICA DO VALOR ECONOMIZADO ---
+    // Show discount only if items are selected AND there's a discount
+    if (count > 0 && totalDiscount > 0) {
+        if (discountLabel) discountLabel.style.display = 'inline-block';
+        if (discountPrice) {
+            discountPrice.textContent = `R$ ${totalDiscount.toFixed(2).replace('.', ',')}`;
+            discountPrice.style.display = 'inline-block';
+        }
+    } else {
+        if (discountLabel) discountLabel.style.display = 'none';
+        if (discountPrice) discountPrice.style.display = 'none';
+    }
+    // --- FIM DA LÓGICA DO VALOR ECONOMIZADO ---
+
+    if (selectAllCheckbox) {
+        const allProductsChecked = Array.from(productCheckboxes).every(cb => cb.checked);
+        selectAllCheckbox.checked = allProductsChecked;
+    }
+}
 
     // Função para verificar e atualizar o estado do noSelectionElement
     function updateNoSelectionDisplay() {
