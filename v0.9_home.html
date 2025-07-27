@@ -411,36 +411,38 @@ Outro ponto que merece destaque é a relação entre os irmãos. Embora unidos p
         	</div>
             
         </div>
-        <div class="container container-small" id="fog-container"></div>
-    </div>
-    <div class="floating-buttons-container">
-    <div class="floating-button">
-        <img src="https://static.wixstatic.com/media/ce6c69_f2fe9ae3fe2d445696e7d067be71e604~mv2.png" alt="Instagram">
-      </div>
-      <div class="floating-button">
-        <img src="https://raw.githubusercontent.com/zyon-king/Imortais/refs/heads/main/botao-comprar.png" alt="Button 2">
-      </div>
-    </div>  
-        <script>       
-        function initializeReadMore() {
-          const readMoreBtn = document.getElementById('read-more-btn');
-          const hiddenSynopsis = document.getElementById('hidden-synopsis');
-
-          if (readMoreBtn && hiddenSynopsis) {
-            readMoreBtn.addEventListener('click', function() {
-              if (hiddenSynopsis.style.display === 'none' || hiddenSynopsis.style.display === '') {
-                hiddenSynopsis.style.display = 'inline'; // Or 'block' if you want it on a new line
-                readMoreBtn.textContent = 'Mostrar Menos'; // Change button text
-              } else {
-                hiddenSynopsis.style.display = 'none';
-                readMoreBtn.textContent = 'Leia Mais'; // Change button text back
-              }
-            });
-          }
-        }
         
-        // Call the function once the DOM is fully loaded
-		document.addEventListener('DOMContentLoaded', initializeReadMore);
+    </div>
+    
+    <script>
+  	// ==================
+  	// ---- ReadMore ----
+  	// ==================
+	function initializeReadMore() {
+		const readMoreBtn = document.getElementById('read-more-btn');
+       	const hiddenSynopsis = document.getElementById('hidden-synopsis');
+        if (readMoreBtn && hiddenSynopsis) {
+        	readMoreBtn.addEventListener('click', function() {
+            	if (hiddenSynopsis.style.display === 'none' || hiddenSynopsis.style.display === '') {
+                	hiddenSynopsis.style.display = 'inline'; // Or 'block' if you want it on a new line
+             		readMoreBtn.textContent = 'Mostrar Menos'; // Change button text
+           		}
+                else {
+             		hiddenSynopsis.style.display = 'none';
+             		readMoreBtn.textContent = 'Leia Mais'; // Change button text back
+           		}
+        	});
+		}
+    }
+        
+   	// --- Inicialização ao carregar a página ---
+    document.addEventListener('DOMContentLoaded', () => {
+    	initializeReadMore()
+        setupStoreCheckboxesListeners();
+        setupProductCheckboxesListeners();
+        updateTotal();
+        updateNoSelectionDisplay();
+    });
     </script>
 </body>
 </html>
