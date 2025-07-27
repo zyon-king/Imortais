@@ -17,9 +17,6 @@
             box-sizing: border-box;
         }
 
-        .open-overlay-button {
-        }
-
         /* Overlay Styles */
         .overlay {
             position: fixed;
@@ -42,19 +39,23 @@
             visibility: visible;
         }
 
-        .overlay-content {
-            background-color: #f0f2f5;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            width: 90vw;
-            max-width: 450px;
-            height: 100%;
-            box-sizing: border-box;
+        .overlay .overlay-content {
+            display: grid;
+            /* Para telas pequenas, pode ser uma coluna ou duas */
+            grid-template-columns: 1fr; /* Uma coluna, cada campo ocupa 100% da largura */
+            gap: 15px; /* Espaçamento entre os campos */
+            width: 100%;
+            
+            flex-direction: column;
             position: relative;
             overflow-y: auto;
+            max-width: 450px;
+            height: 100%;
+            background-color: #f0f2f5;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            box-sizing: border-box;
             transform: translateX(100%);
             transition: transform 0.4s ease-out;
-            display: flex;
-            flex-direction: column;
         }
 
         .overlay.active .overlay-content {
@@ -71,7 +72,7 @@
             line-height: 1.6;
         }
 
-        /* Cart Header */
+        /* Header */
         .header {
             display: flex;
             align-items: center;
@@ -114,17 +115,23 @@
         /* Store Section */
         .store-section {
             background-color: white;
-            margin-top: 10px;
-            padding: 15px;
+            margin-top: .2em;
+            padding: 1em;
             border-radius: 0; /* Remove border-radius for cleaner look */
         }
 
-        .store-header {
+        .store-header, .shipping {
             display: flex;
             align-items: center;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
+            margin-bottom: 1.2em;
+            padding-bottom: 1em;
             border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .shipping {
+            margin-top: .2em;
+            margin-bottom: 0;
+            padding-bottom: .9em;
         }
 
         .store-checkbox {
@@ -361,40 +368,6 @@
 
         /* Responsive adjustments for product-item layout */
         @media (max-width: 600px) {
-            .product-item {
-                flex-direction: column;
-                align-items: center;
-                text-align: center;
-            }
-
-            .product-info {
-                align-items: center;
-                margin-top: 15px;
-                width: 100%; /* Ensure product info takes full width when stacked */
-            }
-
-            .product-checkbox {
-                margin-bottom: 10px;
-            }
-
-            .title-and-quantity {
-                flex-direction: column; /* Stack title and quantity vertically */
-                align-items: center;
-                width: 100%;
-            }
-
-            .product-title {
-                margin-right: 0;
-                margin-bottom: 5px;
-            }
-
-            .quantity-controls {
-                margin-top: 5px; /* Add space between stacked title and quantity */
-            }
-
-            .price-group {
-                justify-content: center; /* Center prices when stacked */
-            }
         }
 
         /* New styles for the fixed footer bar */
@@ -753,7 +726,7 @@
 			
             <!-Frete->
             <div class="store-section">
-                <div class="store-header">
+                <div class="shipping">
                     <div class="store-icon">📬</div>
                     <span class="store-name">Frete</span>
                     <span class="product-price" id="shipping-price">R$19,90</span>
@@ -767,7 +740,12 @@
                     <span class="store-name">Opção de Envio</span>
                     <button class="edit-btn" id="edit-btn">Editar</button>
                 </div>
-                <div class="show-adress" id="showAddress"> </div>                
+                <div id="shipping-label">
+                	<p>Dados Pessoais:</p>
+                	<p>Endereço de Entrega:</p>
+                </div>
+                <div class="show-adress" id="showAddress">
+                </div>                
             </div>
             
             <div class="bottom-section"> 
@@ -1270,11 +1248,15 @@
 	});
 
     // Function to capture and display address
+    const shippingLabel = document.getElementById('shipping-label');
+    
     if (saveButton) {
         saveButton.addEventListener('click', (event) => {
             event.preventDefault(); // Prevent default form submission if it were a <form>
 	
             if (validateForm()) { // Only proceed if the form is valid
+            	shippingLabel.style.display = 'none';
+                
                 const cpf = cpfInput.value.trim();
                 const nomeCompleto = nomeCompletoInput.value.trim();
                 const telefone = telefoneInput.value.trim();
