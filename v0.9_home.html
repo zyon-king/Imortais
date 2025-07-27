@@ -500,9 +500,14 @@
             display: flex;
             justify-content: space-between;
         }
-
         .form-group.inline .input-half {
-            flex: 1;
+            flex: 0 1 auto; /* Allow it to shrink, don't allow it to grow beyond its content's size */
+            width: 85%; /* Give logradouro more width */
+        }
+
+        /* Add a specific style for the numero input's parent div */
+        .form-group.inline .input-half:last-child {
+            width: 15%; /* Give numero less width */
         }
 
         .section-title {
@@ -737,27 +742,32 @@
                 <div class="checkout-item-block">
                     <div style="font-size: 0.9em; color: #777;">Mensagem para o vendedor:</div>
                     <div style="font-size: 0.95em; color: #333; margin-top: 5px;">
-                        Digite aqui --> Entrega rápida, por favor!
+                        Digite aqui -->
                     </div>
                 </div>
                 
+            </div>
+			
+            <!-Frete->
+            <div class="store-section">
+                <div class="store-header">
+                    <div class="store-icon">📬</div>
+                    <span class="store-name">Frete</span>
+                    <span class="product-price" id="shipping-price">R$19,90</span>
+                </div>         
             </div>
 			
             <!-Adress->
             <div class="store-section">
                 <div class="store-header">
                     <div class="store-icon">🦇</div>
-                    <span class="store-name">Opcao de Envio</span>
+                    <span class="store-name">Opção de Envio</span>
                     <button class="edit-btn" id="edit-btn">Editar</button>
                 </div>
                 <div class="show-adress" id="showAddress"> </div>                
             </div>
             
-            <div class="bottom-section">
-            	
-                <div class="no-selection">
-					ℹ️ Nenhum item selecionado
-            	</div>
+            <div class="bottom-section"> 
             	        
             	<div class="total-section">    
             		<input type="checkbox" class="select-all-checkbox">
@@ -797,16 +807,20 @@
             <div class="section-title">Endereço</div>
             <div class="form-group">
                 <input type="text" id="cep" placeholder="CEP" maxlength="9"> </div>
-            <div class="form-group">
-                <input type="text" id="estadoCidade" placeholder="Estado - Cidade" readonly> </div>
+            <div class="form-group inline">
+                <div class="input-half">
+                    <input type="text" id="cidade" placeholder="Cidade" readonly> </div>
+                <div class="input-half">
+                    <input type="text" id="estado" placeholder="UF" readonly> </div>
+            </div>
             <div class="form-group">
                 <input type="text" id="bairro" placeholder="Bairro" readonly> </div>
             <div class="form-group inline">
                 <div class="input-half">
                     <input type="text" id="logradouro" placeholder="Nome da rua" readonly> </div>
                 <div class="input-half">
-                    <input type="text" id="numero" placeholder="Número"> </div>
-          </div>
+                    <input type="text" id="numero" placeholder="Nº"> </div>
+          	</div>
             <div class="form-group">
                 <textarea id="complemento" placeholder="Complemento/Referências Próx./Descrição do Prédio"></textarea>            
             </div>
@@ -838,9 +852,25 @@
 
             <div class="header">
                 <button class="back-btn" id="back-btn-checkout">🢦</button>
-                <span class="header-title">🛍️ Checkout</span>
+                <span class="header-title">Termos e Condições</span>
             </div>
-
+            <p>Você será direcionadob para pagar através de um link do Mercado Pago. Estando logado na sua conta Mercado Pago, você tem a Compra Garantida.
+Como funciona a Compra Garantida do Mercado Pago?
+A Compra Garantida do Mercado Pago é um benefício gratuito que visa proteger o comprador em transações realizadas dentro da plataforma. Para ter direito a ela, você precisa seguir alguns requisitos:
+ * Pagar logado: É fundamental que você esteja com sua conta Mercado Pago logada ao realizar o pagamento pelo link. Pagamentos feitos como "convidado" ou "guest" não têm essa cobertura.
+ * Não receber o produto: A garantia se aplica se você não receber o produto que comprou.
+ * Abrir uma reclamação no prazo: Você precisa iniciar uma reclamação em até 14 dias corridos após a data do pagamento.
+O que acontece se eu precisar usar a Compra Garantida?
+ * Abra uma reclamação: Se você não receber o produto, deve iniciar uma reclamação através da sua conta Mercado Pago.
+ * Mercado Pago entra em contato com o vendedor: A plataforma tentará mediar a situação com o vendedor para encontrar uma solução.
+ * Devolução do dinheiro: Se a reclamação não for resolvida e for constatado que você não recebeu o produto, o Mercado Pago fará a devolução do valor da compra.
+Casos em que a Compra Garantida não oferece cobertura:
+ * Pagamentos realizados sem estar logado na conta Mercado Pago.
+ * O produto apresentar algum problema (defeito, avaria) ou o pacote estiver vazio, mas o produto em si foi entregue. A Compra Garantida é para não recebimento do produto.
+ * Compra de serviços, assinaturas ou produtos digitais (como streaming de vídeo, e-books, etc.).
+Em resumo, sempre que for pagar um link do Mercado Pago, certifique-se de estar logado na sua conta para ter a segurança da Compra Garantida.
+Ficou alguma dúvida sobre o processo ou sobre a cobertura da Compra Garantida?
+</p>
             <div class="store-section">
                 <div class="store-header">
                     <input type="checkbox" class="store-checkbox">
@@ -1051,7 +1081,15 @@
 
         document.querySelector('.total-price').textContent = `R$${total.toFixed(2).replace('.', ',')}`;
         document.querySelector('.continue-btn').textContent = `Continuar (${count})`;
-        document.querySelector('.continue-btn').disabled = count === 0;
+	    
+	const continueButton = document.querySelector('.continue-btn');
+	if (continueButton) { // Always good to check if the button exists	    
+		if (validateForm() && count > 0) {
+		    document.querySelector('.continue-btn').disabled = false;
+		} else { // You'll need an else block to disable it if conditions aren't met
+		    document.querySelector('.continue-btn').disabled = true;
+		}
+	}
 
         if (selectAllCheckbox) {
             const allProductsChecked = Array.from(productCheckboxes).every(cb => cb.checked);
@@ -1199,7 +1237,8 @@
 
     // CEP fields
     const cepInput = document.getElementById('cep');
-    const estadoCidadeInput = document.getElementById('estadoCidade');
+    const cidadeInput = document.getElementById('cidade');
+    const estadoInput = document.getElementById('estado');
     const bairroInput = document.getElementById('bairro');
     const logradouroInput = document.getElementById('logradouro');
     const numeroInput = document.getElementById('numero');
@@ -1210,7 +1249,7 @@
     const nomeCompletoInput = document.getElementById('nomeCompleto');
     const telefoneInput = document.getElementById('telefone');
     const emailInput = document.getElementById('email');
-    // CEP fields are already defined: cepInput, estadoCidadeInput, bairroInput, logradouroInput, numeroInput, complementoInput
+    // CEP fields are already defined: cepInput, cidadeInput, bairroInput, logradouroInput, numeroInput, complementoInput
 
     const saveButton = document.getElementById('save-button');
     const showAddressDiv = document.getElementById('showAddress');
@@ -1227,7 +1266,8 @@
             telefoneInput,
             emailInput,
             cepInput,
-            estadoCidadeInput,
+            cidadeInput,
+	    estadoInput,
             bairroInput,
             logradouroInput,
             numeroInput
@@ -1257,26 +1297,27 @@
 
         return allFilled;
     }
-
-    // Add event listeners to all relevant input fields to re-validate on change
-    document.querySelectorAll('.form-section input, .form-section textarea').forEach(input => {
-        input.addEventListener('input', validateForm);
-    });
-    // Call validateForm initially to set the button state on page load
-    validateForm();
+	// Add event listeners to all relevant input fields to re-validate on change
+	document.querySelectorAll('.form-section input, .form-section textarea').forEach(input => {
+	    input.addEventListener('input', () => { // Changed to an arrow function for conciseness
+	        validateForm(); // Re-validate the form itself
+	        updateTotal();  // <-- ADD THIS LINE: Re-evaluate the "Continuar" button's state
+	    });
+	});
 
     // Function to capture and display address
     if (saveButton) {
         saveButton.addEventListener('click', (event) => {
             event.preventDefault(); // Prevent default form submission if it were a <form>
-
+	
             if (validateForm()) { // Only proceed if the form is valid
                 const cpf = cpfInput.value.trim();
                 const nomeCompleto = nomeCompletoInput.value.trim();
                 const telefone = telefoneInput.value.trim();
                 const email = emailInput.value.trim();
                 const cep = cepInput.value.trim();
-                const estadoCidade = estadoCidadeInput.value.trim();
+                const cidade = cidadeInput.value.trim();
+		const estado = estadoInput.value.trim();
                 const bairro = bairroInput.value.trim();
                 const logradouro = logradouroInput.value.trim();
                 const numero = numeroInput.value.trim();
@@ -1292,22 +1333,21 @@
                 const isDefaultAddress = enderecoPadraoCheckbox ? enderecoPadraoCheckbox.checked : false;
 
                 // Construct the display string
-                let addressDisplay = `CPF: ${cpf}\n`;
-                addressDisplay += `Nome Completo: ${nomeCompleto}\n`;
-                addressDisplay += `E-mail: ${email}\n`;
-                addressDisplay += `Telefone: ${telefone}\n`;
-                addressDisplay += `CEP: ${cep}\n`;
-                addressDisplay += `Endereço: ${logradouro}, ${numero}\n`;
-                addressDisplay += `Bairro: ${bairro}\n`;
-                addressDisplay += `Cidade - UF: ${estadoCidade}\n`;
-                if (complemento) { // Only add complement if it exists
-                    addressDisplay += `Complemento: ${complemento}\n`;
-                }
-                addressDisplay += `Tipo: ${tipoEndereco}\n`;
-                addressDisplay += `Endereço Padrão: ${isDefaultAddress ? 'Sim' : 'Não'}`;
-                
-                if (showAddressDiv) {
-                    showAddressDiv.textContent = addressDisplay;
+                let addressDisplay = `${cpf}<br>`;
+	            addressDisplay += `<strong>${nomeCompleto}</strong><br>`;
+	            addressDisplay += `${email}<br>`;
+	            addressDisplay += `${telefone}<br><br>`;
+	            addressDisplay += `${logradouro}, ${numero}<br>`;
+	            addressDisplay += `${bairro}<br>`;
+	            addressDisplay += `${cidade} - ${estado}<br>`;
+	            addressDisplay += `${cep}<br>`;
+		    addressDisplay += `Complemento: ${complemento}<br><br>`;
+	            addressDisplay += `Tipo: ${tipoEndereco}<br>`;
+	            addressDisplay += `Endereço Padrão: ${isDefaultAddress ? 'Sim' : 'Não'}`;
+	
+	            if (showAddressDiv) {
+	                // IMPORTANT: Use innerHTML to render HTML tags
+	                showAddressDiv.innerHTML = addressDisplay;
                     showAddressDiv.style.display = 'block'; // Make the div visible
                     
                     if (formOverlay) { // Check if formOverlay exists
@@ -1329,7 +1369,8 @@
 
     // Function to clear address fields
     function clearAddressFields() {
-        estadoCidadeInput.value = '';
+        cidadeInput.value = '';
+	estadoInput.value = '';
         bairroInput.value = '';
         logradouroInput.value = '';
 	}
@@ -1337,13 +1378,9 @@
 	// Function to fetch address from ViaCEP
 	async function fetchAddressByCEP(cep) {
 		clearAddressFields(); // Clear fields before fetching
-		
-        // Show loading state (optional: disable fields, add spinner)
-        estadoCidadeInput.placeholder = 'Buscando...';
-        bairroInput.placeholder = 'Buscando...';
-        logradouroInput.placeholder = 'Buscando...';
 
-        estadoCidadeInput.readOnly = true;
+        cidadeInput.readOnly = true;
+	estadoInput.readOnly = true;
         bairroInput.readOnly = true;
         logradouroInput.readOnly = true;
 	
@@ -1351,7 +1388,8 @@
 	
         if (cleanedCep.length !== 8) {
         	// Not a valid CEP length, clear and reset placeholders
-            estadoCidadeInput.placeholder = 'Estado - Cidade';
+            cidadeInput.placeholder = 'Cidade';
+	    estadoInput.placeholder = 'UF';
             bairroInput.placeholder = 'Bairro';
             logradouroInput.placeholder = 'Nome da rua';
             return;
@@ -1364,11 +1402,13 @@
 			if (data.erro) {
             	alert('CEP não encontrado.');
             	clearAddressFields();
-            	estadoCidadeInput.placeholder = 'CEP não encontrado';
+            	cidadeInput.placeholder = 'CEP não encontrado';
+		estadoInput.placeholder = 'CEP não encontrado';
             	bairroInput.placeholder = 'CEP não encontrado';
             	logradouroInput.placeholder = 'CEP não encontrado';
             } else {
-                estadoCidadeInput.value = `${data.uf} - ${data.localidade}`;
+                cidadeInput.value = data.localidade;
+		estadoInput.value = data.uf;
                 bairroInput.value = data.bairro;
                 logradouroInput.value = data.logradouro;
                 numeroInput.focus(); // Focus on the number field
@@ -1377,20 +1417,77 @@
             console.error('Erro ao buscar CEP:', error);
             alert('Erro ao buscar o CEP. Tente novamente.');
             clearAddressFields();
-            estadoCidadeInput.placeholder = 'Erro na busca';
+            cidadeInput.placeholder = 'Erro na busca';
+	    estadoInput.placeholder = 'Erro na busca';
             bairroInput.placeholder = 'Erro na busca';
             logradouroInput.placeholder = 'Erro na busca';
-		} finally {
+	} finally {
         	// Reset placeholders to original after fetching
-        	if (estadoCidadeInput.value === '') estadoCidadeInput.placeholder = 'Estado - Cidade';
+        	if (cidadeInput.value === '') cidadeInput.placeholder = 'Cidade';		
+	    if (estadoInput.value === '') estadoInput.placeholder = 'UF';
             if (bairroInput.value === '') bairroInput.placeholder = 'Bairro';
             if (logradouroInput.value === '') logradouroInput.placeholder = 'Nome da rua';
 
-            estadoCidadeInput.readOnly = false;
+            cidadeInput.readOnly = false;
             bairroInput.readOnly = false;
             logradouroInput.readOnly = false;
 		}
 	}// <--- Function to fetch address from ViaCEP
+    
+    // Add an event listener for CPF input
+    if (cpfInput) {
+        cpfInput.addEventListener('input', function (e) {
+            let value = e.target.value.replace(/\D/g, ''); // Remove all non-digit characters
+
+            // Apply CPF mask: 000.000.000-00
+            if (value.length > 9) {
+                value = value.substring(0, 3) + '.' + value.substring(3, 6) + '.' + value.substring(6, 9) + '-' + value.substring(9, 11);
+            } else if (value.length > 6) {
+                value = value.substring(0, 3) + '.' + value.substring(3, 6) + '.' + value.substring(6, 9);
+            } else if (value.length > 3) {
+                value = value.substring(0, 3) + '.' + value.substring(3, 6);
+            }
+            e.target.value = value;
+            validateForm(); // Re-validate the form after input
+        });
+    }
+
+    // Add an event listener for nomeCompletoInput
+    if (nomeCompletoInput) {
+        nomeCompletoInput.addEventListener('input', function (e) {
+            let value = e.target.value;
+            // Capitalize the first letter of each word and remove extra spaces
+            value = value.replace(/\s\s+/g, ' ') // Replace multiple spaces with a single space
+                         .split(' ') // Split the string into an array of words
+                         .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()) // Capitalize first letter
+                         .join(' '); // Join the words back into a string
+            e.target.value = value.trim(); // Remove leading/trailing whitespace
+            validateForm(); // Re-validate the form after input
+        });
+    }
+
+    // Add an event listener for telefoneInput
+    if (telefoneInput) {
+        telefoneInput.addEventListener('input', function (e) {
+            let value = e.target.value.replace(/\D/g, ''); // Remove all non-digit characters
+
+            if (value.length > 11) { // For international or very long numbers
+                // Keep the first digits as country code and then format
+                // This is a simplified approach, a more robust solution might involve a library
+                value = '+' + value.substring(0,2) + ' (' + value.substring(2,4) + ') ' + value.substring(4,9) + '-' + value.substring(9,13);
+            } else if (value.length > 10) { // (XX) XXXXX-XXXX (mobile with DDD)
+                value = '(' + value.substring(0,2) + ') ' + value.substring(2,7) + '-' + value.substring(7,11);
+            } else if (value.length > 9) { // (XX) XXXX-XXXX (landline with DDD)
+                value = '(' + value.substring(0,2) + ') ' + value.substring(2,6) + '-' + value.substring(6,10);
+            } else if (value.length > 5) { // XXXX-XXXX (landline without DDD)
+                value = value.substring(0,5) + '-' + value.substring(5,9);
+            } else if (value.length > 4) { // XXXX-X (incomplete landline)
+                 value = value.substring(0,4) + '-' + value.substring(4);
+            }
+            e.target.value = value;
+            validateForm(); // Re-validate the form after input
+        });
+    }
     
     // Event listener for CEP input (fires on every change)
     if (cepInput) {
@@ -1412,6 +1509,7 @@
             }
         });
     }
+    
     // --- Inicialização ao carregar a página ---
     document.addEventListener('DOMContentLoaded', () => {
         setupStoreCheckboxesListeners();
