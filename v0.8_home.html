@@ -742,10 +742,19 @@
                 <div class="checkout-item-block">
                     <div style="font-size: 0.9em; color: #777;">Mensagem para o vendedor:</div>
                     <div style="font-size: 0.95em; color: #333; margin-top: 5px;">
-                        Digite aqui --> Entrega rápida, por favor!
+                        Digite aqui -->
                     </div>
                 </div>
                 
+            </div>
+			
+            <!-Frete->
+            <div class="store-section">
+                <div class="store-header">
+                    <div class="store-icon">📬</div>
+                    <span class="store-name">Frete</span>
+                    <span class="product-price" id="shipping-price">R$19,90</span>
+                </div>         
             </div>
 			
             <!-Adress->
@@ -1060,7 +1069,15 @@
 
         document.querySelector('.total-price').textContent = `R$${total.toFixed(2).replace('.', ',')}`;
         document.querySelector('.continue-btn').textContent = `Continuar (${count})`;
-        document.querySelector('.continue-btn').disabled = count === 0;
+	    
+	const continueButton = document.querySelector('.continue-btn');
+	if (continueButton) { // Always good to check if the button exists	    
+		if (validateForm() && count > 0) {
+		    document.querySelector('.continue-btn').disabled = false;
+		} else { // You'll need an else block to disable it if conditions aren't met
+		    document.querySelector('.continue-btn').disabled = true;
+		}
+	}
 
         if (selectAllCheckbox) {
             const allProductsChecked = Array.from(productCheckboxes).every(cb => cb.checked);
@@ -1268,19 +1285,19 @@
 
         return allFilled;
     }
-
-    // Add event listeners to all relevant input fields to re-validate on change
-    document.querySelectorAll('.form-section input, .form-section textarea').forEach(input => {
-        input.addEventListener('input', validateForm);
-    });
-    // Call validateForm initially to set the button state on page load
-    validateForm();
+	// Add event listeners to all relevant input fields to re-validate on change
+	document.querySelectorAll('.form-section input, .form-section textarea').forEach(input => {
+	    input.addEventListener('input', () => { // Changed to an arrow function for conciseness
+	        validateForm(); // Re-validate the form itself
+	        updateTotal();  // <-- ADD THIS LINE: Re-evaluate the "Continuar" button's state
+	    });
+	});
 
     // Function to capture and display address
     if (saveButton) {
         saveButton.addEventListener('click', (event) => {
             event.preventDefault(); // Prevent default form submission if it were a <form>
-
+	
             if (validateForm()) { // Only proceed if the form is valid
                 const cpf = cpfInput.value.trim();
                 const nomeCompleto = nomeCompletoInput.value.trim();
