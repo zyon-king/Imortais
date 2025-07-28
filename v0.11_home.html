@@ -680,11 +680,11 @@
         /* New styles for the fixed footer bar */
         .footer-bar {
             position: fixed;
-            width: 100%;
-            max-width: 350px;
+            min-width: 650px;
+            max-width: 650px;
             background-color: #f05713;
             backdrop-filter: blur(8px); /* Frosted glass effect */
-            border-radius: 20px 20px 0 0;
+            border-radius: 8px;
             border-top: 1px solid #e0e0e0;
             padding: 0.4em 0.4em;
             display: flex;
@@ -707,7 +707,7 @@
           transform: scale(1.01); /* Exemplo de outra mudança */
         }
 		
-        .footer-bar button {
+        .footer-bar button {            
             background: #f1f3fe;
             border: none;
             font-size: 1.8em; /* Adjust icon size */
@@ -715,6 +715,8 @@
             cursor: pointer;
             display: flex;
             flex-direction: column;
+            width: 13vw;
+            height: 13vh;
             align-items: center;
             padding: 0.04em 0.16em;
             border-radius: 8px;
@@ -1287,6 +1289,18 @@ Outro ponto que merece destaque é a relação entre os irmãos. Embora unidos p
         <button>
             <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/WhatsApp.svg/2044px-WhatsApp.svg.png">
             <span>Whatsapp</span>
+        </button>
+        <button>
+            <img src="https://raw.githubusercontent.com/zyon-king/Imortais/refs/heads/main/instagram-icon.png">
+            <span>Instagram</span>
+        </button>
+        <button>
+            <img src="https://raw.githubusercontent.com/zyon-king/Imortais/refs/heads/main/tiktok-icon.png">
+            <span>TikTok</span>
+        </button>
+        <button>
+            <img src="https://raw.githubusercontent.com/zyon-king/Imortais/refs/heads/main/mercadoLivre-icon.png">
+            <span>Mercado Livre</span>
         </button>
         <button class="openOverlay">
             <img src="https://raw.githubusercontent.com/zyon-king/Imortais/refs/heads/main/shop-bag.png">
