@@ -1474,12 +1474,32 @@ Outro ponto que merece destaque é a relação entre os irmãos. Embora unidos p
     // --- Funcionalidade do Footer Bar ---
     const footerBar = document.getElementById("footerBar");
     let timeoutId;
+    let forceFixedInterval;
 
-    // Verifica se footerBar existe antes de tentar acessá-lo
     if (footerBar) {
-        footerBar.style.top = '2vh'; // Define a posição inicial
+        // Set initial position and ensure it's fixed
+        footerBar.style.top = '2vh';
+        footerBar.style.position = 'fixed';
+        footerBar.style.width = '100%';
+        footerBar.style.zIndex = '1000';
+
+        // Function to ensure position is fixed
+        function ensureFixedPosition() {
+            if (footerBar.style.position !== 'fixed') {
+                footerBar.style.position = 'fixed';
+                footerBar.style.top = '2vh'; // Re-apply top as well
+                footerBar.style.width = '100%';
+                footerBar.style.zIndex = '1000';
+            }
+        }
+
+        // Call it immediately and then on scroll activity
+        ensureFixedPosition();
 
         function handleScrollActivity() {
+            // Ensure fixed position on every scroll
+            ensureFixedPosition();
+
             footerBar.classList.add("active");
             clearTimeout(timeoutId);
             timeoutId = setTimeout(() => {
@@ -1487,6 +1507,13 @@ Outro ponto que merece destaque é a relação entre os irmãos. Embora unidos p
             }, 500);
         }
         window.addEventListener("scroll", handleScrollActivity);
+
+        // Optionally, re-apply fixed position at a regular interval
+        // This can be heavy on performance, use only if necessary
+        // forceFixedInterval = setInterval(ensureFixedPosition, 200); // Every 200ms
+
+        // Clear interval if you navigate away or on page unload
+        // window.addEventListener('beforeunload', () => clearInterval(forceFixedInterval));
     }
 
     // --- Abrir Overlay de Carrinho ---
