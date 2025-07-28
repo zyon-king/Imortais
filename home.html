@@ -1468,48 +1468,31 @@ Outro ponto que merece destaque é a relação entre os irmãos. Embora unidos p
     const openFormBtns = document.querySelectorAll('.edit-btn'); // Adicionado
     
     // --- Funcionalidade do Footer Bar ---
-    const footerBar = document.getElementById("footerBar");
-    let timeoutId;
+    // --- Funcionalidade do Footer Bar (focando apenas na visibilidade) ---
+const footerBar = document.getElementById("footerBar");
+let timeoutId;
 
-    if (footerBar) {
-        // Define a posição inicial na parte superior
-        footerBar.style.position = 'absolute'; // Mude para 'absolute' ou deixe como está se já for o padrão
-        footerBar.style.top = '0'; // Defina o top inicial para 0 ou o valor que preferir
-        footerBar.style.minWidth = '550px'; // Garante que ocupe a largura total
-        footerBar.style.maxWidth = '550px'; // Garante que ocupe a largura total
-        footerBar.style.zIndex = '999'; // Garante que esteja acima de outros conteúdos
+if (footerBar) {
+    // Remova qualquer tentativa de definir style.top ou style.position aqui
+    // footerBar.style.top = '2vh'; // Comente ou remova
+    // footerBar.style.position = 'absolute'; // Comente ou remova
+    // footerBar.style.transform = ...; // Comente ou remova
 
-        // Função para atualizar a posição da barra de rodapé com base na rolagem
-        function updateFooterPosition() {
-            // Calcula o quanto a página rolou
-            const scrollY = window.scrollY || window.pageYOffset;
-
-            // Calcula a nova posição vertical do elemento
-            // Por exemplo, para manter a 2vh do topo da janela de visualização:
-            // Se a barra deve ficar 2vh abaixo do topo da tela,
-            // seu translateY deve ser igual ao scrollY + 2vh (convertido para pixels)
-            const targetTopInPixels = scrollY + (window.innerHeight * 0.02); // 2vh
-
-            // Aplica a transformação para mover o elemento
-            footerBar.style.transform = `translateY(${targetTopInPixels}px)`;
-        }
-
-        // Inicializa a posição da barra
-        updateFooterPosition();
-
-        // Adiciona o event listener para a rolagem
-        window.addEventListener("scroll", updateFooterPosition);
-
-        // Sua funcionalidade de mostrar/esconder na atividade de rolagem
-        function handleScrollActivity() {
-            footerBar.classList.add("active");
-            clearTimeout(timeoutId);
-            timeoutId = setTimeout(() => {
-                footerBar.classList.remove("active");
-            }, 500);
-        }
-        window.addEventListener("scroll", handleScrollActivity);
+    function handleScrollActivity() {
+        footerBar.classList.add("active"); // Adiciona a classe para mostrar a barra
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => {
+            footerBar.classList.remove("active"); // Remove a classe para esconder a barra
+        }, 500); // Esconde após 0.5 segundos de inatividade
     }
+    window.addEventListener("scroll", handleScrollActivity);
+
+    // Se você quiser que ela apareça no carregamento, adicione:
+    // footerBar.classList.add("active");
+    // timeoutId = setTimeout(() => {
+    //     footerBar.classList.remove("active");
+    // }, 3000); // Exibe por 3 segundos ao carregar
+}
 
     // --- Abrir Overlay de Carrinho ---
     openOverlayBtns.forEach(button => {
