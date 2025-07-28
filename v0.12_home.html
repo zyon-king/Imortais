@@ -1007,7 +1007,11 @@
         /* Barra de Rodapé Fixa */
         /* ========================================= */
         .footer-bar {        
-        	position: fixed !important;
+        	position: relative;
+        	top: 2vh !important;
+            z-index: 999 !important; /* Abaixo do overlay, acima de outro conteúdo */
+            min-width: 550px !important;
+            max-width: 550px !important;
             background-color: #4B0082/*#f05713*/;
             backdrop-filter: blur(8px); /* Efeito de vidro fosco */
             border-radius: 8px;
@@ -1045,8 +1049,8 @@
             cursor: pointer;
             display: flex;
             flex-direction: column; /* Organiza ícone e texto em coluna */
-            width: 85px;
-            height: 85px;
+            width: 18vw;
+            height: auto;
             align-items: center;
             padding: 0.04em 0.16em;
             border-radius: 8px;
@@ -1073,8 +1077,10 @@
 
         /* Imagem do ícone do botão da barra de rodapé */
         .footer-bar button img {
-            width: 35px;
-            height: 35px;
+            width: 8vw;
+            height: 8vh;
+            min-width: 6vw;
+            min-height: 6vh;
         }
 
     </style>
@@ -1099,6 +1105,32 @@
                 </table>
             </div>
             
+         <div class="footer-bar" id="footerBar">
+        <button>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/WhatsApp.svg/2044px-WhatsApp.svg.png">
+            <span>Whatsapp</span>
+        </button>
+        <button>
+            <img src="https://raw.githubusercontent.com/zyon-king/Imortais/refs/heads/main/instagram-icon.png">
+            <span>Instagram</span>
+        </button>
+        <button>
+            <img src="https://raw.githubusercontent.com/zyon-king/Imortais/refs/heads/main/tiktok-icon.png">
+            <span>TikTok</span>
+        </button>
+        <button>
+            <img src="https://raw.githubusercontent.com/zyon-king/Imortais/refs/heads/main/mercadoLivre-icon.png">
+            <span>Mercado Livre</span>
+        </button>
+        <button class="openOverlay">
+            <img src="https://raw.githubusercontent.com/zyon-king/Imortais/refs/heads/main/shop-bag.png">
+            <span>Comprar Agora</span>
+        </button>
+        <button class="openOverlay">
+            <img src="https://raw.githubusercontent.com/zyon-king/Imortais/refs/heads/main/shop-cart.png">
+            <span>Adicionar</span>
+        </button>
+    </div>
         </div>
     </div>
     <div class="container" id="container-video">    
@@ -1427,33 +1459,6 @@ Outro ponto que merece destaque é a relação entre os irmãos. Embora unidos p
             
         </div><!-Content-->
     </div>
-
-    <div class="footer-bar" id="footerBar">
-        <button>
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/WhatsApp.svg/2044px-WhatsApp.svg.png">
-            <span>Whatsapp</span>
-        </button>
-        <button>
-            <img src="https://raw.githubusercontent.com/zyon-king/Imortais/refs/heads/main/instagram-icon.png">
-            <span>Instagram</span>
-        </button>
-        <button>
-            <img src="https://raw.githubusercontent.com/zyon-king/Imortais/refs/heads/main/tiktok-icon.png">
-            <span>TikTok</span>
-        </button>
-        <button>
-            <img src="https://raw.githubusercontent.com/zyon-king/Imortais/refs/heads/main/mercadoLivre-icon.png">
-            <span>Mercado Livre</span>
-        </button>
-        <button class="openOverlay">
-            <img src="https://raw.githubusercontent.com/zyon-king/Imortais/refs/heads/main/shop-bag.png">
-            <span>Comprar Agora</span>
-        </button>
-        <button class="openOverlay">
-            <img src="https://raw.githubusercontent.com/zyon-king/Imortais/refs/heads/main/shop-cart.png">
-            <span>Adicionar</span>
-        </button>
-    </div>
     
     <script>
     /// --- Overlays ---
@@ -1470,34 +1475,12 @@ Outro ponto que merece destaque é a relação entre os irmãos. Embora unidos p
     // --- Funcionalidade do Footer Bar ---
     const footerBar = document.getElementById("footerBar");
     let timeoutId;
-    let forceFixedInterval;
 
+    // Verifica se footerBar existe antes de tentar acessá-lo
     if (footerBar) {
-        // Set initial position and ensure it's fixed
-        footerBar.style.top = '2vh';
-        footerBar.style.position = 'fixed';
-        footerBar.style.maxWidth = '550px';
-        footerBar.style.minWidth = '550px';
-        footerBar.style.zIndex = '999';
-
-        // Function to ensure position is fixed
-        function ensureFixedPosition() {
-            if (footerBar.style.position !== 'fixed') {
-                footerBar.style.position = 'fixed';
-                footerBar.style.top = '2vh'; // Re-apply top as well
-                footerBar.style.maxWidth = '550px';
-                footerBar.style.minWidth = '550px';
-                footerBar.style.zIndex = '999';
-            }
-        }
-
-        // Call it immediately and then on scroll activity
-        ensureFixedPosition();
+        footerBar.style.top = '2vh'; // Define a posição inicial
 
         function handleScrollActivity() {
-            // Ensure fixed position on every scroll
-            ensureFixedPosition();
-
             footerBar.classList.add("active");
             clearTimeout(timeoutId);
             timeoutId = setTimeout(() => {
@@ -1505,13 +1488,6 @@ Outro ponto que merece destaque é a relação entre os irmãos. Embora unidos p
             }, 500);
         }
         window.addEventListener("scroll", handleScrollActivity);
-
-        // Optionally, re-apply fixed position at a regular interval
-        // This can be heavy on performance, use only if necessary
-        // forceFixedInterval = setInterval(ensureFixedPosition, 200); // Every 200ms
-
-        // Clear interval if you navigate away or on page unload
-        // window.addEventListener('beforeunload', () => clearInterval(forceFixedInterval));
     }
 
     // --- Abrir Overlay de Carrinho ---
