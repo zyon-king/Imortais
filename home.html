@@ -1466,38 +1466,42 @@ Outro ponto que merece destaque é a relação entre os irmãos. Embora unidos p
     const formOverlay = document.getElementById('form-overlay'); // Adicionado
     const backBtnForm = document.getElementById('back-btn-form'); // Adicionado
     const openFormBtns = document.querySelectorAll('.edit-btn'); // Adicionado
-
+    
     // --- Funcionalidade do Footer Bar ---
     const footerBar = document.getElementById("footerBar");
     let timeoutId;
-    let forceFixedInterval;
 
     if (footerBar) {
-        // Set initial position and ensure it's fixed
-        footerBar.style.top = '2vh';
-        footerBar.style.position = 'fixed';
-        footerBar.style.maxWidth = '550px';
-        footerBar.style.minWidth = '550px';
-        footerBar.style.zIndex = '999';
+        // Define a posição inicial na parte superior
+        footerBar.style.position = 'absolute'; // Mude para 'absolute' ou deixe como está se já for o padrão
+        footerBar.style.top = '0'; // Defina o top inicial para 0 ou o valor que preferir
+        footerBar.style.minWidth = '550px'; // Garante que ocupe a largura total
+        footerBar.style.maxWidth = '550px'; // Garante que ocupe a largura total
+        footerBar.style.zIndex = '999'; // Garante que esteja acima de outros conteúdos
 
-        // Function to ensure position is fixed
-        function ensureFixedPosition() {
-            if (footerBar.style.position !== 'absolute') {
-                footerBar.style.position = 'absolute';
-                footerBar.style.top = '2vh'; // Re-apply top as well
-                footerBar.style.maxWidth = '550px';
-                footerBar.style.minWidth = '550px';
-                footerBar.style.zIndex = '999';
-            }
+        // Função para atualizar a posição da barra de rodapé com base na rolagem
+        function updateFooterPosition() {
+            // Calcula o quanto a página rolou
+            const scrollY = window.scrollY || window.pageYOffset;
+
+            // Calcula a nova posição vertical do elemento
+            // Por exemplo, para manter a 2vh do topo da janela de visualização:
+            // Se a barra deve ficar 2vh abaixo do topo da tela,
+            // seu translateY deve ser igual ao scrollY + 2vh (convertido para pixels)
+            const targetTopInPixels = scrollY + (window.innerHeight * 0.02); // 2vh
+
+            // Aplica a transformação para mover o elemento
+            footerBar.style.transform = `translateY(${targetTopInPixels}px)`;
         }
 
-        // Call it immediately and then on scroll activity
-        ensureFixedPosition();
+        // Inicializa a posição da barra
+        updateFooterPosition();
 
+        // Adiciona o event listener para a rolagem
+        window.addEventListener("scroll", updateFooterPosition);
+
+        // Sua funcionalidade de mostrar/esconder na atividade de rolagem
         function handleScrollActivity() {
-            // Ensure fixed position on every scroll
-            ensureFixedPosition();
-
             footerBar.classList.add("active");
             clearTimeout(timeoutId);
             timeoutId = setTimeout(() => {
@@ -1505,13 +1509,6 @@ Outro ponto que merece destaque é a relação entre os irmãos. Embora unidos p
             }, 500);
         }
         window.addEventListener("scroll", handleScrollActivity);
-
-        // Optionally, re-apply fixed position at a regular interval
-        // This can be heavy on performance, use only if necessary
-        // forceFixedInterval = setInterval(ensureFixedPosition, 200); // Every 200ms
-
-        // Clear interval if you navigate away or on page unload
-        // window.addEventListener('beforeunload', () => clearInterval(forceFixedInterval));
     }
 
     // --- Abrir Overlay de Carrinho ---
