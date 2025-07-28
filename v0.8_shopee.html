@@ -1,0 +1,1558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sliding Overlay</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Align to top initially */
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        /* Overlay Styles */
+        .overlay {
+            position: fixed;
+            overflow-y: auto;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Transparent dark background for overlay */
+            display: flex;
+            justify-content: flex-end; /* Align content to the right */
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .overlay .overlay-content {
+            display: grid;
+            align-self: flex-start;
+            grid-template-columns: 1fr; /* Uma coluna, cada campo ocupa 100% da largura */
+            width: 100%;
+            position: relative;
+            overflow-y: auto;
+            max-width: 450px;
+            max-height: 800px;
+            background-color: #f0f2f5;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            box-sizing: border-box;
+            transform: translateX(100%);
+            transition: transform 0.4s ease-out;
+        }
+
+        .overlay.active .overlay-content {
+            transform: translateX(0); /* Slides to the normal position (0) */
+        }
+
+        .overlay-content h2 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        .overlay-content p {
+            color: #555;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            align-items: center;
+            padding: .2em .4em;
+            width: 100%;
+            background-color: #fff;
+            border-bottom: 1px solid #eee;
+            position: sticky;
+            top: 0; /* Make it sticky at the top of the overlay-content */
+            z-index: 10;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .header .back-btn {
+            background: none;
+            border: none;
+            font-size: 1.2em;
+            margin-right: 15px;
+            cursor: pointer;
+            color: #007bff;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .back-btn:hover {
+            scale: 1.1;
+        }
+
+        .back-btn:active {
+            scale: 1.0;
+        }
+
+        .header .header-title {
+            text-align: center;
+            font-size: 1em;
+            font-weight: bold;
+            flex-grow: 1;
+            color: #333;
+        }
+
+        /* Store Section */
+        .store-section {
+            background-color: white;
+            margin-top: .8em;
+            padding: 1em;
+            border-radius: 0; /* Remove border-radius for cleaner look */
+            box-shadow: 0 0 5px rgba(0,0,0,0.1); /* Sombra suave para destacar */
+        }
+
+        .store-header, .shipping {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.2em;
+            padding-bottom: 1em;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .shipping {
+            margin-top: .2em;
+            margin-bottom: 0;
+            padding-bottom: .9em;
+        }
+
+        .store-checkbox {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+
+        .store-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .store-name {
+            font-weight: bold;
+            flex-grow: 1;
+            color: #333;
+        }
+
+        /* Product Item */
+        .product-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #f9f9f9;
+        }
+
+        .product-item:last-of-type { /* Changed to last-of-type to target the last product item in its parent */
+            border-bottom: none; /* No border for the last item */
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .product-checkbox {
+            margin-top: 25px; /* Align with image/content */
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+
+        .product-image-placeholder {
+            flex-shrink: 0; /* Prevent image from shrinking */
+            width: 80px; /* Adjust as needed */
+            height: 80px; /* Adjust as needed */
+            margin-right: 15px;
+        }
+
+        .product-image-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        .product-info {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column; /* Changed to column to stack elements */
+            justify-content: space-between;
+        }
+
+        /* Group for Title and Quantity */
+        .title-and-quantity {
+            display: flex;
+            align-items: center; /* Align items vertically */
+            justify-content: space-between; /* Push quantity to the right */
+            margin-bottom: 5px; /* Space between title/qty and prices */
+            flex-wrap: wrap; /* Allow wrapping on small screens */
+        }
+
+        .product-title {
+            font-size: 0.95em;
+            color: #333;
+            font-weight: bold; /* Make title bold */
+            margin-bottom: 0; /* Remove bottom margin from title directly */
+            flex-grow: 1; /* Allow title to take available space */
+            margin-right: 10px; /* Space between title and quantity */
+        }
+
+        /* Price Group */
+        .price-group {
+            display: flex; /* Allow current and old price to be side by side */
+            align-items: baseline; /* Align prices at their baseline */
+            margin-top: 5px; /* Space above prices */
+        }
+
+        .product-price {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #2da9ee;
+            margin-right: 8px; /* Space between current and old price */
+        }
+
+        .product-old-price {
+            font-size: 0.95em;
+            font-weight: bold;
+            color: #999;
+            text-decoration: line-through;
+            margin-left: 4px;
+        }
+
+        /* Quantity Controls */
+        .quantity-controls {
+            display: flex;
+            border: 1px solid #ddd;
+            align-items: center;
+            border-radius: 3px;
+            flex-shrink: 0; /* Prevent quantity controls from shrinking */
+        }
+
+        .quantity-btn {
+            background-color: #f5f5f5;
+            border: none;
+            padding: 6px 10px; /* Adjusted padding for smaller size */
+            cursor: pointer;
+            font-size: 1em; /* Adjusted font size */
+            color: #555;
+            transition: background-color 0.2s;
+        }
+
+        .quantity-btn:hover {
+            background-color: #eee;
+        }
+
+        .quantity-input {
+            width: 30px; /* Adjusted width for smaller size */
+            text-align: center;
+            border: none;
+            outline: none;
+            font-size: 0.9em; /* Adjusted font size */
+            color: #333;
+            background-color: white;
+            padding: 6px 0; /* Adjusted padding */
+        }
+
+        /* Message to seller block */
+        .checkout-item-block {
+            margin-top: 15px; /* Space above the message block */
+            padding: 10px;
+            border: 1px dashed #ccc;
+            border-radius: 5px;
+            background-color: #fff;
+            width: 100%; /* Ensures it takes full width */
+            box-sizing: border-box;
+        }
+
+        .checkout-item-block > div {
+            margin-bottom: 5px;
+        }        
+		
+        .show-adress {
+            margin-top: 0;
+            padding: 1em .4em;
+            white-space: pre-wrap; /* Preserves whitespace and line breaks */
+            font-family: monospace; /* For a more 'code-like' display */
+            font-size: 1.2em; /* Adjusted font size */
+            display: none; /* Hide initially */
+            box-sizing: border-box;
+        }
+        
+        /* Bottom Section (Sticky Footer) */    
+        .bottom-section {
+            position: sticky;
+            bottom: 0;
+            background-color: white;
+            border-top: 1px solid #eee;
+            padding: 15px;
+            display: column;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.05);
+            margin-top: .6em;
+            flex-shrink: 0;
+        }
+        .no-selection {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            font-size: 1em;
+            color: #ee4d2d;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .select-all-checkbox {
+            margin-right: 8px;
+            transform: scale(1.2);
+        }
+        .select-all-text {
+            font-size: 0.95em;
+            color: #333;
+        }
+        .total-section {
+            display: flex; /* Torna os filhos diretos (grupos) flexíveis */
+            align-items: center; /* Centraliza verticalmente os blocos (checkbox/tudo, preços, botão) */
+            justify-content: space-between; /* Distribui os blocos: esquerda, centro, direita */
+            width: 100%;
+            gap: .5em; /* Adicione padding horizontal para as bordas */
+            background-color: #fff;
+            box-sizing: border-box; /* Inclui padding na largura total */
+        }
+
+        /* BLOCo ESQUERDO: Checkbox e "Tudo" */
+        .select-all-group {
+            display: flex; /* Faz o checkbox e o texto ficarem lado a lado */
+            align-items: center; /* Alinha-os verticalmente */
+            /* Nenhuma largura específica aqui, eles ocuparão o espaço necessário */
+        }
+
+        .select-all-checkbox {
+            margin-right: 8px; /* Espaçamento entre o checkbox e o texto */
+            /* Remova qualquer width:100% que possa estar aqui */
+        }
+
+        .select-all-text {
+            font-size: 1em;
+            color: #333;
+        }
+
+        /* BLOCo CENTRAL: Valor Total e Desconto */
+        .price-summary-group {
+            display: flex;
+            flex-direction: column; /* Empilha o total e o desconto verticalmente */
+            align-items: flex-end; /* Alinha o conteúdo (texto) à direita dentro deste grupo */
+            /* flex-grow: 1; se quiser que ocupe mais espaço central, mas cuidado com o layout */
+            /* width: auto; ou min-content */
+        }
+
+        .total-price {
+            font-size: 1.25em; /* Valor maior para o total */
+            font-weight: bold;
+            color: #2da9ee;
+            margin-bottom: 3px; /* Espaço entre o total e a linha de desconto */
+            white-space: nowrap; /* Evita que o valor quebre linha, se for muito grande */
+        }
+
+        .discount-info {
+            display: flex; /* Faz o texto e o valor de desconto ficarem lado a lado */
+            align-items: center; /* Alinha-os verticalmente */
+            font-size: 1em; /* Tamanho menor para o desconto */
+            color: #666;
+            white-space: nowrap; /* Evita que a linha de desconto quebre */
+        }
+
+        #discount-label {
+            margin-right: 5px; /* Espaçamento entre o texto e o valor do desconto */
+        }
+
+        #discount-price {
+            font-weight: bold;
+            color: grey;
+        }
+
+        /* BLOCo DIREITO: Botão Continuar */
+        .continue-btn {
+            padding: 12px 20px;
+            font-size: 1.1em;
+            font-weight: bold;
+            border-radius: 2px; /* Cantos arredondados */
+            background-color: #007bff; /* Cor primária, ajuste conforme seu tema */
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            min-width: 150px; /* Garante uma largura mínima para o botão */
+            text-align: center; /* Centraliza o texto dentro do botão */
+        }
+
+        .continue-btn:disabled {
+            background-color: #2da9ee; /* Lighter red when disabled */
+            cursor: not-allowed;
+        }
+
+
+        /* Responsive adjustments for product-item layout */
+        @media (max-width: 600px) {
+        }
+
+        /* New styles for the fixed footer bar */
+        .footer-bar {
+            position: fixed;
+            min-width: 650px;
+            max-width: 650px;
+            background-color: #f05713;
+            backdrop-filter: blur(8px); /* Frosted glass effect */
+            border-radius: 8px;
+            border-top: 1px solid #e0e0e0;
+            padding: 0.4em 0.4em;
+            display: flex;
+            justify-content: center;
+            gap: 0.8em; /* Space between buttons */
+            z-index: 999; /* Below overlay, above other content */
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            opacity: 0.25; /* Começa com 50% de opacidade */
+            transform: scale(1); /* Exemplo de outra propriedade para transição */
+            transition: opacity 0.5s ease-in-out, transform 0.3s ease;
+        }
+        
+        .footer-bar:hover {
+          opacity: 1; /* Aumenta para 100% de opacidade suavemente */
+          transform: scale(1.01); /* Exemplo de outra mudança */
+        }
+        
+        .footer-bar.active {
+          opacity: 1; /* Aumenta para 100% de opacidade suavemente */
+          transform: scale(1.01); /* Exemplo de outra mudança */
+        }
+		
+        .footer-bar button {
+            background: #f1f3fe;
+            border: none;
+            font-size: 1.8em; /* Adjust icon size */
+            color: white;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            width: 13vw;
+            height: 13vh;
+            align-items: center;
+            padding: 0.04em 0.16em;
+            border-radius: 8px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .footer-bar button:hover {
+            background-color: #f0f0f0;
+            transform: translateY(-3px); /* Slight lift on hover */
+        }
+
+        .footer-bar button span {
+            font-size: 0.6em; /* Label text size */
+            margin-top: 0.01em;
+            color: #333;
+        }
+
+        .footer-bar button img {
+            width: 35px;
+            height: 35px;
+        }
+        /*============*/
+        /*FORM OVERLAY*/
+		/*============*/
+        .form-header {
+        }
+
+        .form-header .back-btn-form {
+        }
+
+        .form-header h1 {
+        }
+
+        .form-section {
+        }
+
+        .form-group {
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 1em;
+            color: #555;
+            margin-bottom: 5px;
+        }
+        
+        .form-group input[type="text"],
+        .form-group input[type="cpf"],
+        .form-group input[type="tel"],
+        .form-group input[type="email"],
+        .form-group textarea { /* Added textarea to this selector */
+            width: 100%;
+            padding: .5em 1.2em;
+            border: 1px solid #ddd;
+            font-size: 1em; /* Base font size for all */
+            color: #333;
+            box-sizing: border-box;
+        }
+
+        .form-group textarea { /* Specific rule to override font-size for textarea */
+            font-size: 1.2em; /* Larger font size for textarea only */
+        }
+
+        .form-group.inline {
+            display: flex;
+            justify-content: space-between;
+        }
+        .form-group.inline .input-half {
+            flex: 0 1 auto; /* Allow it to shrink, don't allow it to grow beyond its content's size */
+            width: 85%; /* Give logradouro more width */
+        }
+
+        /* Add a specific style for the numero input's parent div */
+        .form-group.inline .input-half:last-child {
+            width: 15%; /* Give numero less width */
+        }
+
+        .section-title {
+            font-size: 0.8em;
+            color: #888;
+            padding: 1.6em .4em .4em 1em;
+            text-transform: uppercase;
+        }
+        
+        /* --- */
+        .setup-group, .toggle-group {        
+            background-color: white;
+            display: flex;
+            align-items: center; /* Aligns items vertically in the middle */
+            padding: .4em .8em;
+            margin-bottom: 15px; /* Adjust as needed for spacing from elements below */
+            justify-content: space-between;
+        }
+
+        .setup-group span {
+            /* No specific changes needed here unless you want to adjust its font size or color */
+            font-size: 15px;
+            color: #333;
+            white-space: nowrap; /* Prevents the text from wrapping if space is tight */
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 0;
+            margin-right: 0;
+        }
+        
+        .radio-group .radio-button {
+            flex: 1;
+            background-color: #e0e0e0;
+            padding: 5px 10px;
+            text-align: center;
+            border-radius: 4px;
+            cursor: pointer;
+            color: #555;
+            font-size: 15px;
+        }
+
+        .radio-group .radio-button.selected {
+            border: 1px solid grey; /* Separator for settings */
+            color: grey;
+            font-weight: bold;
+        }
+
+        .toggle-groupe {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee; /* Separator for settings */
+        }
+
+        .toggle-group span {
+            font-size: 15px;
+            color: #333;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            -webkit-transition: .4s;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+
+        input:focus + .slider {
+            box-shadow: 0 0 1px #2196F3;
+        }
+
+        input:checked + .slider:before {
+            -webkit-transform: translateX(16px);
+            -ms-transform: translateX(16px);
+            transform: translateX(16px);
+        }
+
+        .save-button-container {
+            padding: .4em;
+            text-align: center;
+            background-color: ;
+            border-top: 1px solid #eee;
+        }
+
+        .save-button {
+            width: 100%;
+            padding: 15px;
+            background-color: #e0e0e0; /* Disabled look */
+            color: #a0a0a0; /* Disabled text color */
+            border: none;
+            border-radius: 2px;
+            font-size: 17px;
+            cursor: not-allowed; /* Indicate it's not active */
+            font-weight: bold;
+        }
+
+        .save-button.active {
+            background-color: #FF5722;
+            color: #fff;
+            cursor: pointer;
+        }
+
+
+    </style>
+</head>
+<body>
+	<button onclick="document.getElementById('checkout').classList.add('active');" style="margin-top: 100px;">Policy</button>
+
+
+    <div class="overlay" id="myOverlay">
+        <div class="overlay-content">
+
+            <div class="header">
+                <button class="back-btn" id="back-btn-cart">🢦</button>
+                <span class="header-title">🛒 Carrinho</span>
+            </div>
+
+            <div class="store-section">
+                <div class="store-header">
+                    <input type="checkbox" class="store-checkbox">
+                    <div class="store-icon">🧛</div>
+                    <span class="store-name">LOJA IMORTAIS COMPLETOS</span>
+                    <button class="edit-btn" id="adr-btn">Endereço</button>
+                </div>
+                <div class="product-item">
+                    <input type="checkbox" class="product-checkbox">
+                    <div class="product-image-placeholder">
+                        <img src="https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcQBS3CQXupdyvstNW6e3CuDJp-McDfUxVYBIsMT2kH5VYomuGubsiWbLC1S24gujTO8lkzRFUggGLKU5Ze1F0BHo61foXKJv71UPWXUB6irgDk7yrVv7PnHhw" alt="Livro: Imortais Completos" class="image">
+                    </div>
+                    <div class="product-info">
+                        <div class="title-and-quantity">
+                            <div class="product-title">
+                                Livro: Imortais Completos - O Recomeco
+                            </div>
+                            <div class="price-group">
+                                <div class="product-price">
+                                    R$89,90
+                                </div>
+                                <span class="product-old-price">
+                                    R$109,90
+                                </span>
+                            </div>
+                            <div class="quantity-controls">
+                                <button class="quantity-btn">−</button>
+                                <input type="text" class="quantity-input" value="0">
+                                <button class="quantity-btn">+</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="checkout-item-block">
+                    <div style="font-size: 0.9em; color: #777;">Mensagem para o vendedor:</div>
+                    <div style="font-size: 0.95em; color: #333; margin-top: 5px;">
+                        Digite aqui -->
+                    </div>
+                </div>
+                
+            </div>
+			
+            <!-Frete->
+            <div class="store-section">
+                <div class="shipping">
+                    <div class="store-icon">📬</div>
+                    <span class="store-name">Frete</span>
+                    <span class="product-price" id="shipping-price">R$19,90</span>
+                </div>         
+            </div>
+			
+            <!-Adress->
+            <div class="store-section">
+                <div class="store-header">
+                    <div class="store-icon">🦇</div>
+                    <span class="store-name">Opção de Envio</span>
+                    <button class="edit-btn" id="edit-btn">Editar</button>
+                </div>
+                <div id="shipping-label" style="font-size: 0.9em; color: #ee4d2d;">
+                	ℹ️ Clique em editar para preencher seus <strong>Dados Pessoais e Endereço de Entrega.</strong>
+                </div>
+                <div class="show-adress" id="showAddress">
+                </div>                
+            </div>
+            
+            <div class="bottom-section">
+              <div class="no-selection">
+                  ℹ️ Nenhum item selecionado
+              </div>
+
+              <div class="total-section">
+                  <div class="select-all-group">
+                      <input type="checkbox" class="select-all-checkbox">
+                      <span class="select-all-text">Tudo</span>
+                  </div>
+
+                  <div class="price-summary-group">
+                      <div class="total-price" id="cart-total-price">R$0,00</div>
+                      <div class="discount-info">
+                          <span id="discount-label">Você economizou</span>
+                          <span id="discount-price">R$0,00</span>
+                      </div>
+                  </div>
+
+                  <button class="continue-btn" disabled>
+                      Continuar (0)
+                  </button>
+              </div>
+          </div>
+            
+        </div><!-Content-->
+    </div>
+
+	<!-============-->
+	<!-FORM OVERLAY-->
+	<!-============-->
+    <div class="overlay" id="form-overlay">
+        <div class="overlay-content">
+          <div class="header">
+              <button class="back-btn" id="back-btn-form">🢦</button>
+              <span class="header-title">📍 Opção de Envio</span>
+          </div>
+          <div class="form-section">
+			<div class="section-title">Contato</div>
+            <div class="form-group">
+                <input type="cpf" id="cpf" placeholder="CPF"> </div>
+            <div class="form-group">
+                <input type="text" id="nomeCompleto" placeholder="Nome Completo"> </div>
+            <div class="form-group">
+                <input type="tel" id="telefone" placeholder="Número de telefone"> </div>
+            <div class="form-group">
+                  <input type="email" id="email" placeholder="E-mail"> </div>
+              
+            <div class="section-title">Endereço</div>
+            <div class="form-group">
+                <input type="text" id="cep" placeholder="CEP" maxlength="9"> </div>
+            <div class="form-group inline">
+                <div class="input-half">
+                    <input type="text" id="cidade" placeholder="Cidade" readonly> </div>
+                <div class="input-half">
+                    <input type="text" id="estado" placeholder="UF" readonly> </div>
+            </div>
+            <div class="form-group">
+                <input type="text" id="bairro" placeholder="Bairro" readonly> </div>
+            <div class="form-group inline">
+                <div class="input-half">
+                    <input type="text" id="logradouro" placeholder="Nome da rua" readonly> </div>
+                <div class="input-half">
+                    <input type="text" id="numero" placeholder="Nº"> </div>
+          	</div>
+            <div class="form-group">
+                <textarea id="complemento" placeholder="Complemento/Referências Próx./Descrição do Prédio"></textarea>            
+            </div>
+
+              <div class="section-title">Configurações</div>
+              <div class="setup-group">
+                  <span>Salvar como:</span>
+                  <div class="radio-group">
+                      <div class="radio-button selected" id="saveWork">Trabalho</div> <div class="radio-button" id="saveHome">Casa</div>
+                  </div>
+              </div>
+              <div class="toggle-group">
+                  <span>Definir como endereço padrão</span>
+                  <label class="switch">
+                      <input type="checkbox" id="enderecoPadrao">
+                      <span class="slider"></span>
+                  </label>
+              </div>
+          </div>
+          <div class="save-button-container">
+              <button class="save-button" id="save-button">Salvar</button>
+          </div>
+            
+        </div><!-Content-->
+    </div>
+
+    <div class="overlay" id="checkout">
+        <div class="overlay-content">
+
+            <div class="header">
+                <button class="back-btn" id="back-btn-checkout">🢦</button>
+                <span class="header-title">Termos e Condições</span>
+            </div>
+            <div class="policy">
+			</div>
+            <div class="store-section">
+                <div class="checkout-item-block">
+                    <div style="font-size: 0.9em; color: #777;">
+            <p>Você será direcionado para pagar através do link de pagamento do <strong>Mercado Pago</strong>. Estando logado na sua conta Mercado Pago, você tem a  segurança da <strong>Compra Garantida</strong>.</p>
+            <h4>Como funciona a Compra Garantida do Mercado Pago?</h4>
+            <p>A Compra Garantida do Mercado Pago é um benefício gratuito que visa proteger o comprador em transações realizadas dentro da plataforma. Para ter direito a ela, você precisa seguir alguns requisitos:</p>
+            <p><strong>• Pagar logado:</strong> É fundamental que você esteja com sua conta Mercado Pago logada ao realizar o pagamento pelo link. Pagamentos feitos como "convidado" ou "guest" não têm essa cobertura.</p>
+            <p><strong>• Não receber o produto:</strong> A garantia se aplica se você não receber o produto que comprou.</p>
+            <p><strong>• Abrir uma reclamação no prazo:</strong> Você precisa iniciar uma reclamação em até 14 dias corridos após a data do pagamento.</p>
+            <h4>O que acontece se eu precisar usar a Compra Garantida?</h4>
+            <p><strong>• Abra uma reclamação:</strong> Se você não receber o produto, deve iniciar uma reclamação através da sua conta Mercado Pago.
+            <p><strong>• Mercado Pago entra em contato com o vendedor:</strong> A plataforma tentará mediar a situação com o vendedor para encontrar uma solução.
+            <p><strong>• Devolução do dinheiro:</strong> Se a reclamação não for resolvida e for <strong>constatado</strong> que você não recebeu o produto, o Mercado Pago fará a devolução do valor da compra.
+            <h4>Casos em que a Compra Garantida não oferece cobertura:</h4>
+            <p>▫︎ Pagamentos realizados sem estar logado na conta Mercado Pago.
+            <p>▫︎ Compra de serviços, assinaturas ou produtos digitais (como streaming de vídeo, e-books, etc.).
+            <p>Em resumo, sempre que for pagar um link do Mercado Pago, certifique-se de estar logado na sua conta para ter a segurança da Compra Garantida.
+            <h4>Ficou alguma dúvida sobre o processo ou sobre a cobertura da Compra Garantida?</h4>
+            <p>Clique aqui e fale com a gente no whatsapp.</p>
+            		</div>
+                </div>
+            </div>
+            
+            <div class="bottom-section"> 
+            	        
+				<div class="total-section">
+                
+                  <div class="select-all-group">
+                      <input type="checkbox" class="select-all-checkbox" id="policy-agree-checkbox">
+                      <span class="select-all-text">Aceitar</span>
+                  </div>
+                  <button class="continue-btn" id="policy-agree-btn" disabled>
+                      Continuar
+                  </button>
+                 
+				</div>
+            	
+            </div>
+            
+        </div><!-Content-->
+    </div>
+
+    <div class="footer-bar" id="footerBar">
+        <button>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/WhatsApp.svg/2044px-WhatsApp.svg.png">
+            <span>Whatsapp</span>
+        </button>
+        <button>
+            <img src="https://raw.githubusercontent.com/zyon-king/Imortais/refs/heads/main/instagram-icon.png">
+            <span>Instagram</span>
+        </button>
+        <button>
+            <img src="https://raw.githubusercontent.com/zyon-king/Imortais/refs/heads/main/tiktok-icon.png">
+            <span>TikTok</span>
+        </button>
+        <button>
+            <img src="https://raw.githubusercontent.com/zyon-king/Imortais/refs/heads/main/mercadoLivre-icon.png">
+            <span>Mercado Livre</span>
+        </button>
+        <button class="openOverlay">
+            <img src="https://raw.githubusercontent.com/zyon-king/Imortais/refs/heads/main/shop-bag.png">
+            <span>Comprar Agora</span>
+        </button>
+        <button class="openOverlay">
+            <img src="https://raw.githubusercontent.com/zyon-king/Imortais/refs/heads/main/shop-cart.png">
+            <span>Adicionar</span>
+        </button>
+    </div>
+
+    <script>
+    /// --- Overlays ---
+    const openOverlayBtns = document.querySelectorAll('.openOverlay');
+    const myOverlay = document.getElementById('myOverlay');
+    const backBtnCart = document.getElementById('back-btn-cart');
+    const checkoutOverlay = document.getElementById('checkout');
+    const backBtnCheckout = document.getElementById('back-btn-checkout'); // NEW: Get checkout's back button
+    const continueBtn = document.querySelector('.continue-btn');
+
+    // --- Funcionalidade do Footer Bar (mantida como estava) ---
+    const footerBar = document.getElementById("footerBar");
+    let timeoutId;
+
+    footerBar.style.top = '2vh';
+
+    function handleScrollActivity() {
+        footerBar.classList.add("active");
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => {
+            footerBar.classList.remove("active");
+        }, 500);
+    }
+    window.addEventListener("scroll", handleScrollActivity);
+
+    // --- Abrir Overlay de Carrinho ---
+    openOverlayBtns.forEach(button => {
+        button.addEventListener('click', () => {
+            myOverlay.classList.add('active');
+            window.scrollTo({
+                top: 0,            // Scroll to the top (0 pixels from the top)
+                behavior: 'smooth' // Makes the scroll animated and smooth
+            });
+        });
+    });
+
+    // --- Fechar Overlay de Carrinho (backBtnCart click) ---
+    // This listener handles the back button IN THE CART OVERLAY
+    if (backBtnCart) {
+        backBtnCart.addEventListener('click', () => {
+            myOverlay.classList.remove('active'); // Simply close the cart
+        });
+    }
+
+    // --- Fechar Overlay clicando fora do myOverlay (cart) ---
+    myOverlay.addEventListener('click', (event) => {
+        if (event.target === myOverlay) {
+            myOverlay.classList.remove('active');
+        }
+    });
+
+	// --- Fechar Overlay de Checkout (backBtnCheckout click) ---
+    if (backBtnCheckout) {
+        backBtnCheckout.addEventListener('click', () => {
+            // When clicking back from checkout, you likely want to go back to the cart,
+            // not just close everything.
+            if (checkoutOverlay) {
+                checkoutOverlay.classList.remove('active'); // Close checkout
+            }
+            myOverlay.classList.add('active'); // Open cart again
+        });
+    }
+
+    // --- Fechar Overlay clicando fora do myOverlay (cart) ---
+    checkoutOverlay.addEventListener('click', (event) => {
+        if (event.target === checkoutOverlay) {
+            checkoutOverlay.classList.remove('active');
+        }
+    });
+
+    // --- Funcionalidade do Botão 'Continuar' (Abrir Checkout) ---
+    if (continueBtn) { // Verifica se o botão existe
+        continueBtn.addEventListener('click', () => {
+            myOverlay.classList.remove('active'); // Esconde o overlay do carrinho
+            if (checkoutOverlay) { // Verifica se o overlay de checkout existe
+                checkoutOverlay.classList.add('active'); // Mostra o overlay de checkout
+            }
+        });
+    }
+
+    // --- Fechar Overlays com a Tecla ESC ---
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+            if (myOverlay.classList.contains('active')) {
+                myOverlay.classList.remove('active');
+            }
+            if (checkoutOverlay && checkoutOverlay.classList.contains('active')) {
+                checkoutOverlay.classList.remove('active');
+            }
+        }
+    });
+
+    // --- Funcionalidades do Carrinho ---
+// --- Funcionalidades do Carrinho ---
+const productCheckboxes = document.querySelectorAll('.product-checkbox');
+const storeCheckboxes = document.querySelectorAll('.store-checkbox');
+const selectAllCheckbox = document.querySelector('.select-all-checkbox');
+const noSelectionElement = document.querySelector('.no-selection');
+
+// Obtenha referências aos elementos de desconto
+const discountLabel = document.getElementById('discount-label');
+const discountPrice = document.getElementById('discount-price');
+// Obtenha referência ao elemento do preço do frete
+const shippingPriceElement = document.getElementById('shipping-price');
+
+// Esconda-os por padrão ao carregar a página
+if (discountLabel) discountLabel.style.display = 'none';
+if (discountPrice) discountPrice.style.display = 'none';
+
+// Desmarcar todos os checkboxes ao carregar a página
+productCheckboxes.forEach(checkbox => {
+    checkbox.checked = false;
+});
+storeCheckboxes.forEach(checkbox => {
+    checkbox.checked = false;
+});
+if (selectAllCheckbox) {
+    selectAllCheckbox.checked = false;
+}
+
+// Função para calcular e atualizar o total e a contagem de itens selecionados
+function updateTotal() {
+    let total = 0;
+    let count = 0;
+    let totalDiscount = 0;
+
+    productCheckboxes.forEach(checkbox => {
+        if (checkbox.checked) {
+            const productItem = checkbox.closest('.product-item');
+            if (productItem) {
+                const priceElement = productItem.querySelector('.product-price');
+                const oldPriceElement = productItem.querySelector('.product-old-price');
+                const quantityInputElement = productItem.querySelector('.quantity-input');
+
+                if (priceElement && quantityInputElement) {
+                    const priceText = priceElement.textContent;
+                    const price = parseFloat(priceText.replace('R$', '').replace(',', '.').trim());
+                    const quantity = parseInt(quantityInputElement.value);
+
+                    if (!isNaN(price) && !isNaN(quantity)) {
+                        total += price * quantity;
+                        count += quantity;
+
+                        if (oldPriceElement) {
+                            const oldPriceText = oldPriceElement.textContent;
+                            const oldPrice = parseFloat(oldPriceText.replace('R$', '').replace(',', '.').trim());
+                            if (!isNaN(oldPrice)) {
+                                totalDiscount += (oldPrice - price) * quantity;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // --- Adicionar o preço do frete se houver itens selecionados ---
+    if (count > 0 && shippingPriceElement) {
+        const shippingText = shippingPriceElement.textContent;
+        const shippingValue = parseFloat(shippingText.replace('R$', '').replace(',', '.').trim());
+        if (!isNaN(shippingValue)) {
+            total += shippingValue;
+        }
+        // Optionally, make the shipping price visible if it's hidden by default
+        shippingPriceElement.closest('.shipping').style.display = 'flex'; // Or 'block', adjust as needed
+    }
+    // --- Fim da lógica do frete ---
+
+    document.querySelector('.total-price').textContent = `R$${total.toFixed(2).replace('.', ',')}`;
+    document.querySelector('.continue-btn').textContent = `Continuar (${count})`;
+
+    const continueButton = document.querySelector('.continue-btn');
+    if (continueButton) {
+        if (validateForm() && count > 0) {
+            document.querySelector('.continue-btn').disabled = false;
+        } else {
+            document.querySelector('.continue-btn').disabled = true;
+        }
+    }
+
+    // --- LÓGICA DO VALOR ECONOMIZADO ---
+    if (count > 0 && totalDiscount > 0) {
+        if (discountLabel) discountLabel.style.display = 'inline-block';
+        if (discountPrice) {
+            discountPrice.textContent = `R$${totalDiscount.toFixed(2).replace('.', ',')}`;
+            discountPrice.style.display = 'inline-block';
+        }
+    } else {
+        if (discountLabel) discountLabel.style.display = 'none';
+        if (discountPrice) discountPrice.style.display = 'none';
+    }
+    // --- FIM DA LÓGICA DO VALOR ECONOMIZADO ---
+
+    if (selectAllCheckbox) {
+        const allProductsChecked = Array.from(productCheckboxes).every(cb => cb.checked);
+        selectAllCheckbox.checked = allProductsChecked;
+    }
+}
+
+    // Função para verificar e atualizar o estado do noSelectionElement
+    function updateNoSelectionDisplay() {
+        const anyProductChecked = Array.from(productCheckboxes).some(cb => cb.checked);
+        if (noSelectionElement) {
+            if (anyProductChecked) {
+                noSelectionElement.style.display = 'none';
+            } else {
+                noSelectionElement.style.display = 'flex';
+            }
+        }
+    }
+
+    // Adiciona event listeners para os botões de quantidade
+    document.querySelectorAll('.quantity-controls .quantity-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const productItem = this.closest('.product-item');
+            const quantityInput = productItem.querySelector('.quantity-input');
+            const productCheckbox = productItem.querySelector('.product-checkbox');
+            let currentQuantity = parseInt(quantityInput.value);
+
+            if (this.textContent === '+') {
+                currentQuantity++;
+                if (productCheckbox) {
+                    productCheckbox.checked = true;
+                }
+            } else if (this.textContent === '−') {
+                if (currentQuantity > 1) {
+                    currentQuantity--;
+                }
+            }
+            quantityInput.value = currentQuantity;
+
+            updateTotal();
+            updateNoSelectionDisplay();
+        });
+    });
+
+    // Configura listeners para os checkboxes de loja
+    function setupStoreCheckboxesListeners() {
+        storeCheckboxes.forEach(storeCheckbox => {
+            storeCheckbox.addEventListener('change', function() {
+                const isStoreChecked = this.checked;
+                const storeSection = this.closest('.store-section');
+                if (storeSection) {
+                    storeSection.querySelectorAll('.product-checkbox').forEach(productCb => {
+                        productCb.checked = isStoreChecked;
+                    });
+                }
+                updateTotal();
+                updateNoSelectionDisplay();
+            });
+        });
+    }
+
+    // Configura listeners para os checkboxes de produto
+    function setupProductCheckboxesListeners() {
+        productCheckboxes.forEach(productCheckbox => {
+            productCheckbox.addEventListener('change', function() {
+                updateTotal();
+                updateNoSelectionDisplay();
+                const storeSection = this.closest('.store-section');
+                if (storeSection) {
+                    const allProductsInStore = storeSection.querySelectorAll('.product-checkbox');
+                    const allCheckedInStore = Array.from(allProductsInStore).every(cb => cb.checked);
+                    const storeCb = storeSection.querySelector('.store-checkbox');
+                    if (storeCb) {
+                        storeCb.checked = allCheckedInStore;
+                    }
+                }
+            });
+        });
+    }
+
+    // Funcionalidade do checkbox "Tudo"
+    if (selectAllCheckbox) {
+        selectAllCheckbox.addEventListener('change', function() {
+            const isChecked = this.checked;
+            productCheckboxes.forEach(checkbox => {
+                checkbox.checked = isChecked;
+            });
+            storeCheckboxes.forEach(checkbox => {
+                checkbox.checked = isChecked;
+            });
+            updateTotal();
+            updateNoSelectionDisplay();
+        });
+    }
+        
+    // --- ============ ---
+    // --- FORM OVERLAY ---
+    // --- ============ ---
+    const openFormBtns = document.querySelectorAll('.edit-btn'); // Changed to openFormBtns (plural)
+    const formOverlay = document.getElementById('form-overlay');
+    const backBtnForm = document.getElementById('back-btn-form');
+
+    // --- Abrir Form (edit-btn click) ---
+    // Loop through each button with the class 'edit-btn'
+    openFormBtns.forEach(button => {
+        button.addEventListener('click', () => {
+            myOverlay.classList.remove('active'); // Hide the cart overlay
+            if (formOverlay) { // Check if the form overlay exists
+                formOverlay.classList.add('active'); // Show the form overlay
+            }
+        });
+    });
+
+    // --- Fechar Form (backBtnForm click) ---
+    if (backBtnForm) {
+        backBtnForm.addEventListener('click', () => {
+            if (formOverlay) {
+                formOverlay.classList.remove('active'); // Close form overlay
+            }
+            myOverlay.classList.add('active'); // Open cart again
+        });
+    }
+    
+    // --- Fechar Overlay clicando fora do formOverlay ---
+    if (formOverlay) { // Make sure formOverlay exists before adding listener
+        formOverlay.addEventListener('click', (event) => {
+            if (event.target === formOverlay) {
+                formOverlay.classList.remove('active');
+                // Optionally, if you want to go back to the cart after closing the form,
+                // you can uncomment the line below:
+                // myOverlay.classList.add('active');
+            }
+        });
+    }
+
+	const radioButtons = document.querySelectorAll('.radio-group .radio-button');
+		if (radioButtons) {
+			radioButtons.forEach(button => {
+				button.addEventListener('click', function() {
+					radioButtons.forEach(btn => btn.classList.remove('selected'));
+					this.classList.add('selected');
+			});
+		});
+	}
+
+    // CEP fields
+    const cepInput = document.getElementById('cep');
+    const cidadeInput = document.getElementById('cidade');
+    const estadoInput = document.getElementById('estado');
+    const bairroInput = document.getElementById('bairro');
+    const logradouroInput = document.getElementById('logradouro');
+    const numeroInput = document.getElementById('numero');
+    const complementoInput = document.getElementById('complemento');
+    
+    // Get references to form elements
+    const cpfInput = document.getElementById('cpf');
+    const nomeCompletoInput = document.getElementById('nomeCompleto');
+    const telefoneInput = document.getElementById('telefone');
+    const emailInput = document.getElementById('email');
+    // CEP fields are already defined: cepInput, cidadeInput, bairroInput, logradouroInput, numeroInput, complementoInput
+
+    const saveButton = document.getElementById('save-button');
+    const showAddressDiv = document.getElementById('showAddress');
+    const saveWorkRadio = document.getElementById('saveWork');
+    const saveHomeRadio = document.getElementById('saveHome');
+    const enderecoPadraoCheckbox = document.getElementById('enderecoPadrao');
+
+    // Function to validate if all required fields are filled
+    function validateForm() {
+        // List of required input fields (adjust as needed)
+        const requiredFields = [
+            cpfInput,
+            nomeCompletoInput,
+            telefoneInput,
+            emailInput,
+            cepInput,
+            cidadeInput,
+	    estadoInput,
+            bairroInput,
+            logradouroInput,
+            numeroInput
+        ];
+
+        let allFilled = true;
+        requiredFields.forEach(field => {
+            if (!field.value.trim()) { // Check if value is empty or just whitespace
+                allFilled = false;
+                // Optional: Add a class to highlight empty fields
+                // field.classList.add('is-invalid');
+            } else {
+                // field.classList.remove('is-invalid');
+            }
+        });
+
+        // Enable/disable the save button based on validation
+        if (saveButton) {
+            if (allFilled) {
+                saveButton.classList.add('active'); // Apply active style
+                saveButton.disabled = false;
+            } else {
+                saveButton.classList.remove('active'); // Remove active style
+                saveButton.disabled = true;
+            }
+        }
+
+        return allFilled;
+    }
+	// Add event listeners to all relevant input fields to re-validate on change
+	document.querySelectorAll('.form-section input, .form-section textarea').forEach(input => {
+	    input.addEventListener('input', () => { // Changed to an arrow function for conciseness
+	        validateForm(); // Re-validate the form itself
+	        updateTotal();  // <-- ADD THIS LINE: Re-evaluate the "Continuar" button's state
+	    });
+	});
+
+    // Function to capture and display address
+    const shippingLabel = document.getElementById('shipping-label');
+    
+    if (saveButton) {
+        saveButton.addEventListener('click', (event) => {
+            event.preventDefault(); // Prevent default form submission if it were a <form>
+	
+            if (validateForm()) { // Only proceed if the form is valid
+            	shippingLabel.style.display = 'none';
+                
+                const cpf = cpfInput.value.trim();
+                const nomeCompleto = nomeCompletoInput.value.trim();
+                const telefone = telefoneInput.value.trim();
+                const email = emailInput.value.trim();
+                const cep = cepInput.value.trim();
+                const cidade = cidadeInput.value.trim();
+		const estado = estadoInput.value.trim();
+                const bairro = bairroInput.value.trim();
+                const logradouro = logradouroInput.value.trim();
+                const numero = numeroInput.value.trim();
+                const complemento = complementoInput.value.trim(); // Optional field
+
+                let tipoEndereco = '';
+                if (saveWorkRadio && saveWorkRadio.classList.contains('selected')) {
+                    tipoEndereco = 'Trabalho';
+                } else if (saveHomeRadio && saveHomeRadio.classList.contains('selected')) {
+                    tipoEndereco = 'Casa';
+                }
+
+                const isDefaultAddress = enderecoPadraoCheckbox ? enderecoPadraoCheckbox.checked : false;
+
+                // Construct the display string
+                let addressDisplay = `${cpf}<br>`;
+	            addressDisplay += `<strong>${nomeCompleto}</strong><br>`;
+	            addressDisplay += `${email}<br>`;
+	            addressDisplay += `${telefone}<br><br>`;
+	            addressDisplay += `${logradouro}, ${numero}<br>`;
+	            addressDisplay += `${bairro}<br>`;
+	            addressDisplay += `${cidade} - ${estado}<br>`;
+	            addressDisplay += `${cep}<br>`;
+		    addressDisplay += `Complemento: ${complemento}<br><br>`;
+	            addressDisplay += `Tipo: ${tipoEndereco}<br>`;
+	            addressDisplay += `Endereço Padrão: ${isDefaultAddress ? 'Sim' : 'Não'}`;
+	
+	            if (showAddressDiv) {
+	                // IMPORTANT: Use innerHTML to render HTML tags
+	                showAddressDiv.innerHTML = addressDisplay;
+                    showAddressDiv.style.display = 'block'; // Make the div visible
+                    
+                    if (formOverlay) { // Check if formOverlay exists
+                        formOverlay.classList.remove('active'); // Hide the form overlay
+                    }
+
+                    if (myOverlay) { // Check if formOverlay exists
+                        myOverlay.classList.add('active'); // Hide the form overlay
+                    }
+                }
+
+                alert('Endereço salvo com sucesso! Veja os detalhes abaixo.'); // Feedback to user
+
+            } else {
+                alert('Por favor, preencha todos os campos obrigatórios.');
+            }
+        });
+    }
+
+    // Function to clear address fields
+    function clearAddressFields() {
+        cidadeInput.value = '';
+	estadoInput.value = '';
+        bairroInput.value = '';
+        logradouroInput.value = '';
+	}
+
+	// Function to fetch address from ViaCEP
+	async function fetchAddressByCEP(cep) {
+		clearAddressFields(); // Clear fields before fetching
+
+        cidadeInput.readOnly = true;
+	estadoInput.readOnly = true;
+        bairroInput.readOnly = true;
+        logradouroInput.readOnly = true;
+	
+        const cleanedCep = cep.replace(/\D/g, ''); // Remove non-digits
+	
+        if (cleanedCep.length !== 8) {
+        	// Not a valid CEP length, clear and reset placeholders
+            cidadeInput.placeholder = 'Cidade';
+	    estadoInput.placeholder = 'UF';
+            bairroInput.placeholder = 'Bairro';
+            logradouroInput.placeholder = 'Nome da rua';
+            return;
+        }
+			
+        try {
+			const response = await fetch(`https://viacep.com.br/ws/${cleanedCep}/json/`);
+			const data = await response.json();
+
+			if (data.erro) {
+            	alert('CEP não encontrado.');
+            	clearAddressFields();
+            	cidadeInput.placeholder = 'CEP não encontrado';
+		estadoInput.placeholder = 'CEP não encontrado';
+            	bairroInput.placeholder = 'CEP não encontrado';
+            	logradouroInput.placeholder = 'CEP não encontrado';
+            } else {
+                cidadeInput.value = data.localidade;
+		estadoInput.value = data.uf;
+                bairroInput.value = data.bairro;
+                logradouroInput.value = data.logradouro;
+                numeroInput.focus(); // Focus on the number field
+            }
+        } catch (error) {
+            console.error('Erro ao buscar CEP:', error);
+            alert('Erro ao buscar o CEP. Tente novamente.');
+            clearAddressFields();
+            cidadeInput.placeholder = 'Erro na busca';
+	    estadoInput.placeholder = 'Erro na busca';
+            bairroInput.placeholder = 'Erro na busca';
+            logradouroInput.placeholder = 'Erro na busca';
+	} finally {
+        	// Reset placeholders to original after fetching
+        	if (cidadeInput.value === '') cidadeInput.placeholder = 'Cidade';		
+	    if (estadoInput.value === '') estadoInput.placeholder = 'UF';
+            if (bairroInput.value === '') bairroInput.placeholder = 'Bairro';
+            if (logradouroInput.value === '') logradouroInput.placeholder = 'Nome da rua';
+
+            cidadeInput.readOnly = false;
+            bairroInput.readOnly = false;
+            logradouroInput.readOnly = false;
+		}
+	}// <--- Function to fetch address from ViaCEP
+    
+    // Add an event listener for CPF input
+    if (cpfInput) {
+        cpfInput.addEventListener('input', function (e) {
+            let value = e.target.value.replace(/\D/g, ''); // Remove all non-digit characters
+
+            // Apply CPF mask: 000.000.000-00
+            if (value.length > 9) {
+                value = value.substring(0, 3) + '.' + value.substring(3, 6) + '.' + value.substring(6, 9) + '-' + value.substring(9, 11);
+            } else if (value.length > 6) {
+                value = value.substring(0, 3) + '.' + value.substring(3, 6) + '.' + value.substring(6, 9);
+            } else if (value.length > 3) {
+                value = value.substring(0, 3) + '.' + value.substring(3, 6);
+            }
+            e.target.value = value;
+            validateForm(); // Re-validate the form after input
+        });
+    }
+
+    // Add an event listener for nomeCompletoInput
+    if (nomeCompletoInput) {
+        nomeCompletoInput.addEventListener('input', function (e) {
+            let value = e.target.value;
+            // Capitalize the first letter of each word and remove extra spaces
+            value = value.replace(/\s\s+/g, ' ') // Replace multiple spaces with a single space
+                         .split(' ') // Split the string into an array of words
+                         .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()) // Capitalize first letter
+                         .join(' '); // Join the words back into a string
+            e.target.value = value.trim(); // Remove leading/trailing whitespace
+            validateForm(); // Re-validate the form after input
+        });
+    }
+
+    // Add an event listener for telefoneInput
+    if (telefoneInput) {
+        telefoneInput.addEventListener('input', function (e) {
+            let value = e.target.value.replace(/\D/g, ''); // Remove all non-digit characters
+
+            if (value.length > 11) { // For international or very long numbers
+                // Keep the first digits as country code and then format
+                // This is a simplified approach, a more robust solution might involve a library
+                value = '+' + value.substring(0,2) + ' (' + value.substring(2,4) + ') ' + value.substring(4,9) + '-' + value.substring(9,13);
+            } else if (value.length > 10) { // (XX) XXXXX-XXXX (mobile with DDD)
+                value = '(' + value.substring(0,2) + ') ' + value.substring(2,7) + '-' + value.substring(7,11);
+            } else if (value.length > 9) { // (XX) XXXX-XXXX (landline with DDD)
+                value = '(' + value.substring(0,2) + ') ' + value.substring(2,6) + '-' + value.substring(6,10);
+            } else if (value.length > 5) { // XXXX-XXXX (landline without DDD)
+                value = value.substring(0,5) + '-' + value.substring(5,9);
+            } else if (value.length > 4) { // XXXX-X (incomplete landline)
+                 value = value.substring(0,4) + '-' + value.substring(4);
+            }
+            e.target.value = value;
+            validateForm(); // Re-validate the form after input
+        });
+    }
+    
+    // Event listener for CEP input (fires on every change)
+    if (cepInput) {
+        // Add a mask to the CEP input
+        cepInput.addEventListener('input', function (e) {
+            let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+            if (value.length > 5) {
+                value = value.substring(0, 5) + '-' + value.substring(5, 8);
+            }
+            e.target.value = value;
+
+            // --- NEW: Trigger search immediately if 8 digits are typed ---
+            const cleanedCep = value.replace(/\D/g, ''); // Clean CEP again for the check
+            if (cleanedCep.length === 8) {
+                fetchAddressByCEP(cleanedCep);
+            } else {
+                // Optionally clear fields if CEP becomes invalid (e.g., user backspaces)
+                clearAddressFields();
+            }
+        });
+    }
+    
+    // Policy code-block
+    const policyAgreeCheckbox = document.getElementById('policy-agree-checkbox');
+    const policyAgreeButton = document.getElementById('policy-agree-btn');
+
+    // Add an event listener to the checkbox
+    policyAgreeCheckbox.addEventListener('change', function() {
+        // Set the disabled property of the button based on the checkbox's checked state
+        policyAgreeButton.disabled = !this.checked;
+    });
+
+    // Optionally, call it once on page load to set initial state
+    // This ensures the button is disabled if the checkbox isn't checked by default
+    policyAgreeButton.disabled = !policyAgreeCheckbox.checked;
+
+    // --- Inicialização ao carregar a página ---
+    document.addEventListener('DOMContentLoaded', () => {
+        setupStoreCheckboxesListeners();
+        setupProductCheckboxesListeners();
+        updateTotal();
+        updateNoSelectionDisplay();
+    });
+</script>
+
+</body>
+</html>
