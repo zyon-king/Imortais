@@ -1008,10 +1008,11 @@
         /* ========================================= */
         .footer-bar {        
         	position: relative;
-        	top: 2vh !important;
+        	top: .5vh !important;
+        	margin-bottom: .5vh !important;
             z-index: 999 !important; /* Abaixo do overlay, acima de outro conteúdo */
-            min-width: 550px !important;
-            max-width: 550px !important;
+            min-width: 65vw !important;
+            max-width: 70vw !important;
             background-color: #4B0082/*#f05713*/;
             backdrop-filter: blur(8px); /* Efeito de vidro fosco */
             border-radius: 8px;
@@ -1020,7 +1021,6 @@
             justify-content: center;
             gap: 0.4em; /* Espaço entre os botões */
             box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-            opacity: 0.25; /* Começa com 25% de opacidade */
             transform: scale(1);
             left: 0;
             right: 0;
@@ -1030,13 +1030,12 @@
 
         /* Efeito hover para a barra de rodapé */
         .footer-bar:hover {
-            opacity: 1; /* Aumenta para 100% de opacidade suavemente */
             transform: scale(1.01); /* Leve aumento de escala */
         }
 
         /* Estado ativo da barra de rodapé */
         .footer-bar.active {
-          opacity: 1;
+            opacity: 0.25; /* Começa com 25% de opacidade */
           transform: scale(1.01);
         }
 
@@ -1049,8 +1048,8 @@
             cursor: pointer;
             display: flex;
             flex-direction: column; /* Organiza ícone e texto em coluna */
-            width: 18vw;
-            height: auto;
+            width: 10vw;
+            height: 10vw;
             align-items: center;
             padding: 0.04em 0.16em;
             border-radius: 8px;
@@ -1070,17 +1069,17 @@
 
         /* Texto do rótulo do botão da barra de rodapé */
         .footer-bar button span {
-            font-size: 0.6em;
-            margin-top: 0.01em;
+            font-size: 1.2vw;
+            margin-top: 0.01vh;
             color: #333;
         }
 
         /* Imagem do ícone do botão da barra de rodapé */
         .footer-bar button img {
-            width: 8vw;
-            height: 8vh;
-            min-width: 6vw;
-            min-height: 6vh;
+            width: 7vw;
+            height: 7vw;
+            min-width: 3vw;
+            min-height: 3vw;
         }
 
     </style>
@@ -1095,17 +1094,10 @@
                 <p>O ano era 1889, e a atmosfera hipnotizante de Paris, a cidade das luzes, torna-se pano de fundo para a trama desenrolar-se em meio a um contexto de dualidade, onde a luta entre a luz e as trevas se torna iminente.</p>
                 <p>Não se tratava apenas de escolhas imprevisíveis, mas de profecias seladas com consequências inimagináveis. Venha mergulhar de cabeça nesta jornada, onde dois irmãos, cujo anseio por poder e respeito os conduz por um caminho sombrio sem volta, repleto de dilemas morais.</p>
                 <p>Tudo isso entrelaçado por uma narrativa cativante e repleta de reviravoltas. Então prepare-se, porque batalhas épicas estão prestes a começar.</p>
-                <table>
-                  <tr>
-                    <td colspan="2"><button class="button-89" role="button">Saiba Mais</button></td>
-                  </tr>
-                  <tr>
-                    <td colspan="2"><button class="btn">🛒 Adicionar ao Carrinho?</button></td>
-                  </tr>
-                </table>
+                <button class="button-89" role="button">Saiba Mais</button>
             </div>
             
-         <div class="footer-bar" id="footerBar">
+      <div class="footer-bar" id="footerBar">
         <button>
             <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/WhatsApp.svg/2044px-WhatsApp.svg.png">
             <span>Whatsapp</span>
@@ -1130,7 +1122,7 @@
             <img src="https://raw.githubusercontent.com/zyon-king/Imortais/refs/heads/main/shop-cart.png">
             <span>Adicionar</span>
         </button>
-    </div>
+    		</div>
         </div>
     </div>
     <div class="container" id="container-video">    
@@ -1201,7 +1193,34 @@
                 <p>Leitor misterioso.</p>
                 <p>Japão | Abril, 2025.</p>
             </div>
-            
+            <div class="footer-bar" id="footerBar">
+        <button>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/WhatsApp.svg/2044px-WhatsApp.svg.png">
+            <span>Whatsapp</span>
+        </button>
+        <button>
+            <img src="https://raw.githubusercontent.com/zyon-king/Imortais/refs/heads/main/instagram-icon.png">
+            <span>Instagram</span>
+        </button>
+        <button>
+            <img src="https://raw.githubusercontent.com/zyon-king/Imortais/refs/heads/main/tiktok-icon.png">
+            <span>TikTok</span>
+        </button>
+        <button>
+            <img src="https://raw.githubusercontent.com/zyon-king/Imortais/refs/heads/main/mercadoLivre-icon.png">
+            <span>Mercado Livre</span>
+        </button>
+        <button class="openOverlay">
+            <img src="https://raw.githubusercontent.com/zyon-king/Imortais/refs/heads/main/shop-bag.png">
+            <span>Comprar Agora</span>
+        </button>
+        <button class="openOverlay">
+            <img src="https://raw.githubusercontent.com/zyon-king/Imortais/refs/heads/main/shop-cart.png">
+            <span>Adicionar</span>
+        </button>
+    </div>
+        </div>
+    		</div>
         </div>
     </div>
 
@@ -1228,12 +1247,6 @@ Outro ponto que merece destaque é a relação entre os irmãos. Embora unidos p
                 </span>
                 <button class="read-more-btn" id="read-more-btn">Leia Mais</button>
             	</p>
-        
-                <table>
-                  <tr>
-                    <td colspan="2"><button class="btn">🛒 Adicionar ao carrinho?</button></td>
-                  </tr>
-                </table>
             
         	</div>
             
