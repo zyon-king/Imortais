@@ -1008,11 +1008,9 @@
         /* ========================================= */
         .footer-bar {        
         	position: relative;
-        	top: .5vh !important;
-        	margin-bottom: .5vh !important;
+        	margin-bottom: 4vh !important;
             z-index: 999 !important; /* Abaixo do overlay, acima de outro conteúdo */
-            min-width: 65vw !important;
-            max-width: 70vw !important;
+            width: 78vw !important;
             background-color: #4B0082/*#f05713*/;
             backdrop-filter: blur(8px); /* Efeito de vidro fosco */
             border-radius: 8px;
@@ -1021,6 +1019,7 @@
             justify-content: center;
             gap: 0.4em; /* Espaço entre os botões */
             box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+          	opacity: 1;
             transform: scale(1);
             left: 0;
             right: 0;
@@ -1035,7 +1034,6 @@
 
         /* Estado ativo da barra de rodapé */
         .footer-bar.active {
-            opacity: 0.25; /* Começa com 25% de opacidade */
           transform: scale(1.01);
         }
 
@@ -1048,8 +1046,8 @@
             cursor: pointer;
             display: flex;
             flex-direction: column; /* Organiza ícone e texto em coluna */
-            width: 10vw;
-            height: 10vw;
+            width: 12vw;
+            height: 12vw;
             align-items: center;
             padding: 0.04em 0.16em;
             border-radius: 8px;
@@ -1069,17 +1067,17 @@
 
         /* Texto do rótulo do botão da barra de rodapé */
         .footer-bar button span {
-            font-size: 1.2vw;
-            margin-top: 0.01vh;
+            font-size: 2vw;
+            margin-top: 0.01em;
             color: #333;
         }
 
         /* Imagem do ícone do botão da barra de rodapé */
         .footer-bar button img {
-            width: 7vw;
-            height: 7vw;
-            min-width: 3vw;
-            min-height: 3vw;
+            width: 8vw;
+            height: 8vw;
+            min-width: 6vw;
+            min-height: 6vw;
         }
 
     </style>
@@ -1094,35 +1092,43 @@
                 <p>O ano era 1889, e a atmosfera hipnotizante de Paris, a cidade das luzes, torna-se pano de fundo para a trama desenrolar-se em meio a um contexto de dualidade, onde a luta entre a luz e as trevas se torna iminente.</p>
                 <p>Não se tratava apenas de escolhas imprevisíveis, mas de profecias seladas com consequências inimagináveis. Venha mergulhar de cabeça nesta jornada, onde dois irmãos, cujo anseio por poder e respeito os conduz por um caminho sombrio sem volta, repleto de dilemas morais.</p>
                 <p>Tudo isso entrelaçado por uma narrativa cativante e repleta de reviravoltas. Então prepare-se, porque batalhas épicas estão prestes a começar.</p>
-                <button class="button-89" role="button">Saiba Mais</button>
+                <table>
+                  <tr>
+                    <td colspan="2"><button class="button-89" role="button">Saiba Mais</button></td>
+                  </tr>
+                  <tr>
+                    <td colspan="2"><button class="btn">🛒 Adicionar ao Carrinho?</button></td>
+                  </tr>
+                </table>
             </div>
             
-      <div class="footer-bar" id="footerBar">
-        <button>
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/WhatsApp.svg/2044px-WhatsApp.svg.png">
-            <span>Whatsapp</span>
-        </button>
-        <button>
-            <img src="https://raw.githubusercontent.com/zyon-king/Imortais/refs/heads/main/instagram-icon.png">
-            <span>Instagram</span>
-        </button>
-        <button>
-            <img src="https://raw.githubusercontent.com/zyon-king/Imortais/refs/heads/main/tiktok-icon.png">
-            <span>TikTok</span>
-        </button>
-        <button>
-            <img src="https://raw.githubusercontent.com/zyon-king/Imortais/refs/heads/main/mercadoLivre-icon.png">
-            <span>Mercado Livre</span>
-        </button>
-        <button class="openOverlay">
-            <img src="https://raw.githubusercontent.com/zyon-king/Imortais/refs/heads/main/shop-bag.png">
-            <span>Comprar Agora</span>
-        </button>
-        <button class="openOverlay">
-            <img src="https://raw.githubusercontent.com/zyon-king/Imortais/refs/heads/main/shop-cart.png">
-            <span>Adicionar</span>
-        </button>
-    		</div>
+         	<div class="footer-bar" id="footerBar">
+              <button>
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/WhatsApp.svg/2044px-WhatsApp.svg.png">
+                  <span>Whatsapp</span>
+              </button>
+              <button>
+                  <img src="https://raw.githubusercontent.com/zyon-king/Imortais/refs/heads/main/instagram-icon.png">
+                  <span>Instagram</span>
+              </button>
+              <button>
+                  <img src="https://raw.githubusercontent.com/zyon-king/Imortais/refs/heads/main/tiktok-icon.png">
+                  <span>TikTok</span>
+              </button>
+              <button>
+                  <img src="https://raw.githubusercontent.com/zyon-king/Imortais/refs/heads/main/mercadoLivre-icon.png">
+                  <span>Mercado Livre</span>
+              </button>
+              <button class="openOverlay">
+                  <img src="https://raw.githubusercontent.com/zyon-king/Imortais/refs/heads/main/shop-bag.png">
+                  <span>Comprar Agora</span>
+              </button>
+              <button class="openOverlay">
+                  <img src="https://raw.githubusercontent.com/zyon-king/Imortais/refs/heads/main/shop-cart.png">
+                  <span>Adicionar</span>
+              </button>
+          </div>
+          
         </div>
     </div>
     <div class="container" id="container-video">    
@@ -1193,34 +1199,34 @@
                 <p>Leitor misterioso.</p>
                 <p>Japão | Abril, 2025.</p>
             </div>
-            <div class="footer-bar" id="footerBar">
-        <button>
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/WhatsApp.svg/2044px-WhatsApp.svg.png">
-            <span>Whatsapp</span>
-        </button>
-        <button>
-            <img src="https://raw.githubusercontent.com/zyon-king/Imortais/refs/heads/main/instagram-icon.png">
-            <span>Instagram</span>
-        </button>
-        <button>
-            <img src="https://raw.githubusercontent.com/zyon-king/Imortais/refs/heads/main/tiktok-icon.png">
-            <span>TikTok</span>
-        </button>
-        <button>
-            <img src="https://raw.githubusercontent.com/zyon-king/Imortais/refs/heads/main/mercadoLivre-icon.png">
-            <span>Mercado Livre</span>
-        </button>
-        <button class="openOverlay">
-            <img src="https://raw.githubusercontent.com/zyon-king/Imortais/refs/heads/main/shop-bag.png">
-            <span>Comprar Agora</span>
-        </button>
-        <button class="openOverlay">
-            <img src="https://raw.githubusercontent.com/zyon-king/Imortais/refs/heads/main/shop-cart.png">
-            <span>Adicionar</span>
-        </button>
-    </div>
-        </div>
-    		</div>
+            
+         	<div class="footer-bar" id="footerBar">
+              <button>
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/WhatsApp.svg/2044px-WhatsApp.svg.png">
+                  <span>Whatsapp</span>
+              </button>
+              <button>
+                  <img src="https://raw.githubusercontent.com/zyon-king/Imortais/refs/heads/main/instagram-icon.png">
+                  <span>Instagram</span>
+              </button>
+              <button>
+                  <img src="https://raw.githubusercontent.com/zyon-king/Imortais/refs/heads/main/tiktok-icon.png">
+                  <span>TikTok</span>
+              </button>
+              <button>
+                  <img src="https://raw.githubusercontent.com/zyon-king/Imortais/refs/heads/main/mercadoLivre-icon.png">
+                  <span>Mercado Livre</span>
+              </button>
+              <button class="openOverlay">
+                  <img src="https://raw.githubusercontent.com/zyon-king/Imortais/refs/heads/main/shop-bag.png">
+                  <span>Comprar Agora</span>
+              </button>
+              <button class="openOverlay">
+                  <img src="https://raw.githubusercontent.com/zyon-king/Imortais/refs/heads/main/shop-cart.png">
+                  <span>Adicionar</span>
+              </button>
+          </div>
+            
         </div>
     </div>
 
@@ -1247,6 +1253,12 @@ Outro ponto que merece destaque é a relação entre os irmãos. Embora unidos p
                 </span>
                 <button class="read-more-btn" id="read-more-btn">Leia Mais</button>
             	</p>
+        
+                <table>
+                  <tr>
+                    <td colspan="2"><button class="btn">🛒 Adicionar ao carrinho?</button></td>
+                  </tr>
+                </table>
             
         	</div>
             
