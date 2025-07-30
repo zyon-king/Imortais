@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Layout Responsivo com Neblina em Toda a Tela</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lora:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/scrollreveal"></script>
         <style>
         /* ========================================= */
         /* Variáveis CSS Personalizadas (Root) */
@@ -49,7 +50,11 @@
             min-height: 100vh; /* Garante que o body ocupa a altura total da viewport */
             overflow-x: hidden; /* Evita scroll horizontal indesejado */
         }
-
+        
+		html {
+          scroll-behavior: smooth;
+        }
+        
         /* ========================================= */
         /* Layout Principal e Container de Conteúdo */
         /* ========================================= */
@@ -178,7 +183,7 @@
         /* Container de sinopse */
         #container-sinopse {
             /*background-image:  linear-gradient(135deg, #1e5799 0%,#000000 30%,#000000 30%,#1e5799 50%,#000000 70%,#1e5799 100%);*/
-            background-image: url('https://raw.githubusercontent.com/zyon-king/Imortais/refs/heads/main/blue-dark-castle-room.png');
+			background-image: url('https://raw.githubusercontent.com/zyon-king/Imortais/refs/heads/main/blue-dark-castle-room.png');
         }
 
         /* Estilos de texto dentro do container de sinopse */
@@ -251,7 +256,7 @@
           font-size: 16px;
           font-family: 'Cinzel', serif;
           font-weight: 500.3; /* Deixa o texto do botão mais grosso */
-
+		  text-decoration: none;
           border: 0;
           cursor: pointer;
 
@@ -1094,7 +1099,7 @@
         <table>
             <tr>
                 <td colspan="2">
-                    <button class="button-89" role="button">Saiba Mais</button>
+                    <a href="#text-sinopse" class="button-89" role="button">Ler a Resenha</a>
                 </td>
             </tr>
             <tr>
@@ -1467,6 +1472,28 @@ Outro ponto que merece destaque é a relação entre os irmãos. Embora unidos p
     </div>
     
     <script>
+    // Initialize ScrollReveal
+    ScrollReveal().reveal('.content', {
+        delay: 200,          // Delay before the animation starts (ms)
+        distance: '50px',    // How far the element moves from (from bottom up)
+        origin: 'bottom',    // Start from the bottom
+        opacity: 0,          // Start with opacity 0 (invisible)
+        easing: 'ease-in-out', // Animation curve
+        duration: 800,       // How long the animation lasts (ms)
+        interval: 100,       // Delay between each item in a group (for `.item`)
+        reset: true          // Animation plays every time the element enters the viewport
+    });
+	
+    // You can also target the entire .content div if you want it to appear as one block
+    // ScrollReveal().reveal('.content', {
+    //     delay: 200,
+    //     distance: '50px',
+    //     origin: 'bottom',
+    //     opacity: 0,
+    //     easing: 'ease-in-out',
+    //     duration: 800,
+    //     reset: true
+    // });
     /// --- Overlays ---
     const openOverlayBtns = document.querySelectorAll('.openOverlay');
     const myOverlay = document.getElementById('myOverlay');
