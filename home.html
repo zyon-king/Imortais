@@ -190,34 +190,47 @@
         }
 
         /* ========================================= */
-        /* Estilos de Botões */
+        /* Estilos de Tabela */
         /* ========================================= */
-        /* Estilo base para botões */
-        .btn {
+        table {
+          text-align: center;
+          margin: 0 auto; /* Centraliza a tabela horizontalmente */
+        }
+
+        td {
+            padding: 1vw 0;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        /* ========================================= */
+        /* Estilos de Botões de Pedido */
+        /* ========================================= */
+        .shop-button {
+            display: block; /* Makes the whole area clickable */
+            padding: 1vw 3vh;
+            margin: 1vw 3vh; /* Centers the button if cell is wider */
+            border-radius: 8px;
+            font-size: 100%;
+            font-weight: bold;
+            text-decoration: none; /* Remove underline from links */
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             background-color: white;
             color: #4B0082;
             border: 2px solid #4B0082;
-            padding: 15px 10px;
-            font-size: 1rem;
-            text-decoration:none;
-            cursor: pointer;
-            border-radius: 20px;
-            transition: background-color 0.3s ease; /* Transição suave para o hover */
-            margin: 0.9rem;
-            white-space: nowrap; /* Evita que o texto do botão quebre linha */
             text-shadow: 0.5px 0.5px 1px rgba(0, 0, 0, 0.3); /* Sombra no texto do botão */
         }
 
-        /* Efeito hover para botões */
-        .btn:hover {
-            background-color: #e9eaff;
-            transform: scale(1.03); /* Leve aumento de escala no hover */
+        .shop-button:hover {
+            transform: scale(1.01);
+            transform: translateY(-3px); /* Leve levantamento no hover */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
         }
 
-        /* Efeito active (clique) para botões */
-        .btn:active {
-          transform: scale(0.98); /* Faz parecer que o botão afundou */
-          box-shadow: inset 0 2px 4px rgba(0,0,0,0.2); /* Sombra interna */
+        .shop-button:active {
+            transform: translateY(1px); /* Moves button down slightly, simulating a click/press */
+            box-shadow: 0 1px 2px rgba(0,0,0,0.2); /* Optional: adds a subtle shadow to enhance the "pressed" look */
         }
 
         /* Estilo específico para o botão 89 (com borda animada) */
@@ -262,14 +275,6 @@
           outline-offset: .05em;
           transform: scale(0.96); /* Faz parecer que o botão afundou */
           box-shadow: inset 0 2px 4px rgba(0,0,0,0.2); /* Sombra interna */
-        }
-
-        /* ========================================= */
-        /* Estilos de Tabela */
-        /* ========================================= */
-        table {
-          text-align: center;
-          margin: 0 auto; /* Centraliza a tabela horizontalmente */
         }
 
         /* ========================================= */
@@ -1006,82 +1011,73 @@
         /* ========================================= */
         /* Barra de Rodapé Fixa */
         /* ========================================= */
-        .footer-bar {        
-        	position: relative;
-        	top: 2vh !important;
-            z-index: 999 !important; /* Abaixo do overlay, acima de outro conteúdo */
-            min-width: 550px !important;
-            max-width: 550px !important;
-            background-color: #4B0082/*#f05713*/;
-            backdrop-filter: blur(8px); /* Efeito de vidro fosco */
+        
+        .footer-bar {
+            background-color: transparent;
+            padding: 30px;
             border-radius: 8px;
-            padding: 0.4em 0.4em;
+            text-align: center;
             display: flex;
-            justify-content: center;
-            gap: 0.4em; /* Espaço entre os botões */
-            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-            opacity: 0.25; /* Começa com 25% de opacidade */
-            transform: scale(1);
-            left: 0;
-            right: 0;
-            margin-left: auto; /* Centraliza horizontalmente */
-            margin-right: auto; /* Centraliza horizontalmente */
+            justify-content: space-around;
+            width: 50vw;
+            gap: .4vw; /* Espaço entre os botões */
+            flex-wrap: wrap; /* Permite que os botões quebrem a linha em telas menores */
         }
-
-        /* Efeito hover para a barra de rodapé */
-        .footer-bar:hover {
-            opacity: 1; /* Aumenta para 100% de opacidade suavemente */
-            transform: scale(1.01); /* Leve aumento de escala */
+        .footer-bar span {
+        	font-size: 3.2vw;
+            width: 100vw;
+            color: #333;
+            margin-bottom: 1vw;
         }
-
-        /* Estado ativo da barra de rodapé */
-        .footer-bar.active {
-          opacity: 1;
-          transform: scale(1.01);
-        }
-
-        /* Botões dentro da barra de rodapé */
-        .footer-bar button {
-            background: #f1f3fe;
-            border: none;
-            font-size: 1.8em; /* Ajusta o tamanho do ícone */
+        .footer-bar a {
+            background-color: transparent;
             color: white;
+            padding: 10px 15px;
+            width: 6vw;
+            height: 6vw;
+            margin: 0 1.4vw;
+            border: none;
+            border-radius: 5px;
             cursor: pointer;
-            display: flex;
-            flex-direction: column; /* Organiza ícone e texto em coluna */
-            width: 18vw;
-            height: auto;
-            align-items: center;
-            padding: 0.04em 0.16em;
-            border-radius: 8px;
+            font-size: 16px;
+            flex: 1; /* Faz os botões ocuparem espaço igual */
             transition: all 0.1s ease; /* Transição suave para o efeito */
         }
-
-        /* Efeito active (clique) para botões da barra de rodapé */
-        .footer-bar button:active {
-          box-shadow: inset 0 0 4px rgba(0,0,0,0.4); /* Sombra interna */
-        }
-
-        /* Efeito hover para botões da barra de rodapé */
-        .footer-bar button:hover {
-            background-color: #f0f0f0;
+        .footer-bar a:hover {
+        	transform: scale(1.01);
             transform: translateY(-3px); /* Leve levantamento no hover */
         }
 
-        /* Texto do rótulo do botão da barra de rodapé */
-        .footer-bar button span {
-            font-size: 0.6em;
-            margin-top: 0.01em;
-            color: #333;
+        .footer-bar a:active {
+            transform: translateY(1px); /* Moves button down slightly, simulating a click/press */
+            box-shadow: 0 1px 2px rgba(0,0,0,0.2); /* Optional: adds a subtle shadow to enhance the "pressed" look */
+        }
+        
+        #instagram-icon {
+          background-image: url('https://cdn.statically.io/gh/CrisClei2022/imortais/main/black-instagram-icon.png');
+          background-size: contain;       /* Ajusta o tamanho da imagem */
+          background-repeat: no-repeat;   /* Evita repetição */
+          background-position: center;    /* Centraliza a imagem */
+        }
+        #whatsapp-icon {
+          background-image: url('https://cdn.statically.io/gh/CrisClei2022/imortais/main/black-whatsapp-icon.png');
+          background-size: contain;       /* Ajusta o tamanho da imagem */
+          background-repeat: no-repeat;   /* Evita repetição */
+          background-position: center;    /* Centraliza a imagem */
+        }
+        #tiktok-icon {
+          background-image: url('https://cdn.statically.io/gh/CrisClei2022/imortais/main/black-tiktok-icon.png');
+          background-size: contain;       /* Ajusta o tamanho da imagem */
+          background-repeat: no-repeat;   /* Evita repetição */
+          background-position: center;    /* Centraliza a imagem */
+        }
+        #facebook-icon {
+          background-image: url('https://cdn.statically.io/gh/CrisClei2022/imortais/main/black-facebook-icon.png');
+          background-size: contain;       /* Ajusta o tamanho da imagem */
+          background-repeat: no-repeat;   /* Evita repetição */
+          background-position: center;    /* Centraliza a imagem */
         }
 
-        /* Imagem do ícone do botão da barra de rodapé */
-        .footer-bar button img {
-            width: 8vw;
-            height: auto;
-            min-width: 6vw;
-            min-height: auto;
-        }
 
     </style>
 </head>
@@ -1095,42 +1091,35 @@
                 <p>O ano era 1889, e a atmosfera hipnotizante de Paris, a cidade das luzes, torna-se pano de fundo para a trama desenrolar-se em meio a um contexto de dualidade, onde a luta entre a luz e as trevas se torna iminente.</p>
                 <p>Não se tratava apenas de escolhas imprevisíveis, mas de profecias seladas com consequências inimagináveis. Venha mergulhar de cabeça nesta jornada, onde dois irmãos, cujo anseio por poder e respeito os conduz por um caminho sombrio sem volta, repleto de dilemas morais.</p>
                 <p>Tudo isso entrelaçado por uma narrativa cativante e repleta de reviravoltas. Então prepare-se, porque batalhas épicas estão prestes a começar.</p>
-                <table>
-                  <tr>
-                    <td colspan="2"><button class="button-89" role="button">Saiba Mais</button></td>
-                  </tr>
-                  <tr>
-                    <td colspan="2"><button class="btn">🛒 Adicionar ao Carrinho?</button></td>
-                  </tr>
-                </table>
+        <table>
+            <tr>
+                <td colspan="2">
+                    <button class="button-89" role="button">Saiba Mais</button>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a href="https://wa.me/SEUNUMERODOTELEFONE?text=Ol%C3%A1%2C%20gostaria%20de%20fazer%20um%20pedido!" target="_blank" class="shop-button whatsapp-button">
+                        🛒 Fazer pedido via WhatsApp?
+                    </a>
+                </td>
+                <td>
+                    <a href="https://www.mercadolivre.com/" target="_blank" class="shop-button mercadolivre-button">
+                        🛒 Fazer pedido via Mercado Livre?
+                    </a>
+                </td>
+            </tr>
+        </table>
             </div>
             
-         <div class="footer-bar" id="footerBar">
-        <button>
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/WhatsApp.svg/2044px-WhatsApp.svg.png">
-            <span>Whatsapp</span>
-        </button>
-        <button>
-            <img src="https://raw.githubusercontent.com/zyon-king/Imortais/refs/heads/main/instagram-icon.png">
-            <span>Instagram</span>
-        </button>
-        <button>
-            <img src="https://raw.githubusercontent.com/zyon-king/Imortais/refs/heads/main/tiktok-icon.png">
-            <span>TikTok</span>
-        </button>
-        <button>
-            <img src="https://raw.githubusercontent.com/zyon-king/Imortais/refs/heads/main/mercadoLivre-icon.png">
-            <span>Mercado Livre</span>
-        </button>
-        <button class="openOverlay">
-            <img src="https://raw.githubusercontent.com/zyon-king/Imortais/refs/heads/main/shop-bag.png">
-            <span>Comprar Agora</span>
-        </button>
-        <button class="openOverlay">
-            <img src="https://raw.githubusercontent.com/zyon-king/Imortais/refs/heads/main/shop-cart.png">
-            <span>Adicionar</span>
-        </button>
-    </div>
+         	<div class="footer-bar" id="footerBar">
+            	<span>Siga nossas redes sociais:</span>
+                <a href="https://www.instagram.com/imortaiscompletosoficial/" target="_blank" id="instagram-icon"></a>
+                <a href="https://wa.me/SEUNUMERODOTELEFONE" target="_blank" id="whatsapp-icon"></a>
+                <a href="https://www.tiktok.com/imortaiscompletosoficial" target="_blank" id="tiktok-icon"></a>
+                <a href="https://www.facebook.com/imortaiscompletosoficial" target="_blank" id="facebook-icon"></a>
+          	</div>
+          
         </div>
     </div>
     <div class="container" id="container-video">    
@@ -1202,6 +1191,14 @@
                 <p>Japão | Abril, 2025.</p>
             </div>
             
+         	<div class="footer-bar" id="footerBar">
+            	<span>Siga nossas redes sociais:</span>
+                <a href="https://www.instagram.com/imortaiscompletosoficial/" target="_blank" id="instagram-icon"></a>
+                <a href="https://wa.me/SEUNUMERODOTELEFONE" target="_blank" id="whatsapp-icon"></a>
+                <a href="https://www.tiktok.com/imortaiscompletosoficial" target="_blank" id="tiktok-icon"></a>
+                <a href="https://www.facebook.com/imortaiscompletosoficial" target="_blank" id="facebook-icon"></a>
+          	</div>
+            
         </div>
     </div>
 
@@ -1227,12 +1224,21 @@ Outro ponto que merece destaque é a relação entre os irmãos. Embora unidos p
 "Imortais Completos – O Recomeço" não é apenas uma história de vampiros — é uma saga sobre identidade, escolhas e transformação. A mistura entre fantasia, drama, ação e uma pitada de crítica social garante à obra um lugar de destaque dentro da literatura fantástica nacional. Com capítulos bem estruturados, ritmo envolvente e personagens marcantes, o livro conquista tanto fãs do gênero quanto leitores em busca de uma aventura arrebatadora e inesquecível.
                 </span>
                 <button class="read-more-btn" id="read-more-btn">Leia Mais</button>
-            	</p>
-        
+            	</p>               
+                
                 <table>
-                  <tr>
-                    <td colspan="2"><button class="btn">🛒 Adicionar ao carrinho?</button></td>
-                  </tr>
+                    <tr>
+                        <td>
+                            <a href="https://wa.me/SEUNUMERODOTELEFONE?text=Ol%C3%A1%2C%20gostaria%20de%20fazer%20um%20pedido!" target="_blank" class="shop-button whatsapp-button">
+                                🛒 Fazer pedido via WhatsApp?
+                            </a>
+                        </td>
+                        <td>
+                            <a href="https://www.mercadolivre.com/" target="_blank" class="shop-button mercadolivre-button">
+                                🛒 Fazer pedido via Mercado Livre?
+                            </a>
+                        </td>
+                    </tr>
                 </table>
             
         	</div>
