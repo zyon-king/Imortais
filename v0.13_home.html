@@ -1006,90 +1006,68 @@
         /* ========================================= */
         /* Barra de Rodapé Fixa */
         /* ========================================= */
-        .footer-bar {        
-        	position: relative;
-        	margin-bottom: 8vh !important;
-            z-index: 999 !important; /* Abaixo do overlay, acima de outro conteúdo */
-            width: 78vw !important;
-            padding: 0.4em 0.4em;
+        
+        .footer-bar {
+            background-color: transparent;
+            padding: 30px;
+            border-radius: 8px;
+            text-align: center;
             display: flex;
-            justify-content: center;
-            gap: 0.4em; /* Espaço entre os botões */
-            transform: scale(1);
-            left: 0;
-            right: 0;
-            margin-left: auto; /* Centraliza horizontalmente */
-            margin-right: auto; /* Centraliza horizontalmente */
+            justify-content: space-around;
+            width: 50vw;
+            gap: .4vw; /* Espaço entre os botões */
+            flex-wrap: wrap; /* Permite que os botões quebrem a linha em telas menores */
         }
-
-        /* Efeito hover para a barra de rodapé */
-        .footer-bar:hover {
-            transform: scale(1.01); /* Leve aumento de escala */
+        .footer-bar span {
+        	font-size: 2.5vw;
+            width: 100vw;
+            color: #333;
+            margin-bottom: 1vw;
         }
-
-        /* Estado ativo da barra de rodapé */
-        .footer-bar.active {
-          transform: scale(1.01);
-        }
-
-        /* Botões dentro da barra de rodapé */
         .footer-bar button {
-  			background-color: transparent;  /* Fundo transparente */
+            background-color: transparent;
+            color: white;
+            padding: 10px 15px;
+            width: 4vw;
+            height: 4vw;
+            margin: 0 1.4vw;
             border: none;
+            border-radius: 5px;
             cursor: pointer;
-            display: flex;
-            flex-direction: column; /* Organiza ícone e texto em coluna */
-            width: 8vw;
-            height: 8vw;
-            align-items: center;
-            padding: 0.04em 0.16em;;
-        	margin-bottom: 4vh !important;
+            font-size: 16px;
+            flex: 1; /* Faz os botões ocuparem espaço igual */
             transition: all 0.1s ease; /* Transição suave para o efeito */
         }
-
-        /* Efeito active (clique) para botões da barra de rodapé */
-        .footer-bar button:active {
-          box-shadow: inset 0 0 4px rgba(0,0,0,0.4); /* Sombra interna */
-        }
-
-        /* Efeito hover para botões da barra de rodapé */
         .footer-bar button:hover {
+        	transform: scale(1.01);
             transform: translateY(-3px); /* Leve levantamento no hover */
         }
 
-        /* Texto do rótulo do botão da barra de rodapé */
-        .footer-bar button span {
-            font-size: 2vw;
-            margin-top: 0.01em;
+        .footer-bar button:active {
+            transform: translateY(1px); /* Moves button down slightly, simulating a click/press */
+            box-shadow: 0 1px 2px rgba(0,0,0,0.2); /* Optional: adds a subtle shadow to enhance the "pressed" look */
         }
-
-        /* Imagem do ícone do botão da barra de rodapé */
-        .footer-bar, button img {
-            width: 6vw;
-            height: 6vw;
-            min-width: 6vw;
-            min-height: 6vw;
-        }
+        
         #instagram-icon {
-          background-image: url('https://rawcdn.githack.com/zyon-king/Imortais/main/imagens/black-instagram-icon.png');
+          background-image: url('https://cdn.statically.io/gh/CrisClei2022/imortais/main/black-instagram-icon.png');
           background-size: contain;       /* Ajusta o tamanho da imagem */
           background-repeat: no-repeat;   /* Evita repetição */
           background-position: center;    /* Centraliza a imagem */
         }
-        #whtasapp-icon {
-          background-image: url('https://rawcdn.githack.com/zyon-king/Imortais/main/imagens/black-whatsapp-icon.png');
+        #whatsapp-icon {
+          background-image: url('https://cdn.statically.io/gh/CrisClei2022/imortais/main/black-whatsapp-icon.png');
           background-size: contain;       /* Ajusta o tamanho da imagem */
           background-repeat: no-repeat;   /* Evita repetição */
           background-position: center;    /* Centraliza a imagem */
         }
         #tiktok-icon {
-          background-image: url('https://rawcdn.githack.com/zyon-king/Imortais/main/imagens/black-tiktok-icon.png');
+          background-image: url('https://cdn.statically.io/gh/CrisClei2022/imortais/main/black-tiktok-icon.png');
           background-size: contain;       /* Ajusta o tamanho da imagem */
           background-repeat: no-repeat;   /* Evita repetição */
           background-position: center;    /* Centraliza a imagem */
         }
         #facebook-icon {
-          background-image: url('https://rawcdn.githack.com/zyon-king/Imortais/main/imagens/black-facebook-icon.png');
+          background-image: url('https://cdn.statically.io/gh/CrisClei2022/imortais/main/black-facebook-icon.png');
           background-size: contain;       /* Ajusta o tamanho da imagem */
           background-repeat: no-repeat;   /* Evita repetição */
           background-position: center;    /* Centraliza a imagem */
@@ -1119,11 +1097,12 @@
             </div>
             
          	<div class="footer-bar" id="footerBar">
-              <button class="openOverlay" id="instagram-icon"></button>
-              <button class="openOverlay" id="whatsapp-icon"></button>
-              <button class="openOverlay" id="tiktok-icon"></button>
-              <button class="openOverlay" id="facebook-icon"></button>
-          </div>
+            	<span>Siga nossas redes sociais:</span>
+                <button class="openOverlay" id="instagram-icon"></button>
+                <button class="openOverlay" id="whatsapp-icon"></button>
+                <button class="openOverlay" id="tiktok-icon"></button>
+                <button class="openOverlay" id="facebook-icon"></button>
+          	</div>
           
         </div>
     </div>
