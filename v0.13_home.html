@@ -190,34 +190,36 @@
         }
 
         /* ========================================= */
-        /* Estilos de Botões */
+        /* Estilos de Botões de Pedido */
         /* ========================================= */
-        /* Estilo base para botões */
-        .btn {
+        .shop-button {
+            display: block; /* Makes the whole area clickable */
+            padding: 18px 25px;
+            margin: 10px auto; /* Centers the button if cell is wider */
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: bold;
+            text-decoration: none; /* Remove underline from links */
+
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+
             background-color: white;
             color: #4B0082;
             border: 2px solid #4B0082;
-            padding: 15px 10px;
-            font-size: 1rem;
-            text-decoration:none;
-            cursor: pointer;
-            border-radius: 20px;
-            transition: background-color 0.3s ease; /* Transição suave para o hover */
-            margin: 0.9rem;
-            white-space: nowrap; /* Evita que o texto do botão quebre linha */
             text-shadow: 0.5px 0.5px 1px rgba(0, 0, 0, 0.3); /* Sombra no texto do botão */
         }
 
-        /* Efeito hover para botões */
-        .btn:hover {
-            background-color: #e9eaff;
-            transform: scale(1.03); /* Leve aumento de escala no hover */
+        .shop-button:hover {
+            transform: scale(1.01);
+            transform: translateY(-3px); /* Leve levantamento no hover */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
         }
 
-        /* Efeito active (clique) para botões */
-        .btn:active {
-          transform: scale(0.98); /* Faz parecer que o botão afundou */
-          box-shadow: inset 0 2px 4px rgba(0,0,0,0.2); /* Sombra interna */
+        .shop-button:active {
+            transform: translateY(1px); /* Moves button down slightly, simulating a click/press */
+            box-shadow: 0 1px 2px rgba(0,0,0,0.2); /* Optional: adds a subtle shadow to enhance the "pressed" look */
         }
 
         /* Estilo específico para o botão 89 (com borda animada) */
@@ -1086,15 +1088,25 @@
                 <p>O ano era 1889, e a atmosfera hipnotizante de Paris, a cidade das luzes, torna-se pano de fundo para a trama desenrolar-se em meio a um contexto de dualidade, onde a luta entre a luz e as trevas se torna iminente.</p>
                 <p>Não se tratava apenas de escolhas imprevisíveis, mas de profecias seladas com consequências inimagináveis. Venha mergulhar de cabeça nesta jornada, onde dois irmãos, cujo anseio por poder e respeito os conduz por um caminho sombrio sem volta, repleto de dilemas morais.</p>
                 <p>Tudo isso entrelaçado por uma narrativa cativante e repleta de reviravoltas. Então prepare-se, porque batalhas épicas estão prestes a começar.</p>
-                <table>
-                  <tr>
-                    <td colspan="2"><button class="button-89" role="button">Saiba Mais</button></td>
-                  </tr>
-                  <tr>
-                    <td><button class="btn">🛒 Fazer pedido via WhatsApp?</button></td>
-                    <td><button class="btn">🛒 Fazer pedido via Mercado Livre?</button></td>
-                  </tr>
-                </table>
+        <table>
+            <tr>
+                <td colspan="2">
+                    <button class="button-89" role="button">Saiba Mais</button>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a href="https://wa.me/SEUNUMERODOTELEFONE?text=Ol%C3%A1%2C%20gostaria%20de%20fazer%20um%20pedido!" target="_blank" class="shop-button whatsapp-button">
+                        🛒 Fazer pedido via WhatsApp?
+                    </a>
+                </td>
+                <td>
+                    <a href="https://www.mercadolivre.com/" target="_blank" class="shop-button mercadolivre-button">
+                        🛒 Fazer pedido via Mercado Livre?
+                    </a>
+                </td>
+            </tr>
+        </table>
             </div>
             
          	<div class="footer-bar" id="footerBar">
