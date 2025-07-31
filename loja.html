@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página de Venda de Livro - Inspirada na Amazon</title>
+    <style>
+        /* Estilos básicos para o corpo e contêiner */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f7f7f7;
+            color: #111;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        /* Layout principal da página */
+        .product-page {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        /* Seção da imagem do produto */
+        .product-image-container {
+            flex: 1;
+            width: 50VW;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .product-image-container img {
+            width: 40VW;
+            height: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        /* Seção do banner para o site */
+        .site-banner {
+            margin-top: 30px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .site-banner p {
+            font-size: 16px;
+            color: #333;
+            margin: 0 0 10px 0;
+        }
+
+        .banner-btn {
+            display: inline-block;
+            background-color: #eaebf9;
+            border: 1px solid #a2a6a6;
+            color: #0F1111; /* Texto preto */
+            padding: 8px 18px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: normal;
+            transition: all 0.2s; /* Transição suave para o hover */
+            box-shadow: 0 2px 5px rgba(213, 217, 217, 0.5);
+        }
+
+        .banner-btn:hover {
+            background-color: #fff; /* Fundo branco */
+            border-color: #d5d9d9;
+            box-shadow: 0 2px 5px rgba(213, 217, 217, 0.8);
+        }
+
+        /* Seção de detalhes do produto */
+        .product-details {
+            flex: 2;
+            width: 50VW;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 400;
+            color: #0F1111;
+            margin-top: 0;
+        }
+
+        .author-info {
+            font-size: 14px;
+            color: #007185;
+            margin-bottom: 10px;
+        }
+
+        /* NOVO CSS para o sistema de avaliação */
+        .rating-wrapper {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .rating-container {
+            position: relative;
+            display: inline-block;
+            font-size: 16px; /* Tamanho das estrelas */
+            color: #ccc; /* Cor das estrelas de fundo */
+        }
+        
+        .stars-fill {
+            position: absolute;
+            top: 0;
+            left: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            color: #ff9900; /* Cor das estrelas preenchidas */
+        }
+
+        .rating-text {
+            font-size: 14px;
+            color: #007185;
+            margin-left: 5px;
+        }
+
+        /* Tabela de detalhes do livro (Capa Comum, Ebook, etc.) */
+        .formats-table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .formats-table th, .formats-table td {
+            border-bottom: 1px solid #ddd;
+            padding: 8px 12px;
+            text-align: left;
+        }
+        
+        .formats-table th {
+            font-weight: normal;
+            font-size: 12px;
+            color: #565959;
+            background-color: #fafafa;
+        }
+
+        .formats-table td a {
+            color: #007185;
+            text-decoration: none;
+        }
+
+        .formats-table .selected {
+            border: 2px solid #ff9900;
+            border-radius: 4px;
+            background-color: #fff9e6;
+        }
+
+        /* Preço e botões */
+        .price-section {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .price {
+            font-size: 28px;
+            font-weight: 500;
+            color: #B12704;
+        }
+        
+        .price sup {
+            font-size: 16px;
+            position: relative;
+            top: -0.5em;
+        }
+
+        .buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 350px; /* Defina uma largura fixa ou máxima */
+            margin: 0 auto; /* Centraliza o bloco horizontalmente */
+        }
+        
+        .add-to-cart-btn, .buy-now-btn {
+            /* Adicionando Flexbox para alinhar a imagem e o texto */
+            display: flex;
+            align-items: center; /* Alinha os itens verticalmente */
+            justify-content: center; /* Centraliza o conteúdo horizontalmente */
+            gap: 8px; /* Cria um espaçamento de 8px entre a imagem e o texto */
+            max-width: 350px;
+
+            /* Estilos já existentes */
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        /* Estilo para as imagens dentro dos botões */
+        .button-icon {
+            width: 25px;  /* Define a largura do ícone */
+            height: 25px; /* Define a altura do ícone */
+            /* Garante que a imagem não seja distorcida */
+            object-fit: contain; 
+        }
+        .add-to-cart-btn {
+            background-color: #ebfbec; 
+            border: 1px solid #03a106;
+            color: #0F1111;
+        }
+
+        .add-to-cart-btn:hover {
+            background-color: #bffec3;
+        }
+
+        .buy-now-btn {
+            background-color: #fcf6da;            
+            border: 1px solid #d19600;
+            color: #0F1111;
+        }
+
+        .buy-now-btn:hover {
+            background-color: #fef1b2;
+        }
+
+        /* Seção de descrição e detalhes adicionais */
+        .product-description {
+            margin-top: 40px;
+            line-height: 1.6;
+        }
+
+        .product-description h2, .reviews h2 {
+            font-size: 20px;
+            font-weight: 500;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+        }
+
+        .product-description ul {
+            list-style: disc;
+            margin-left: 20px;
+        }
+
+        /* Seção de avaliações */
+        .reviews {
+            margin-top: 40px;
+        }
+
+        .review-item {
+            border-bottom: 1px solid #eee;
+            padding: 15px 0;
+        }
+
+        .review-item:last-child {
+            border-bottom: none;
+        }
+
+        .review-rating {
+            color: #ff9900;
+            font-size: 14px;
+        }
+
+        .review-title {
+            font-weight: bold;
+            margin: 5px 0;
+        }
+
+        .review-meta {
+            font-size: 12px;
+            color: #565959;
+            margin-bottom: 10px;
+        }
+
+        /* Responsividade básica */
+        @media (max-width: 768px) {
+            .product-page {
+                flex-direction: column;
+            }
+
+            .product-image-container, .product-details {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="product-page">
+
+			<div class="product-image-container">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSbLH9X7Op-tgtLcuFNNGrR46-8J8jT-Toujg&s" alt="Capa do Livro 'O Senhor dos Anéis: A Sociedade do Anel'">                
+            </div>
+
+            <div class="product-details">
+                <h1>O Senhor dos Anéis: A Sociedade do Anel (Volume 1)</h1>
+                <div class="author-info">por J.R.R. Tolkien (Autor)</div>
+                <div class="author-info">e J.R.R. Tolkien (Autor)</div>
+                
+                <div class="rating-wrapper">
+                    <div class="rating-container">
+                        <div class="stars-base">
+                            <span>&#9733;</span>
+                            <span>&#9733;</span>
+                            <span>&#9733;</span>
+                            <span>&#9733;</span>
+                            <span>&#9733;</span>
+                        </div>
+                        <div class="stars-fill" style="width: 91%;"> <span>&#9733;</span>
+                            <span>&#9733;</span>
+                            <span>&#9733;</span>
+                            <span>&#9733;</span>
+                            <span>&#9733;</span>
+                        </div>
+                    </div>
+                    <span class="rating-text">4,8 de 5 estrelas (25.432 avaliações)</span>
+                </div>
+
+                <hr>
+
+                <table class="formats-table">
+                    <thead>
+                        <tr>
+                            <th>Tipo</th>
+                            <th>Formato</th>
+                            <th>Preço</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="selected">
+                            <td><a href="#">Livro Fisico</a></td>
+                            <td>—</td>
+                            <td>R$ 99,90</td>
+                        </tr>
+                        <tr>
+                            <td><a href="#">eBook Google</a></td>
+                            <td><a href="#">Ver detalhes</a></td>
+                            <td>R$ 69,90</td>
+                        </tr>
+                    </tbody>
+                </table>
+        
+                <div class="site-banner">
+                    <p>Conheça mais sobre a história de J.R.R. Tolkien e o universo de Imortais Completos!</p>
+                    <a href="URL_DO_SEU_SITE_AQUI" class="banner-btn">Visitar o site oficial do livro</a>
+                </div>
+                
+                <hr>
+
+                <p><strong>Descrição Rápida:</strong> A primeira parte da épica trilogia de fantasia. Frodo Bolseiro herda um anel e descobre que ele é o Um Anel, o instrumento de poder do maligno Lorde das Trevas, Sauron.</p>
+                <p><strong>Editora:</strong> HarperCollins Brasil</p>
+
+                <div class="price-section">
+                    <span class="price">R$ 99,90</span>
+                </div>
+
+                <div class="buttons">
+                    <button class="add-to-cart-btn">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp Icon" class="button-icon">
+                        Fazer pedido via WhatsApp?
+                    </button>
+                    <button class="buy-now-btn">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRo6abWs9lSfWNejang-RTksnuV2IJJFU86FA&s" target="_blank" alt="Mercado Livre Icon" class="button-icon">
+                        Fazer pedido via Mercado Livre?
+                    </button>
+                </div>
+              
+            </div>
+        </div>
+
+        <div class="product-description">
+            <h2>Sobre este item</h2>
+            <h3>Sinopse do Livro</h3>
+            <p>O jovem hobbit Frodo Bolseiro herda um anel e descobre que este não é um anel comum, mas o Um Anel, forjado pelo Lorde das Trevas Sauron com o objetivo de dominar toda a Terra-média. A Sociedade do Anel, formada por nove companheiros, parte em uma perigosa jornada para destruir o anel nas Chamas da Montanha da Perdição.</p>
+            <h3>Detalhes do Produto</h3>
+            <ul>
+                <li><strong>Capa dura:</strong> 576 páginas</li>
+                <li><strong>Dimensões:</strong> 16 x 23 cm</li>
+                <li><strong>Idioma:</strong> Português</li>
+                <li><strong>ISBN-13:</strong> 978-8595010619</li>
+                <li><strong>ISBN-13:</strong> 978-8595010619</li>
+            </ul>
+        </div>
+
+        <hr>
+
+        <div class="reviews">
+            <h2>Avaliações de Clientes</h2>
+            <div class="review-item">
+                <div class="review-rating">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+                <div class="review-title">Fantástico! A capa dura é linda demais.</div>
+                <div class="review-meta">Avaliado no Brasil em 15 de julho de 2025</div>
+                <p>A edição é de uma qualidade incrível, e a história, como sempre, é sensacional. Um clássico que todo mundo deveria ler. A entrega foi super rápida.</p>
+            </div>
+            <div class="review-item">
+                <div class="review-rating">&#9733;&#9733;&#9733;&#9733;&#9734;</div>
+                <div class="review-title">Excelente livro, mas a tradução poderia ser melhor.</div>
+                <div class="review-meta">Avaliado no Brasil em 10 de junho de 2025</div>
+                <p>Tolkien é gênio, e a história dispensa comentários. A qualidade do material é muito boa, mas alguns termos da tradução me pareceram estranhos em alguns momentos.</p>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
