@@ -1647,89 +1647,83 @@ Outro ponto que merece destaque é a relação entre os irmãos. Embora unidos p
         </div><!-Content-->
     </div>
     
-    <script>    
-    // --- Referências dos elementos ---
+    <script>
     (function() {
+    // --- Referências dos elementos (declaradas uma vez no escopo principal do IIFE) ---
+    const menuBtn = document.getElementById('menuBtn');
+    const navMenu = document.getElementById('navMenu');
+    const menuOverlay = document.getElementById('menuOverlay');
 
-        const reviewButton = document.querySelector('.btn-sinopse');
-                if (reviewButton) {
-                    reviewButton.addEventListener('click', (event) => {
-                        event.preventDefault(); // Prevent default link behavior
-                        const targetId = reviewButton.dataset.target; // Get the ID from data-target
-                        if (targetId) {
-                            scrollToSection(targetId);
-                        }
-                    });
-                }
-        // --- Referências dos elementos ---
-        // Declare these variables ONCE at the top level of your IIFE
-        // so they are accessible to all functions within this scope.
-        const menuBtn = document.getElementById('menuBtn');
-        const navMenu = document.getElementById('navMenu');
-        const menuOverlay = document.getElementById('menuOverlay'); // Correctly referencing the menu overlay
+    // --- FUNÇÃO ÚNICA: Rolar para Seções (com lógica de fechamento de menu) ---
+    function scrollToSection(sectionId) {
+        const targetElement = document.getElementById(sectionId);
+        if (targetElement) {
+            // Usa scrollIntoView por ser mais simples e amplamente suportado para rolagem suave
+            targetElement.scrollIntoView({ behavior: 'smooth' });
 
-        // --- NOVA FUNÇÃO: Rolar para Seções ---
-        function scrollToSection(sectionId) {
-            const targetElement = document.getElementById(sectionId);
-            if (targetElement) {
-                const elementRect = targetElement.getBoundingClientRect();
-                const offsetTop = window.pageYOffset + elementRect.top;
-
-                window.scrollTo({
-                    top: offsetTop,
-                    behavior: 'smooth'
-                });
-
-                // Opcional: Se o menu estiver aberto, feche-o após clicar no link
-                // Use the variables already defined at the top of the IIFE.
-                // DO NOT re-declare them with const/let/var here.
-                if (menuBtn && menuBtn.classList.contains('open')) {
-                    menuBtn.classList.remove('open');
-                    navMenu.classList.remove('open');
-                    // Now, use the 'menuOverlay' reference you already have.
-                    if (menuOverlay) { // Check if menuOverlay exists before trying to modify it
-                        menuOverlay.classList.remove('show'); // Assuming 'show' is the class that makes your overlay visible
-                    }
+            // Opcional: Se o menu estiver aberto, feche-o após clicar no link
+            // As variáveis menuBtn, navMenu e menuOverlay estão acessíveis aqui
+            // porque foram declaradas no escopo pai do IIFE.
+            if (menuBtn && menuBtn.classList.contains('open')) {
+                menuBtn.classList.remove('open');
+                navMenu.classList.remove('open');
+                if (menuOverlay) {
+                    menuOverlay.classList.remove('show');
                 }
             }
         }
+    }
 
-        // --- Adicione event listeners para os links do menu ---
-        function setupMenuScroll() {
-            const menuLinks = document.querySelectorAll('#navMenu ul li a');
-            menuLinks.forEach(link => {
-                link.addEventListener('click', (event) => {
-                    event.preventDefault();
-                    // Get the target ID from either data-target or href
-                    const targetId = link.dataset.target || link.getAttribute('href').substring(1);
-                    if (targetId) {
-                        scrollToSection(targetId);
-                    }
-                });
-            });
-        }
+    // --- FUNÇÃO ÚNICA para configurar listeners para TODOS os links com data-target ---
+    function setupAllDataTargetLinks() {
+        // Seleciona TODOS os elementos 'a' que possuem o atributo 'data-target'
+        const allDataTargetLinks = document.querySelectorAll('a[data-target]');
 
-        // --- Configuração inicial do menu (se já não estiver em outro lugar) ---
-        // Se você tem um evento de clique para abrir/fechar o menu, ele deve estar aqui.
-        if (menuBtn) {
-            menuBtn.addEventListener('click', () => {
-                menuBtn.classList.toggle('open');
-                navMenu.classList.toggle('open');
-                if (menuOverlay) {
-                    menuOverlay.classList.toggle('show');
+        allDataTargetLinks.forEach(link => {
+            link.addEventListener('click', (event) => {
+                event.preventDefault(); // Impede o comportamento padrão do link
+
+                const targetId = link.dataset.target; // Obtém o ID da seção do atributo data-target
+                if (targetId) {
+                    scrollToSection(targetId); // Chama a função de rolagem
                 }
             });
-        }
+        });
+    }
 
-        if (menuOverlay) {
-            menuOverlay.addEventListener('click', () => {
-                menuBtn.classList.remove('open');
-                navMenu.classList.remove('open');
-                menuOverlay.classList.remove('show');
-            });
-        }
+    // --- Configuração inicial do menu (lógica de abrir/fechar o hambúrguer e overlay) ---
+    if (menuBtn) {
+        menuBtn.addEventListener('click', () => {
+            menuBtn.classList.toggle('open');
+            navMenu.classList.toggle('open');
+            if (menuOverlay) {
+                menuOverlay.classList.toggle('show');
+            }
+        });
+    }
 
-    })(); // The function is immediately invoked
+    if (menuOverlay) {
+        menuOverlay.addEventListener('click', () => {
+            menuBtn.classList.remove('open');
+            navMenu.classList.remove('open');
+            menuOverlay.classList.remove('show');
+        });
+    }
+
+    // --- Inicialização ao carregar a página ---
+    document.addEventListener('DOMContentLoaded', () => {
+        // Chame a função que configura TODOS os links com data-target
+        setupAllDataTargetLinks();
+
+        // Chame suas outras funções de inicialização
+        initializeReadMore();
+        setupStoreCheckboxesListeners();
+        setupProductCheckboxesListeners();
+        updateTotal();
+        updateNoSelectionDisplay();
+    });
+
+})(); // A função é imediatamente invocada
     
     /// --- Overlays ---
     const openOverlayBtns = document.querySelectorAll('.openOverlay');
