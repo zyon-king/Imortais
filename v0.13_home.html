@@ -49,12 +49,132 @@
             position: relative; /* Necessário para o posicionamento de elementos filhos com position: absolute/fixed */
             min-height: 100vh; /* Garante que o body ocupa a altura total da viewport */
             overflow-x: hidden; /* Evita scroll horizontal indesejado */
+            font-family: "Open Sans", sans-serif;
         }
         
 		html {
           scroll-behavior: smooth;
         }
         
+        /* Botão Hamburguer - Posicionado no canto SUPERIOR ESQUERDO */
+        .menu-btn {
+          background-color: #000035; /* Cor de fundo do botão */
+          position: fixed; /* Mudei de absolute para fixed para que ele permaneça visível ao rolar */
+          top: 10px;
+          left: 20px; /* Alterado de 'right' para 'left' */
+          width: 50px;
+          height: 40px;
+          padding: 7px 14px;
+          cursor: pointer;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          z-index: 1001;
+        }
+
+        .menu-btn div {
+          height: 4px;
+          background: #fff;
+          border-radius: 2px;
+          transition: 0.4s;
+        }
+
+        /* Transformação para 'X' quando o menu está aberto */
+        .menu-btn.open div:nth-child(1) {
+          transform: rotate(45deg) translate(5px, 5px); /* Ajuste os valores de translate se precisar */
+        }
+
+        .menu-btn.open div:nth-child(2) {
+          opacity: 0;
+        }
+
+        .menu-btn.open div:nth-child(3) {
+          /* Ajuste o translate para a linha inferior formar o X corretamente */
+          transform: rotate(-45deg) translate(9.5px, -9.5px); /* Ajustei o translate aqui */
+        }
+
+        /* Navegação - Desliza da ESQUERDA para a direita */
+        nav {
+          position: fixed;
+          top: 0;
+          left: -250px; /* Alterado de 'right: -100%' para 'left: -WIDTH_OF_NAV' */
+          height: 100%;
+          width: 250px;
+          background: #f2f2f2;
+          box-shadow: 2px 0 5px rgba(0,0,0,0.2); /* Sombra à direita agora */
+          transition: left 0.3s ease; /* Transição na propriedade 'left' */
+          padding-top: 60px;
+          z-index: 1000;
+        }
+
+        /* Quando a classe 'open' é adicionada, o menu aparece */
+        nav.open {
+          left: 0; /* Alterado de 'right: 0' para 'left: 0' */
+        }
+
+        nav ul {
+          list-style: none;
+          padding: 0;
+          margin: 0;
+        }
+
+        nav ul li {
+          border-bottom: 1px solid #ddd;
+  		  padding: 3px 6px;
+        }
+
+        nav ul li a {
+          text-decoration: none;
+          color: #333;
+          font-size: 18px;display: block; /*bloco para o clique */
+  		  padding: 10px 20px;
+        }
+
+        nav ul li:hover {
+          background: #f0f0f7; /* Cor de hover um pouco mais clara para contraste */
+          cursor: pointer; /* Corrigido de 'mouse' para 'cursor' */
+        }
+        
+        /* Estilo para o overlay do MENU (novo) */
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5); /* Fundo escuro semitransparente */
+            display: none; /* Esconde por padrão */
+            z-index: 999; /* Abaixo do menu */
+        }
+
+        /* Estado ativo do overlay do MENU */
+        .menu-overlay.show { /* Usaremos 'show' para o menu overlay */
+            display: block;
+        }
+
+        /* Seus outros estilos de .overlay e .overlay.active para carrinho, etc. */
+        .overlay {
+            position: fixed;
+            overflow-y: auto;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: flex-end; /* Isso é para o carrinho/checkout, etc. */
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
         /* ========================================= */
         /* Layout Principal e Container de Conteúdo */
         /* ========================================= */
@@ -76,32 +196,23 @@
             gap: 1.5rem; /* Espaçamento entre os itens flex */
             width: 100vw; /* Ocupa 100% da largura da viewport */
             max-width: 1200px; /* Largura máxima para o conteúdo */
+           
             padding: 20px;
             z-index: 2; /* Garante que o conteúdo esteja acima de outros elementos, como sobreposições */
         }
-
-        /* Estilo para o bloco de texto dentro do conteúdo */
-        .content .text {
-            flex-grow: 1; /* Permite que o texto cresça e preencha o espaço disponível */
-            max-width: 800px;
-            min-width: 400px; /* Opcional: Define uma largura mínima para evitar que fique muito estreito */
-        }
-
-        /* Imagem dentro do conteúdo */
+        
         .image {
-            width: 48%; /* A imagem ocupa quase metade da largura */
-            max-width: 100%; /* Garante que a imagem não exceda a largura do seu contêiner */
-            height: auto; /* Mantém a proporção da imagem */
-            box-shadow: 1px 1px 9px 2px rgba(0,0,0,0.75);
-        }
-
+			width: 35%; /* Em telas menores, imagem e texto ocupam a largura total */
+			max-width: none; /* Remove max-width para permitir que ocupem 100% */
+			min-width: unset; /* Remove min-width */
+			box-shadow: 0 0 8px rgba(0, 0, 0, 5);
+        }        
+        
         /* Bloco de texto principal */
         .text {
             color: var(--color-link);
             width: 48%;
-            min-height: 100%; /* Garante que o texto tenha uma altura mínima */
-            justify-content: center; /* Alinha o conteúdo verticalmente (se for um flex container) */
-            text-align: justify; /* Justifica o texto */
+            text-align: center; /* Justifica o texto */
             padding: 1.5rem;
         }
 
@@ -117,23 +228,7 @@
         }
 
         /* Título principal (h1) */
-        h1 {
-            font-family: 'Cinzel', serif;
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            text-align: center;
-        }
-
-        /* Subtítulo (h2) */
-        h2 {
-            font-size: 1.5rem;
-            font-family: 'Cinzel', serif;
-            margin-bottom: 10px;
-            text-align: center;
-        }
-
-        /* Subtítulo (h3) */
-        h3 {
+        h1, h2, h3, h4 {
             font-family: 'Cinzel', serif;
             margin-bottom: 10px;
             text-align: center;
@@ -141,9 +236,9 @@
 
         /* Parágrafo */
         p {
-            font-family: 'Georgia', serif;
-            font-size: 1.2rem;
-            line-height: 1.6; /* Espaçamento entre as linhas */
+            font-family: 'Oldenburg', serif;
+        	font-size: 1.2rem;
+            text-align: justify; /* Justifica o texto */
         }
 
         /* Linha horizontal (hr) */
@@ -155,18 +250,11 @@
           margin: 20px auto; /* Centraliza a linha horizontalmente e adiciona margem */
         }
 
-        /* Quebra de linha (br) - nota: text-indent e font-size não afetam <br> */
-        br {
-          /* text-indent: 2em; */ /* Esta propriedade não tem efeito em <br> */
-          /* font-size: 1rem; */   /* Esta propriedade não tem efeito em <br> */
-        }
-
         /* ========================================= */
         /* Embeds e Mídia */
         /* ========================================= */
         .instagram-media {
-            max-width: 50% !important; /* Sobrescreve largura máxima */
-            width: 100% !important; /* Sobrescreve largura */
+            max-width: 35% !important; /* Sobrescreve largura máxima */
             padding: 50px 50px;
             margin: 0 auto !important; /* Centraliza o embed */
         }
@@ -183,7 +271,7 @@
         /* Container de sinopse */
         #container-sinopse {
             /*background-image:  linear-gradient(135deg, #1e5799 0%,#000000 30%,#000000 30%,#1e5799 50%,#000000 70%,#1e5799 100%);*/
-			background-image: url('https://raw.githubusercontent.com/zyon-king/Imortais/refs/heads/main/blue-dark-castle-room.png');
+			background-image: url('https://cdn.statically.io/gh/zyon-king/Imortais/main/blue-dark-castle-room.png');
         }
 
         /* Estilos de texto dentro do container de sinopse */
@@ -208,78 +296,28 @@
             vertical-align: middle;
         }
 
-        /* ========================================= */
-        /* Estilos de Botões de Pedido */
-        /* ========================================= */
-        .shop-button {
-            display: block; /* Makes the whole area clickable */
-            padding: 1vw 3vh;
-            margin: 1vw 3vh; /* Centers the button if cell is wider */
-            border-radius: 8px;
-            font-size: 100%;
-            font-weight: bold;
-            text-decoration: none; /* Remove underline from links */
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            background-color: white;
-            color: #4B0082;
-            border: 2px solid #4B0082;
-            text-shadow: 0.5px 0.5px 1px rgba(0, 0, 0, 0.3); /* Sombra no texto do botão */
+        /* Estilo específico para o botão sinopse (com borda animada) */
+        .btn-sinopse {
+            margin-top: 1rem;
+            background-color: #000035; /* Fundo #000035 */
+            color: #FFFFFF; /* Texto branco */
+            padding: 10px 20px;
+            border: 2px solid #000035; /* <--- Defina uma borda inicial, geralmente na mesma cor do fundo para "aparecer" no hover, ou transparente */
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease; /* <--- Adicione border-color na transição */
         }
 
-        .shop-button:hover {
-            transform: scale(1.01);
-            transform: translateY(-3px); /* Leve levantamento no hover */
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        .btn-sinopse:hover {
+            background-color: #FFFFFF; /* Fundo branco no hover */
+            color: #000035; /* Texto #000035 no hover */
+            border-color: #000035; /* <--- Borda #000035 no hover */
         }
 
-        .shop-button:active {
-            transform: translateY(1px); /* Moves button down slightly, simulating a click/press */
-            box-shadow: 0 1px 2px rgba(0,0,0,0.2); /* Optional: adds a subtle shadow to enhance the "pressed" look */
-        }
-
-        /* Estilo específico para o botão 89 (com borda animada) */
-        .button-89 {
-          --b: 2px;   /* espessura da borda */
-          --s: .45em; /* tamanho do canto */
-          --color: #000066;
-
-          padding: calc( .8em + var(--s)) calc(1.5em + var(--s));
-          color: var(--color);
-          --_p: var(--s); /* Variável interna para controle da animação */
-          background:
-            conic-gradient(from 90deg at var(--b) var(--b),#0000 90deg,var(--color) 0)
-            var(--_p) var(--_p)/calc(100% - var(--b) - 2*var(--_p)) calc(100% - var(--b) - 2*var(--_p));
-          transition: .3s linear, color 0s, background-color 0s; /* Transições para background e outras propriedades */
-          outline: var(--b) solid #0000;
-          outline-offset: .6em;
-          font-size: 16px;
-          font-family: 'Cinzel', serif;
-          font-weight: 500.3; /* Deixa o texto do botão mais grosso */
-		  text-decoration: none;
-          border: 0;
-          cursor: pointer;
-
-          user-select: none; /* Desabilita seleção de texto */
-          -webkit-user-select: none; /* Para navegadores Webkit */
-          touch-action: manipulation; /* Otimiza para toque */
-        }
-
-        /* Efeito hover e focus para o botão 89 */
-        .button-89:hover,
-        .button-89:focus-visible {
-          --_p: 10px; /* Altera a variável para a animação */
-          outline-offset: .01em;
-          background-color: #e9eaff;
-          transform: scale(1.03);
-        }
-
-        /* Efeito active (clique) para o botão 89 */
-        .button-89:active {
-          --_p: 0px;
-          outline-offset: .05em;
-          transform: scale(0.96); /* Faz parecer que o botão afundou */
-          box-shadow: inset 0 2px 4px rgba(0,0,0,0.2); /* Sombra interna */
+        .btn-sinopse:active {
+            background-color: #CCCCCC;
+            transform: translateY(1px);
         }
 
         /* ========================================= */
@@ -751,8 +789,13 @@
                 max-width: none; /* Remove max-width para permitir que ocupem 100% */
                 min-width: unset; /* Remove min-width */
             }
+            .image {
+                width: 60%; /* Em telas menores, imagem e texto ocupam a largura total */
+                max-width: none; /* Remove max-width para permitir que ocupem 100% */
+                min-width: unset; /* Remove min-width */
+            }
             .instagram-media {
-                max-width: 100% !important; /* Em telas menores, o embed ocupa a largura total */
+                max-width: 60% !important; /* Em telas menores, o embed ocupa a largura total */
                 padding: 20px; /* Ajusta o padding para telas menores */
             }
         }
@@ -1011,6 +1054,49 @@
             background-color: #FF5722;
             color: #fff;
             cursor: pointer;
+        }        
+        
+        /* ========================================= */
+        /* Shop Bar */
+        /* ========================================= */
+        .shop-bar {
+            display: flex;
+            justify-content: center; /* Centers items horizontally */
+            align-items: center; /* Centers items vertically */
+            gap: 20px; /* Space between the buttons */
+            margin-top: 30px; /* Space above the buttons */
+        }
+        .shop-bar a {
+            display: flex; /* Make the link a flex container for image and text */
+            align-items: center; /* Vertically align image and text within the button */
+            text-align: center;
+            padding: 6px 15px; /* Slightly larger padding for buttons */
+            text-decoration: none;
+            border-radius: 0; /* Slightly more rounded corners */
+            transition: background-color 0.3s ease; /* Smooth hover effect */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: white;
+            color: #4B0082;
+            border: 1px solid #4B0082;
+            text-shadow: 0.5px 0.5px 0.5px rgba(0, 0, 0, 0.3); /* Sombra no texto do botão */
+        }
+
+        .shop-bar a:hover {
+        	transform: translateY(-1px);
+            background-color: #00004d;
+            color: #fff;
+        }
+
+        .shop-bar a:active {
+            transform: translateY(1px); /* Moves button down slightly, simulating a click/press */
+            box-shadow: 0 1px 2px rgba(0,0,0,0.2); /* Optional: adds a subtle shadow to enhance the "pressed" look */
+        }
+
+        .shop-bar a img {
+            height: 3rem; /* Fixed height for icons */
+            width: 3rem; /* Fixed width for icons */
+            margin-right: 10px; /* Space between icon and text */
+            vertical-align: middle; /* Ensures proper alignment, though flexbox handles most */
         }
 
         /* ========================================= */
@@ -1024,12 +1110,12 @@
             text-align: center;
             display: flex;
             justify-content: space-around;
-            width: 50vw;
+            max-width: 400px;
             gap: .4vw; /* Espaço entre os botões */
             flex-wrap: wrap; /* Permite que os botões quebrem a linha em telas menores */
         }
         .footer-bar span {
-        	font-size: 3.2vw;
+        	font-size: 1.2rem;
             width: 100vw;
             color: #333;
             margin-bottom: 1vw;
@@ -1038,8 +1124,8 @@
             background-color: transparent;
             color: white;
             padding: 10px 15px;
-            width: 6vw;
-            height: 6vw;
+            width: 3.5rem;
+            height: 3.5rem;
             margin: 0 1.4vw;
             border: none;
             border-radius: 5px;
@@ -1083,50 +1169,144 @@
           background-position: center;    /* Centraliza a imagem */
         }
 
+        /* ========================================= */
+        /* Ajustes Responsivos (Media Queries) */
+        /* ========================================= */
+        /* Estilos para telas médias */
+        @media (max-width: 768px) {
+            /* Adicione estilos específicos para tablets e dispositivos menores aqui */
+            .content .text, .image {
+                width: 100%; /* Em telas menores, imagem e texto ocupam a largura total */
+                max-width: none; /* Remove max-width para permitir que ocupem 100% */
+                min-width: unset; /* Remove min-width */
+            }
+            
+            .content p {
+        		font-size: 1.2rem;
+            }
+            .image {
+                width: 60%; /* Em telas menores, imagem e texto ocupam a largura total */
+                max-width: none; /* Remove max-width para permitir que ocupem 100% */
+                min-width: unset; /* Remove min-width */
+            }
+            .instagram-media {
+                max-width: 60% !important; /* Em telas menores, o embed ocupa a largura total */
+                padding: 20px; /* Ajusta o padding para telas menores */
+            }
+            .footer-bar {
+                width: 100vw;
+            }
+            .shop-bar {
+            	flex-direction: column;
+                gap: 15px;
+            }
+            .shop-bar a {
+                width: 100%;
+                max-width: 450px; /* Make buttons take more width on small screens */
+                justify-content: center; /* Center content within stacked buttons */
+            }
+        }
 
+		/* ========================================= */
+        /* Botão Flutuante */
+        /* ========================================= */
+        .float-button {
+            position: fixed; /* Fixa o botão na tela */
+            bottom: 15px;    /* 30px da parte inferior */
+            right: 20px;     /* 50px da direita */
+            background-color: #000035;; /* Cor de fundo do botão */
+            color: white;    /* Cor do texto/ícone */
+            border: none;    /* Sem borda */
+            border-radius: 50%; /* Torna o botão redondo */
+            width: 60px;     /* Largura do botão */
+            height: 60px;    /* Altura do botão */
+            font-size: 24px; /* Tamanho do ícone/texto */
+            display: flex;   /* Centraliza o conteúdo */
+            justify-content: center;
+            align-items: center;
+            cursor: pointer; /* Indica que é clicável */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra para destaque */
+            z-index: 1000;   /* Garante que o botão fique acima de outros elementos */
+            transition: background-color 0.3s ease, transform 0.2s ease; /* Transição suave */
+        }
+
+        .float-button:hover {
+            background-color: #0056b3; /* Cor de fundo no hover */
+            transform: translateY(-3px); /* Leve levantamento no hover */
+        }
+
+        .float-button:active {
+            transform: translateY(1px); /* Efeito de clique */
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2); /* Sombra menor ao clicar */
+        }
+
+        /* Media query para telas menores */
+        @media (max-width: 600px) {
+            .float-button {
+                width: 50px;     /* Reduz o tamanho do botão em telas menores */
+                height: 50px;
+                font-size: 20px;
+                bottom: 20px;    /* Ajusta a posição inferior */
+                right: 20px;     /* Ajusta a posição direita */
+            }
+        }
     </style>
 </head>
 <body>
+	<button class="float-button" onclick="window.scrollTo({ top: 0, behavior: 'smooth' });">⬆</button>
+    
+	<div class="menu-overlay" id="menuOverlay"></div>
+    <div class="menu-btn" id="menuBtn">
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+
+    <nav id="navMenu">
+      <ul>
+        <li><a href="#container-start" data-target="container-start">Início</a></li>
+        <li><a href="#container-video" data-target="container-video">Sinopse</a></li>
+        <li><a href="#text-sinopse" data-target="text-sinopse">Resenha</a></li>
+        <li><a href="#still-working" data-target="still-working">Blog</a></li>
+        <li><a href="#footerBar" data-target="footerBar">Contato</a></li>
+        <li><a href="#still-working" data-target="still-working">Sobre os Autores</a></li>
+        <li><a href="#container-media" data-target="container-media">Opinião do Leitores</a></li>
+        <li><a href="#still-working" data-target="still-working">Próximos Lançamentos</a></li>
+    </ul>
+    </nav>
+  
     <div class="container" id="container-start">
         <div class="content">           
-            <img src="https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcQBS3CQXupdyvstNW6e3CuDJp-McDfUxVYBIsMT2kH5VYomuGubsiWbLC1S24gujTO8lkzRFUggGLKU5Ze1F0BHo61foXKJv71UPWXUB6irgDk7yrVv7PnHhw" alt="Imagem" class="image">
+            <img src="https://cdn.statically.io/gh/CrisClei2022/imortais/main/capa.png" alt="Imagem" class="image">
             <div class="text" id="text-start">
                 <h1>Imortais Completos</h1>
                 <h2>O Recomeço</h2>
                 <p>O ano era 1889, e a atmosfera hipnotizante de Paris, a cidade das luzes, torna-se pano de fundo para a trama desenrolar-se em meio a um contexto de dualidade, onde a luta entre a luz e as trevas se torna iminente.</p>
                 <p>Não se tratava apenas de escolhas imprevisíveis, mas de profecias seladas com consequências inimagináveis. Venha mergulhar de cabeça nesta jornada, onde dois irmãos, cujo anseio por poder e respeito os conduz por um caminho sombrio sem volta, repleto de dilemas morais.</p>
                 <p>Tudo isso entrelaçado por uma narrativa cativante e repleta de reviravoltas. Então prepare-se, porque batalhas épicas estão prestes a começar.</p>
-        <table>
-            <tr>
-                <td colspan="2">
-                    <a href="#text-sinopse" class="button-89" role="button">Ler a Resenha</a>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <a href="https://wa.me/SEUNUMERODOTELEFONE?text=Ol%C3%A1%2C%20gostaria%20de%20fazer%20um%20pedido!" target="_blank" class="shop-button whatsapp-button">
-                        🛒 Fazer pedido via WhatsApp?
-                    </a>
-                </td>
-                <td>
-                    <a href="https://www.mercadolivre.com/" target="_blank" class="shop-button mercadolivre-button">
-                        🛒 Fazer pedido via Mercado Livre?
-                    </a>
-                </td>
-            </tr>
-        </table>
-            </div>
-            
-         	<div class="footer-bar" id="footerBar">
-            	<span>Siga nossas redes sociais:</span>
-                <a href="https://www.instagram.com/imortaiscompletosoficial/" target="_blank" id="instagram-icon"></a>
-                <a href="https://wa.me/SEUNUMERODOTELEFONE" target="_blank" id="whatsapp-icon"></a>
-                <a href="https://www.tiktok.com/imortaiscompletosoficial" target="_blank" id="tiktok-icon"></a>
-                <a href="https://www.facebook.com/imortaiscompletosoficial" target="_blank" id="facebook-icon"></a>
-          	</div>
-          
-        </div>
-    </div>
+                <a data-target="text-sinopse" class="btn-sinopse" role="button">Ler a Resenha</a>
+                <div class="shop-bar" id="shopBar">
+                  <a href="https://wa.me//5511989993251">
+                      <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp Icon">
+                      <span>Fazer pedido via WhatsApp?</span>
+                  </a>
+                  <a href="https://produto.mercadolivre.com.br/MLB-4140608717-livro-imortais-completos-o-recomeco-_JM#origin%3Dshare%26sid%3Dshare" target="_blank" id="mercadolivre">
+                      <!-https://cdn.statically.io/gh/CrisClei2022/imortais/main/mercadoLivre-icon.png--><img src="https://http2.mlstatic.com/static/org-img/homesnw/mercado-libre.png" alt="Mercado Livre Icon">
+                      <span>Fazer pedido via Mercado Livre? </span>
+                  </a>
+              </div>
+              
+          </div>
+              <div class="footer-bar" id="footerBar">
+                  <span>Siga nossas redes sociais:</span>
+                  <a href="https://www.instagram.com/imortaiscompletosoficial/" target="_blank" id="instagram-icon"></a>
+                  <a href="https://wa.me//5511989993251" target="_blank" id="whatsapp-icon"></a>
+                  <a href="https://www.tiktok.com/imortaiscompletosoficial" target="_blank" id="tiktok-icon"></a>
+                  <a href="https://www.facebook.com/imortaiscompletosoficial" target="_blank" id="facebook-icon"></a>
+              </div>  
+        
+		</div>
+	</div>
     <div class="container" id="container-video">    
         <blockquote class="instagram-media" data-instgrm-captioned data-instgrm-permalink="https://www.instagram.com/reel/C1-C_ojJ_qz/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style=" background:#FFF; border:0; border-radius:3px; box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15); margin: 1px; max-width:540px; min-width:326px; padding:0; width:70%; width:-webkit-calc(70% - 2px); width:calc(100% - 2px);">
         <div style="padding:16px;">
@@ -1161,8 +1341,8 @@
             
             <div class="text" style="background-color: #ecf1f9">
                 <h2>꧁Legado e Maldição꧂</h2>
-                <h3>"Você não precisa me ver para me sentir. Eu estive com você o tempo todo."</h3><br>
-                <p>Essa frase ressoa de um jeito bem particular pra mim. Ela me transporta imediatamente para uma fase da vida onde eu buscava uma conexão mais profunda e autêntica, sabe? Quando percebi que as presenças mais verdadeiras nem sempre são as mais visíveis, mas sim as que se fazem sentir constantemente, como uma força silenciosa me guiando ou uma memória que nunca se apaga. É a certeza de que alguém essencial sempre esteve lá, mesmo que eu não percebesse na época.</p>
+                <h4>"Você não precisa me ver para me sentir. Eu estive com você o tempo todo."</h4><br>
+                <p>Essa frase ressoa de um jeito bem particular pra mim. Ela me transporta imediatamente para uma fase da vida onde eu buscava uma conexão mais profunda e autêntica, sabe? Quando percebi que as presenças mais verdadeiras nem sempre são as mais visíveis, mas sim as que se fazem sentir constantemente, como uma força silenciosa me guiando ou uma memória que nunca se apaga. É a certeza de que alguém essencial sempre esteve lá, mesmo que eu não percebesse na época.</p>
                 <hr>
                 <p>Amorim, Ray T.</p>
                 <p>Brasil | Julho, 2025.</p>
@@ -1171,7 +1351,7 @@
             
             <div class="text" style="background-color: #ecf1f9">
                 <h2>꧁Dualidade e Conflito꧂</h2>
-                <h3>Eles são gêmeos é verdade e se amam como tal. Até que o poder os consuma no final.</h3><br>
+                <h4>Eles são gêmeos é verdade e se amam como tal. Até que o poder os consuma no final.</h4><br>
                 <p>Mesmo quando estive do outro lado do mundo, essa frase já me fazia pensar em como as maiores paixões, até mesmo o amor fraternal, podem se tornar destrutivas quando a busca por algo maior (como o poder), entra em cena. É um lembrete vívido da fragilidade humana, independentemente de onde estamos.</p>
                 <hr>
                 <p>Pinheiro, Ariane S.</p>
@@ -1180,7 +1360,7 @@
             
             <div class="text" style="background-color: #ecf1f9">
                 <h2>꧁Profecias e Reviravoltas꧂</h2>
-                <h3>Para cumprir a profecia eles renascerão mais poderosos. E com uma sede... que somente o poder pode saciar.</h3><br>
+                <h4>Para cumprir a profecia eles renascerão mais poderosos. E com uma sede... que somente o poder pode saciar.</h4><br>
                 <p>Sempre que eu chego nessa parte do livro sou atingida em cheio, fico até arrepiada. Sabe quando a gente falha, mas encontra uma força interior para se reerguer? A "sede de poder" aqui não é só por controle, mas por superação. É sobre a fome de provar a si mesmo que, mesmo depois de uma queda feia, a gente pode voltar mais forte e conquistar algo ainda maior. É a essência da resiliência e da vitória sobre as próprias limitações.</p>
                 <hr>
                 <p>Leitor misterioso.</p>
@@ -1189,7 +1369,7 @@
             
             <div class="text" style="background-color: #ecf1f9">
                 <h2>꧁Batalhas Épicas꧂</h2>
-                <h3>Dois jovens irmãos que lutam para ascender ao poder e se tornarem os imortais mais poderosos de todos os tempos.</h3><br>
+                <h4>Dois jovens irmãos que lutam para ascender ao poder e se tornarem os imortais mais poderosos de todos os tempos.</h4><br>
                 <p>É tipo a gente, que é jovem, e todo mundo já nos olha torto, acha que não temos experiência ou capacidade. A gente tem que provar o tempo todo que merece um espaço, que tem ideias, que é capaz de conquistar coisas grandes. Essa "ascensão ao poder" e o desejo de ser "o mais poderoso" não é só sobre dominar, é sobre ser reconhecido, sobre mostrar que a idade ou as aparências não definem o seu potencial. É a nossa própria batalha contra julgamentos de quem nos subestima só por sermos jovens.</p>
                 <hr>
                 <p>Leitor misterioso.</p>
@@ -1199,7 +1379,7 @@
          	<div class="footer-bar" id="footerBar">
             	<span>Siga nossas redes sociais:</span>
                 <a href="https://www.instagram.com/imortaiscompletosoficial/" target="_blank" id="instagram-icon"></a>
-                <a href="https://wa.me/SEUNUMERODOTELEFONE" target="_blank" id="whatsapp-icon"></a>
+                <a href="https://wa.me//5511989993251" target="_blank" id="whatsapp-icon"></a>
                 <a href="https://www.tiktok.com/imortaiscompletosoficial" target="_blank" id="tiktok-icon"></a>
                 <a href="https://www.facebook.com/imortaiscompletosoficial" target="_blank" id="facebook-icon"></a>
           	</div>
@@ -1229,24 +1409,20 @@ Outro ponto que merece destaque é a relação entre os irmãos. Embora unidos p
 "Imortais Completos – O Recomeço" não é apenas uma história de vampiros — é uma saga sobre identidade, escolhas e transformação. A mistura entre fantasia, drama, ação e uma pitada de crítica social garante à obra um lugar de destaque dentro da literatura fantástica nacional. Com capítulos bem estruturados, ritmo envolvente e personagens marcantes, o livro conquista tanto fãs do gênero quanto leitores em busca de uma aventura arrebatadora e inesquecível.
                 </span>
                 <button class="read-more-btn" id="read-more-btn">Leia Mais</button>
-            	</p>               
-                
-                <table>
-                    <tr>
-                        <td>
-                            <a href="https://wa.me/SEUNUMERODOTELEFONE?text=Ol%C3%A1%2C%20gostaria%20de%20fazer%20um%20pedido!" target="_blank" class="shop-button whatsapp-button">
-                                🛒 Fazer pedido via WhatsApp?
-                            </a>
-                        </td>
-                        <td>
-                            <a href="https://www.mercadolivre.com/" target="_blank" class="shop-button mercadolivre-button">
-                                🛒 Fazer pedido via Mercado Livre?
-                            </a>
-                        </td>
-                    </tr>
-                </table>
+            	</p>
             
         	</div>
+                
+                <div class="shop-bar" id="shopBar">
+                  <a href="https://wa.me/SEUNUMERODOTELEFONE" target="_blank" id="whatsapp">
+                      <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp Icon">
+                      <span>Fazer pedido via WhatsApp?</span>
+                  </a>
+                  <a href="https://www.mercadolivre.com/" target="_blank" id="mercadolivre">
+                      <!-https://cdn.statically.io/gh/CrisClei2022/imortais/main/mercadoLivre-icon.png--><img src="https://http2.mlstatic.com/static/org-img/homesnw/mercado-libre.png" alt="Mercado Livre Icon">
+                      <span>Fazer pedido via Mercado Livre? </span>
+                  </a>
+              </div>
             
         </div>
         
@@ -1471,29 +1647,90 @@ Outro ponto que merece destaque é a relação entre os irmãos. Embora unidos p
         </div><!-Content-->
     </div>
     
-    <script>
-    // Initialize ScrollReveal
-    ScrollReveal().reveal('.container', {
-        delay: 200,          // Delay before the animation starts (ms)
-        distance: '50px',    // How far the element moves from (from bottom up)
-        origin: 'bottom',    // Start from the bottom
-        opacity: 0,          // Start with opacity 0 (invisible)
-        easing: 'ease-in-out', // Animation curve
-        duration: 800,       // How long the animation lasts (ms)
-        interval: 100,       // Delay between each item in a group (for `.item`)
-        reset: true          // Animation plays every time the element enters the viewport
-    });
-	
-    // You can also target the entire .content div if you want it to appear as one block
-    // ScrollReveal().reveal('.content', {
-    //     delay: 200,
-    //     distance: '50px',
-    //     origin: 'bottom',
-    //     opacity: 0,
-    //     easing: 'ease-in-out',
-    //     duration: 800,
-    //     reset: true
-    // });
+    <script>    
+    // --- Referências dos elementos ---
+    (function() {
+
+        const reviewButton = document.querySelector('.btn-sinopse');
+                if (reviewButton) {
+                    reviewButton.addEventListener('click', (event) => {
+                        event.preventDefault(); // Prevent default link behavior
+                        const targetId = reviewButton.dataset.target; // Get the ID from data-target
+                        if (targetId) {
+                            scrollToSection(targetId);
+                        }
+                    });
+                }
+        // --- Referências dos elementos ---
+        // Declare these variables ONCE at the top level of your IIFE
+        // so they are accessible to all functions within this scope.
+        const menuBtn = document.getElementById('menuBtn');
+        const navMenu = document.getElementById('navMenu');
+        const menuOverlay = document.getElementById('menuOverlay'); // Correctly referencing the menu overlay
+
+        // --- NOVA FUNÇÃO: Rolar para Seções ---
+        function scrollToSection(sectionId) {
+            const targetElement = document.getElementById(sectionId);
+            if (targetElement) {
+                const elementRect = targetElement.getBoundingClientRect();
+                const offsetTop = window.pageYOffset + elementRect.top;
+
+                window.scrollTo({
+                    top: offsetTop,
+                    behavior: 'smooth'
+                });
+
+                // Opcional: Se o menu estiver aberto, feche-o após clicar no link
+                // Use the variables already defined at the top of the IIFE.
+                // DO NOT re-declare them with const/let/var here.
+                if (menuBtn && menuBtn.classList.contains('open')) {
+                    menuBtn.classList.remove('open');
+                    navMenu.classList.remove('open');
+                    // Now, use the 'menuOverlay' reference you already have.
+                    if (menuOverlay) { // Check if menuOverlay exists before trying to modify it
+                        menuOverlay.classList.remove('show'); // Assuming 'show' is the class that makes your overlay visible
+                    }
+                }
+            }
+        }
+
+        // --- Adicione event listeners para os links do menu ---
+        function setupMenuScroll() {
+            const menuLinks = document.querySelectorAll('#navMenu ul li a');
+            menuLinks.forEach(link => {
+                link.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    // Get the target ID from either data-target or href
+                    const targetId = link.dataset.target || link.getAttribute('href').substring(1);
+                    if (targetId) {
+                        scrollToSection(targetId);
+                    }
+                });
+            });
+        }
+
+        // --- Configuração inicial do menu (se já não estiver em outro lugar) ---
+        // Se você tem um evento de clique para abrir/fechar o menu, ele deve estar aqui.
+        if (menuBtn) {
+            menuBtn.addEventListener('click', () => {
+                menuBtn.classList.toggle('open');
+                navMenu.classList.toggle('open');
+                if (menuOverlay) {
+                    menuOverlay.classList.toggle('show');
+                }
+            });
+        }
+
+        if (menuOverlay) {
+            menuOverlay.addEventListener('click', () => {
+                menuBtn.classList.remove('open');
+                navMenu.classList.remove('open');
+                menuOverlay.classList.remove('show');
+            });
+        }
+
+    })(); // The function is immediately invoked
+    
     /// --- Overlays ---
     const openOverlayBtns = document.querySelectorAll('.openOverlay');
     const myOverlay = document.getElementById('myOverlay');
@@ -2181,6 +2418,7 @@ Outro ponto que merece destaque é a relação entre os irmãos. Embora unidos p
         setupProductCheckboxesListeners();
         updateTotal();
         updateNoSelectionDisplay();
+        setupMenuScroll();
     });
     </script>
 </body>
