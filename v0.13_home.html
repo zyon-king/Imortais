@@ -60,7 +60,7 @@
         .menu-btn {
           background-color: #000035; /* Cor de fundo do botão */
           position: fixed; /* Mudei de absolute para fixed para que ele permaneça visível ao rolar */
-          top: 10px;
+          top: 60px;
           left: 20px; /* Alterado de 'right' para 'left' */
           width: 50px;
           height: 40px;
@@ -70,6 +70,11 @@
           flex-direction: column;
           justify-content: space-between;
           z-index: 1001;
+        }
+        
+        .menu-btn.open {
+          left: 190px; /* Move o botão para a esquerda quando o menu está aberto */
+          transition: left 0.4s ease; /* Animação suave */
         }
 
         .menu-btn div {
@@ -1212,7 +1217,7 @@
         /* ========================================= */
         .float-button {
             position: fixed; /* Fixa o botão na tela */
-            bottom: 15px;    /* 30px da parte inferior */
+            bottom: 60px;    /* 30px da parte inferior */
             right: 20px;     /* 50px da direita */
             background-color: #000035;; /* Cor de fundo do botão */
             color: white;    /* Cor do texto/ícone */
