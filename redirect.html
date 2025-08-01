@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Bem-vindo</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+	  background-image: url('https://cdn.statically.io/gh/zyon-king/Imortais/main/blue-dark-castle-room.png');
+    }
+
+        /* ========================================= */
+        /* Layout Principal e Container de Conteúdo */
+        /* ========================================= */
+        .container {
+            background-image: white; /* Nota: 'white' não é uma imagem, mas uma cor. Considere usar 'background-color' se for uma cor sólida. */
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        /* Container para o conteúdo (imagem e texto) */
+        .content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap; /* Permite que os itens quebrem para a próxima linha em telas menores */
+            gap: 1.5rem; /* Espaçamento entre os itens flex */
+            width: 100vw; /* Ocupa 100% da largura da viewport */
+            max-width: 1200px; /* Largura máxima para o conteúdo */
+           
+            padding: 20px;
+            z-index: 2; /* Garante que o conteúdo esteja acima de outros elementos, como sobreposições */
+        }
+        
+        .image {
+			width: 35%; /* Em telas menores, imagem e texto ocupam a largura total */
+			max-width: none; /* Remove max-width para permitir que ocupem 100% */
+			min-width: unset; /* Remove min-width */
+			box-shadow: 0 0 8px rgba(0, 0, 0, 5);
+        }        
+        
+        /* Bloco de texto principal */
+        .text {
+            color: var(--color-link);
+            width: 48%;
+            text-align: center; /* Justifica o texto */
+            padding: 1.5rem;
+        }
+
+    /* Overlay */
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      background: rgba(0, 0, 0, 0.8);
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      z-index: 1000;
+      flex-direction: column;
+    }
+
+    .overlay-content {
+      background: #222;
+      padding: 30px;
+      border-radius: 8px;
+      text-align: center;
+      position: relative;
+    }
+
+    .overlay-content h1 {
+      margin: 0 0 10px;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      background: transparent;
+      border: none;
+      font-size: 24px;
+      color: white;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Overlay -->
+  <div class="overlay" id="welcomeOverlay">
+    <div class="overlay-content">
+      <button class="close-btn" id="closeBtn">&times;</button>
+      <h1>Bem-vindo!</h1>
+      <p>Obrigado por visitar nosso site.</p>
+    </div>
+  </div>
+
+  <!-- Conteúdo da Página -->
+      <div class="container" id="container-start">
+        <div class="content">           
+            <img src="https://cdn.statically.io/gh/CrisClei2022/imortais/main/capa.png" alt="Imagem" class="image">
+          </div>
+
+  <script>
+    const closeBtn = document.getElementById('closeBtn');
+    const overlay = document.getElementById('welcomeOverlay');
+
+    closeBtn.addEventListener('click', () => {
+      window.open("https://sites.google.com/view/imortais-completos/in%C3%ADcio/o-recome%C3%A7o"); // Abre em nova guia
+    });
+
+  </script>
+</body>
+</html>
