@@ -56,128 +56,92 @@
           scroll-behavior: smooth;
         }
         
-        /* Botão Hamburguer - Posicionado no canto SUPERIOR ESQUERDO */
-        .menu-btn {
-          background-color: #000035; /* Cor de fundo do botão */
-          position: fixed; /* Mudei de absolute para fixed para que ele permaneça visível ao rolar */
-          top: 60px;
-          left: 20px; /* Alterado de 'right' para 'left' */
-          width: 50px;
-          height: 40px;
-          padding: 7px 14px;
-          cursor: pointer;
-          display: flex;
-          flex-direction: column;
-          justify-content: space-between;
-          z-index: 1001;
-        }
-        
-        .menu-btn.open {
-          left: 190px; /* Move o botão para a esquerda quando o menu está aberto */
-          transition: left 0.4s ease; /* Animação suave */
-        }
-
-        .menu-btn div {
-          height: 4px;
-          background: #fff;
-          border-radius: 2px;
-          transition: 0.4s;
-        }
-
-        /* Transformação para 'X' quando o menu está aberto */
-        .menu-btn.open div:nth-child(1) {
-          transform: rotate(45deg) translate(5px, 5px); /* Ajuste os valores de translate se precisar */
-        }
-
-        .menu-btn.open div:nth-child(2) {
-          opacity: 0;
-        }
-
-        .menu-btn.open div:nth-child(3) {
-          /* Ajuste o translate para a linha inferior formar o X corretamente */
-          transform: rotate(-45deg) translate(9.5px, -9.5px); /* Ajustei o translate aqui */
-        }
-
-        /* Navegação - Desliza da ESQUERDA para a direita */
-        nav {
+        /* Barra de Menu Fixa */
+        .header-nav {
           position: fixed;
           top: 0;
-          left: -250px; /* Alterado de 'right: -100%' para 'left: -WIDTH_OF_NAV' */
-          height: 100%;
-          width: 250px;
-          background: #f2f2f2;
-          box-shadow: 2px 0 5px rgba(0,0,0,0.2); /* Sombra à direita agora */
-          transition: left 0.3s ease; /* Transição na propriedade 'left' */
-          padding-top: 60px;
+          left: 0;
+          min-width: 100%;
+          max-height: 8vh; /* Altura fixa para os itens */
+          background-color: #000035; /* Cor de fundo do menu */
+          color: #fff;
+          display: flex;
+          justify-content: center; /* Centraliza os itens principais de navegação */
+          align-items: center;
+          box-shadow: 0 2px 5px rgba(0,0,0,0.2);
           z-index: 1000;
         }
 
-        /* Quando a classe 'open' é adicionada, o menu aparece */
-        nav.open {
-          left: 0; /* Alterado de 'right: 0' para 'left: 0' */
-        }
-
-        nav ul {
+        .header-nav ul {
           list-style: none;
           padding: 0;
           margin: 0;
+          display: flex; /* Exibe os itens da lista em linha */
         }
 
-        nav ul li {
-          border-bottom: 1px solid #ddd;
-  		  padding: 3px 6px;
+        .header-nav ul li {
+          border-left: 1px solid grey;
+          border-right: 1px solid grey;
+          max-height: 8vh; /* Altura fixa para os itens */
+          position: relative; /* Necessário para o posicionamento do dropdown */
+          padding: 0 15px; /* Espaçamento entre os itens */
+          display: flex; /* Layout flexível */
+          align-items: center; /* Centraliza o texto verticalmente */
+          justify-content: center; /* Centraliza o texto horizontalmente */
         }
 
-        nav ul li a {
+        /* Estilos para os links do menu */
+        .header-nav ul li a {
           text-decoration: none;
-          color: #333;
-          font-size: 18px;display: block; /*bloco para o clique */
-  		  padding: 10px 20px;
+          color: #fff;
+          font-size: 18px;
+          padding: 10px 5px; /* Ajuste do padding para links dentro da barra */
+          display: block;
+          white-space: nowrap; /* Impede a quebra de linha do texto */
+          transition: color 0.3s ease;
         }
 
-        nav ul li:hover {
-          background: #f0f0f7; /* Cor de hover um pouco mais clara para contraste */
-          cursor: pointer; /* Corrigido de 'mouse' para 'cursor' */
-        }
-        
-        /* Estilo para o overlay do MENU (novo) */
-        .menu-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5); /* Fundo escuro semitransparente */
-            display: none; /* Esconde por padrão */
-            z-index: 999; /* Abaixo do menu */
+        /* Estilos para o Dropdown "Mais" */
+        .dropdown-list {
+          display: none; /* Oculto por padrão */
+          position: absolute;
+          background-color: #000035; /* Cor de fundo do dropdown */
+          min-width: 200px;
+          box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+          z-index: 1;
+          top: 100%; /* Posiciona abaixo do link "Mais" */
+          right: 0; /* Alinha o dropdown à direita do link "Mais" */
+          left: auto; /* Garante que o 'right' tenha precedência */
+          border-radius: 4px;
+          overflow: hidden; /* Garante bordas arredondadas nos itens internos */
         }
 
-        /* Estado ativo do overlay do MENU */
-        .menu-overlay.show { /* Usaremos 'show' para o menu overlay */
-            display: block;
+        .dropdown-list a {
+          color: #333; /* Cor mais escura para os itens do dropdown */
+          padding: 12px 16px;
+          text-decoration: none;
+          display: block;
+          text-align: left; /* Alinha o texto à esquerda */
+          font-size: 16px; /* Fonte ligeiramente menor para o dropdown */
         }
 
-        /* Seus outros estilos de .overlay e .overlay.active para carrinho, etc. */
-        .overlay {
-            position: fixed;
-            overflow-y: auto;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: flex;
-            justify-content: flex-end; /* Isso é para o carrinho/checkout, etc. */
-            align-items: center;
-            z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s ease, visibility 0.3s ease;
+        .dropdown-list a:hover {
+          background-color: #ddd; /* Efeito hover para os itens do dropdown */
         }
 
-        .overlay.active {
-            opacity: 1;
-            visibility: visible;
+        .header-nav ul li a:hover {
+          color: #000035; /* Cor escura para o texto no hover */
+        }
+
+        .header-nav ul li:hover {
+          background-color: #ddd; /* Efeito hover para os itens */
+          color: #000035; /* Cor escura para o texto */
+        }
+
+        /* Mostrar o dropdown ao passar o mouse ou quando "Mais" for clicado */
+        .header-nav ul li.dropdown-menu-item:hover .dropdown-list,
+        .header-nav ul li.dropdown-menu-item.active .dropdown-list {
+          display: block;
         }
 
         /* ========================================= */
@@ -224,10 +188,10 @@
         /* ========================================= */
         /* Tipografia e Elementos de Texto */
         /* ========================================= */
-        /* Estilos para títulos dentro de #container-media */
-        #container-media h1,
-        #container-media h2,
-        #container-media h3 {
+        /* Estilos para títulos dentro de #readers-opinion */
+        #readers-opinion h1,
+        #readers-opinionh2,
+        #readers-opinion h3 {
             color: black;
             text-align: center;
         }
@@ -242,8 +206,10 @@
         /* Parágrafo */
         p {
             font-family: 'Oldenburg', serif;
-        	font-size: 1.2rem;
+            font-size: 1.2rem;
             text-align: justify; /* Justifica o texto */
+            text-indent: 2em; /* Recuo da primeira linha */
+            margin-bottom: .75em;
         }
 
         /* Linha horizontal (hr) */
@@ -328,26 +294,26 @@
         /* ========================================= */
         /* Recurso "Leia Mais" */
         /* ========================================= */
-        /* Esconde o texto adicional inicialmente */
-        .more-text {
-          display: none;
+        #hidden-synopsis {
+    		display: none; /* Isso esconde o conteúdo inicialmente */
         }
 
-        /* Botão "Leia Mais" */
+        /* Opcional: Estilo para o botão */
         .read-more-btn {
-          background: none; /* Sem fundo */
-          border: none; /* Sem borda */
-          color: #007bff; /* Cor azul para o link */
-          cursor: pointer;
-          font-size: inherit; /* Herda o tamanho da fonte do pai */
-          padding: 0;
-          text-decoration: underline; /* Sublinha o texto */
-          outline: none; /* Remove o contorno no foco para melhor estética */
+            margin-top: 10px;
+            padding: 8px 15px;
+            background-color: #000035;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
         }
 
-        /* Efeito hover para o botão "Leia Mais" */
         .read-more-btn:hover {
-          color: #0056b3; /* Azul mais escuro no hover */
+            color: #000035;
+            background-color: white;
+            border-color: 1px solid #000035;
         }
 
         /* ========================================= */
@@ -817,6 +783,22 @@
             p {
                 font-size: 1rem; /* Reduz o tamanho da fonte para parágrafos em mobile */
             }
+            .header-nav {
+                max-height: 6vh; /* Altura fixa para os itens */
+              }
+
+              .header-nav ul {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+                display: flex; /* Exibe os itens da lista em linha */
+              }
+
+              .header-nav ul li {
+                max-height: 6vh; /* Altura fixa para os itens */
+                padding: 0 7px; /* Espaçamento entre os itens */
+              }
+
             .btn, .button-89 {
                 padding: 10px 15px; /* Ajusta o padding dos botões */
                 font-size: 0.9rem; /* Reduz o tamanho da fonte dos botões */
@@ -1089,6 +1071,7 @@
         .shop-bar a:hover {
         	transform: translateY(-1px);
             background-color: #00004d;
+            border: 1px solid white;
             color: #fff;
         }
 
@@ -1115,7 +1098,7 @@
             text-align: center;
             display: flex;
             justify-content: space-around;
-            max-width: 400px;
+            max-width: 500px;
             gap: .4vw; /* Espaço entre os botões */
             flex-wrap: wrap; /* Permite que os botões quebrem a linha em telas menores */
         }
@@ -1128,9 +1111,9 @@
         .footer-bar a {
             background-color: transparent;
             color: white;
-            padding: 10px 15px;
-            width: 3.5rem;
-            height: 3.5rem;
+            padding: 5px 10px;
+            width: 4rem;
+            height: 4rem;
             margin: 0 1.4vw;
             border: none;
             border-radius: 5px;
@@ -1210,6 +1193,12 @@
                 max-width: 450px; /* Make buttons take more width on small screens */
                 justify-content: center; /* Center content within stacked buttons */
             }
+            .float-button {
+                width: 50px;     /* Reduz o tamanho do botão em telas menores */
+                height: 50px;
+                font-size: 20px;
+                right: 20px;     /* Ajusta a posição direita */
+            }
         }
 
 		/* ========================================= */
@@ -1219,7 +1208,7 @@
             position: fixed; /* Fixa o botão na tela */
             bottom: 60px;    /* 30px da parte inferior */
             right: 20px;     /* 50px da direita */
-            background-color: #000035;; /* Cor de fundo do botão */
+            background-color: #000035; /* Cor de fundo do botão */
             color: white;    /* Cor do texto/ícone */
             border: none;    /* Sem borda */
             border-radius: 50%; /* Torna o botão redondo */
@@ -1244,42 +1233,31 @@
             transform: translateY(1px); /* Efeito de clique */
             box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2); /* Sombra menor ao clicar */
         }
-
-        /* Media query para telas menores */
-        @media (max-width: 600px) {
-            .float-button {
-                width: 50px;     /* Reduz o tamanho do botão em telas menores */
-                height: 50px;
-                font-size: 20px;
-                bottom: 20px;    /* Ajusta a posição inferior */
-                right: 20px;     /* Ajusta a posição direita */
-            }
-        }
     </style>
 </head>
 <body>
 	<button class="float-button" onclick="window.scrollTo({ top: 0, behavior: 'smooth' });">⬆</button>
     
-	<div class="menu-overlay" id="menuOverlay"></div>
-    <div class="menu-btn" id="menuBtn">
-      <div></div>
-      <div></div>
-      <div></div>
-    </div>
-
-    <nav id="navMenu">
+    <header class="header-nav">
+    <nav>
       <ul>
         <li><a href="#container-start" data-target="container-start">Início</a></li>
         <li><a href="#container-video" data-target="container-video">Sinopse</a></li>
         <li><a href="#text-sinopse" data-target="text-sinopse">Resenha</a></li>
-        <li><a href="#still-working" data-target="still-working">Blog</a></li>
-        <li><a href="#footerBar" data-target="footerBar">Contato</a></li>
-        <li><a href="#still-working" data-target="still-working">Sobre os Autores</a></li>
-        <li><a href="#container-media" data-target="container-media">Opinião do Leitores</a></li>
-        <li><a href="#still-working" data-target="still-working">Próximos Lançamentos</a></li>
-    </ul>
+		<li class="dropdown-menu-item">
+          <a href="#" class="dropdown-btn">Mais &#9662;</a>
+          <div class="dropdown-list">
+            <a href="#footerBar" data-target="footerBar">Contato</a>
+            <a href="#about-authors" data-target="about-authors">Sobre os Autores</a>
+            <a href="#readers-opinion" data-target="readers-opinion">Opinião dos Leitores</a>
+            <a href="#upcoming-releases" data-target="upcoming-releases">Próximos Lançamentos</a>
+          </div>
+        </li>
+      </ul>
     </nav>
-  
+  </header>
+
+    
     <div class="container" id="container-start">
         <div class="content">           
             <img src="https://cdn.statically.io/gh/CrisClei2022/imortais/main/capa.png" alt="Imagem" class="image">
@@ -1306,7 +1284,7 @@
                   <span>Siga nossas redes sociais:</span>
                   <a href="https://www.instagram.com/imortaiscompletosoficial/" target="_blank" id="instagram-icon"></a>
                   <a href="https://wa.me//5511989993251" target="_blank" id="whatsapp-icon"></a>
-                  <a href="https://www.tiktok.com/imortaiscompletosoficial" target="_blank" id="tiktok-icon"></a>
+                  <a href="https://www.tiktok.com/@imortais.completo" target="_blank" id="tiktok-icon"></a>
                   <a href="https://www.facebook.com/imortaiscompletosoficial" target="_blank" id="facebook-icon"></a>
               </div>  
         
@@ -1340,7 +1318,7 @@
         <script async src="//www.instagram.com/embed.js"></script>        
     </div>
     
-    <div class="container" id="container-media">
+    <div class="container" id="readers-opinion">
     
     	<div class="content">
             
@@ -1385,7 +1363,7 @@
             	<span>Siga nossas redes sociais:</span>
                 <a href="https://www.instagram.com/imortaiscompletosoficial/" target="_blank" id="instagram-icon"></a>
                 <a href="https://wa.me//5511989993251" target="_blank" id="whatsapp-icon"></a>
-                <a href="https://www.tiktok.com/imortaiscompletosoficial" target="_blank" id="tiktok-icon"></a>
+                <a href="https://www.tiktok.com/@imortais.completo" target="_blank" id="tiktok-icon"></a>
                 <a href="https://www.facebook.com/imortaiscompletosoficial" target="_blank" id="facebook-icon"></a>
           	</div>
             
@@ -1399,24 +1377,39 @@
                 <h1>Resenha</h1>
                 <h2>Imortais Completos</h2>
                 <h3>O Recomeço</h3>
-                <p>"Imortais Completos – O Recomeço", escrito por Alexandre Lamim em parceria com Celonice A. Lamim, é uma envolvente obra de fantasia que mergulha o leitor em um universo sombrio, elegante e absolutamente viciante, onde vampiros, lobisomens e profecias entrelaçam-se numa trama cheia de reviravoltas, ação e emoção.<br><br>
+                <div id="synopsis-container">
+    <p>
+        "Imortais Completos – O Recomeço", escrito por Alexandre Lamim em parceria com Celonice A. Lamim, é uma envolvente obra de fantasia que mergulha o leitor em um universo sombrio, elegante e absolutamente viciante, onde vampiros, lobisomens e profecias entrelaçam-se numa trama cheia de reviravoltas, ação e emoção.
+    </p>
 
-A narrativa inicia com uma cena dramática e arrebatadora, que já entrega o tom intenso da história: um guerreiro ferido, ajoelhado, testemunha a perda irreparável de alguém amado. A dor e o sentimento de vingança que o dominam reverberam ao longo de toda a obra. A partir daí, o leitor é conduzido ao século XIX, em meio às vielas escuras de uma Paris em
-                <span class="more-text" id="hidden-synopsis">
-                     transformação, para acompanhar a jornada dos irmãos Vincent e Victor Fourier — jovens da aristocracia francesa, desajustados com as normas sociais e desejosos de algo maior: respeito, poder e liberdade.<br><br>
+    <p>
+        A narrativa inicia com uma cena dramática e arrebatadora, que já entrega o tom intenso da história: um guerreiro ferido, ajoelhado, testemunha a perda irreparável de alguém amado. A dor e o sentimento de vingança que o dominam reverberam ao longo de toda a obra. A partir daí, o leitor é conduzido ao século XIX, em meio às vielas escuras de uma Paris em
+    </p>
 
-A escrita de Lamim é vívida, cinematográfica. Cada cenário é meticulosamente descrito, transportando o leitor para mansões suntuosas, tavernas misteriosas e becos perigosos. Os personagens, especialmente os irmãos gêmeos, são complexos, com motivações profundas e muitas vezes conflitantes. A transformação em vampiros marca não apenas uma mudança física, mas uma verdadeira quebra de paradigmas em suas personalidades e destinos.<br><br>
+    <span class="more-text" id="hidden-synopsis">
+        <p>
+            transformação, para acompanhar a jornada dos irmãos Vincent e Victor Fourier — jovens da aristocracia francesa, desajustados com as normas sociais e desejosos de algo maior: respeito, poder e liberdade.
+        </p>
 
-Um dos grandes trunfos da obra é a construção do universo mitológico. As regras entre os clãs, os rituais de batismo, o papel dos padrinhos, o conselho de anciões, a presença ameaçadora dos lobisomens e a figura lendária do Conde Drácula — tudo é costurado com habilidade e coerência. Além disso, o livro insere profecias enigmáticas e jornadas de autoconhecimento que dão à trama um caráter épico e ao mesmo tempo intimista.<br><br>
+        <p>
+            A escrita de Lamim é vívida, cinematográfica. Cada cenário é meticulosamente descrito, transportando o leitor para mansões suntuosas, tavernas misteriosas e becos perigosos. Os personagens, especialmente os irmãos gêmeos, são complexos, com motivações profundas e muitas vezes conflitantes. A transformação em vampiros marca não apenas uma mudança física, mas uma verdadeira quebra de paradigmas em suas personalidades e destinos.
+        </p>
 
-Outro ponto que merece destaque é a relação entre os irmãos. Embora unidos pelo sangue, Vincent e Victor seguem caminhos distintos dentro do novo mundo em que são inseridos. A oposição entre os dois, com um buscando poder absoluto e o outro ansiando por respeito e equilíbrio, instiga o leitor e cria um dinamismo narrativo cativante.<br><br>
+        <p>
+            Um dos grandes trunfos da obra é a construção do universo mitológico. As regras entre os clãs, os rituais de batismo, o papel dos padrinhos, o conselho de anciões, a presença ameaçadora dos lobisomens e a figura lendária do Conde Drácula — tudo é costurado com habilidade e coerência. Além disso, o livro insere profecias enigmáticas e jornadas de autoconhecimento que dão à trama um caráter épico e ao mesmo tempo intimista.
+        </p>
 
-"Imortais Completos – O Recomeço" não é apenas uma história de vampiros — é uma saga sobre identidade, escolhas e transformação. A mistura entre fantasia, drama, ação e uma pitada de crítica social garante à obra um lugar de destaque dentro da literatura fantástica nacional. Com capítulos bem estruturados, ritmo envolvente e personagens marcantes, o livro conquista tanto fãs do gênero quanto leitores em busca de uma aventura arrebatadora e inesquecível.
-                </span>
-                <button class="read-more-btn" id="read-more-btn">Leia Mais</button>
-            	</p>
-            
-        	</div>
+        <p>
+            Outro ponto que merece destaque é a relação entre os irmãos. Embora unidos pelo sangue, Vincent e Victor seguem caminhos distintos dentro do novo mundo em que são inseridos. A oposição entre os dois, com um buscando poder absoluto e o outro ansiando por respeito e equilíbrio, instiga o leitor e cria um dinamismo narrativo cativante.
+        </p>
+
+        <p>
+            "Imortais Completos – O Recomeço" não é apenas uma história de vampiros — é uma saga sobre identidade, escolhas e transformação. A mistura entre fantasia, drama, ação e uma pitada de crítica social garante à obra um lugar de destaque dentro da literatura fantástica nacional. Com capítulos bem estruturados, ritmo envolvente e personagens marcantes, o livro conquista tanto fãs do gênero quanto leitores em busca de uma aventura arrebatadora e inesquecível.
+        </p>
+    </span>
+
+    <button class="read-more-btn" id="read-more-btn">Leia Mais</button>
+</div>
                 
                 <div class="shop-bar" id="shopBar">
                   <a href="https://wa.me/SEUNUMERODOTELEFONE" target="_blank" id="whatsapp">
@@ -1435,8 +1428,6 @@ Outro ponto que merece destaque é a relação entre os irmãos. Embora unidos p
     
     <!-Overlays-->
     <button onclick="document.getElementById('checkout').classList.add('active');">Policy</button>
-
-
     <div class="overlay" id="myOverlay">
         <div class="overlay-content">
 
@@ -1653,84 +1644,70 @@ Outro ponto que merece destaque é a relação entre os irmãos. Embora unidos p
     </div>
     
     <script>
+    // --- ========================================== ---
+    // --- -------- Bloco de Funções do Menu -------- ---
+    // --- ========================================== ---
+    
     (function() {
-    // --- Referências dos elementos (declaradas uma vez no escopo principal do IIFE) ---
-    const menuBtn = document.getElementById('menuBtn');
-    const navMenu = document.getElementById('navMenu');
-    const menuOverlay = document.getElementById('menuOverlay');
+      // --- References to elements ---
+      const dropdownBtn = document.querySelector('.dropbtn');
+      const dropdownParent = document.querySelector('.dropdown');
+      const navLinks = document.querySelectorAll('.header-nav a[data-target]');
+      const allDropdownLinks = document.querySelectorAll('.dropdown-content a');
 
-    // --- FUNÇÃO ÚNICA: Rolar para Seções (com lógica de fechamento de menu) ---
-    function scrollToSection(sectionId) {
+      // --- Function to scroll to section ---
+      function scrollToSection(sectionId) {
         const targetElement = document.getElementById(sectionId);
         if (targetElement) {
-            // Usa scrollIntoView por ser mais simples e amplamente suportado para rolagem suave
-            targetElement.scrollIntoView({ behavior: 'smooth' });
-
-            // Opcional: Se o menu estiver aberto, feche-o após clicar no link
-            // As variáveis menuBtn, navMenu e menuOverlay estão acessíveis aqui
-            // porque foram declaradas no escopo pai do IIFE.
-            if (menuBtn && menuBtn.classList.contains('open')) {
-                menuBtn.classList.remove('open');
-                navMenu.classList.remove('open');
-                if (menuOverlay) {
-                    menuOverlay.classList.remove('show');
-                }
-            }
+          targetElement.scrollIntoView({ behavior: 'smooth' });
+          // Close dropdown after clicking a link (optional, but good UX)
+          if (dropdownParent) {
+            dropdownParent.classList.remove('active');
+          }
         }
-    }
+      }
 
-    // --- FUNÇÃO ÚNICA para configurar listeners para TODOS os links com data-target ---
-    function setupAllDataTargetLinks() {
-        // Seleciona TODOS os elementos 'a' que possuem o atributo 'data-target'
-        const allDataTargetLinks = document.querySelectorAll('a[data-target]');
-
-        allDataTargetLinks.forEach(link => {
-            link.addEventListener('click', (event) => {
-                event.preventDefault(); // Impede o comportamento padrão do link
-
-                const targetId = link.dataset.target; // Obtém o ID da seção do atributo data-target
-                if (targetId) {
-                    scrollToSection(targetId); // Chama a função de rolagem
-                }
-            });
+      // --- Setup click listeners for main navigation links ---
+      navLinks.forEach(link => {
+        link.addEventListener('click', (event) => {
+          event.preventDefault();
+          const targetId = link.dataset.target;
+          if (targetId) {
+            scrollToSection(targetId);
+          }
         });
-    }
+      });
 
-    // --- Configuração inicial do menu (lógica de abrir/fechar o hambúrguer e overlay) ---
-    if (menuBtn) {
-        menuBtn.addEventListener('click', () => {
-            menuBtn.classList.toggle('open');
-            navMenu.classList.toggle('open');
-            if (menuOverlay) {
-                menuOverlay.classList.toggle('show');
-            }
+      // --- Setup click listeners for dropdown links ---
+      allDropdownLinks.forEach(link => {
+        link.addEventListener('click', (event) => {
+          event.preventDefault();
+          const targetId = link.dataset.target;
+          if (targetId) {
+            scrollToSection(targetId);
+          }
         });
-    }
+      });
 
-    if (menuOverlay) {
-        menuOverlay.addEventListener('click', () => {
-            menuBtn.classList.remove('open');
-            navMenu.classList.remove('open');
-            menuOverlay.classList.remove('show');
+      // --- Dropdown functionality for "Mais" button ---
+      if (dropdownBtn) {
+        dropdownBtn.addEventListener('click', function(event) {
+          event.preventDefault(); // Prevent default link behavior
+          // Toggle the 'active' class on the parent li to show/hide dropdown
+          dropdownParent.classList.toggle('active');
         });
-    }
 
-    // --- Inicialização ao carregar a página ---
-    document.addEventListener('DOMContentLoaded', () => {
-        // Chame a função que configura TODOS os links com data-target
-        setupAllDataTargetLinks();
+        // Close dropdown if clicked outside
+        document.addEventListener('click', function(event) {
+          if (dropdownParent && !dropdownParent.contains(event.target)) {
+            dropdownParent.classList.remove('active');
+          }
+        });
+      }
 
-        // Chame suas outras funções de inicialização
-        initializeReadMore();
-        setupStoreCheckboxesListeners();
-        setupProductCheckboxesListeners();
-        updateTotal();
-        updateNoSelectionDisplay();
-    });
-
-})(); // A função é imediatamente invocada
+    })();
     
-    /// --- Overlays ---
+    /// --- Overlays da Store ---
     const openOverlayBtns = document.querySelectorAll('.openOverlay');
     const myOverlay = document.getElementById('myOverlay');
     const backBtnCart = document.getElementById('back-btn-cart');
@@ -2386,28 +2363,31 @@ Outro ponto que merece destaque é a relação entre os irmãos. Embora unidos p
     }
 
 
-    // ==================
-    // ---- ReadMore ----
-    // ==================
-    function initializeReadMore() {
-        const readMoreBtn = document.getElementById('read-more-btn');
-        const hiddenSynopsis = document.getElementById('hidden-synopsis');
+// ==================
+// ---- ReadMore ----
+// ==================
+function initializeReadMore() {
+    const readMoreBtn = document.getElementById('read-more-btn');
+    const hiddenSynopsis = document.getElementById('hidden-synopsis');
 
-        if (readMoreBtn && hiddenSynopsis) { // Certifica-se de que os elementos existem
-            readMoreBtn.addEventListener('click', function() {
-                // Usa 'getComputedStyle' para pegar o estilo computado, que reflete o CSS aplicado
-                const currentDisplay = window.getComputedStyle(hiddenSynopsis).display;
+    if (readMoreBtn && hiddenSynopsis) { // Certifica-se de que os elementos existem
+        readMoreBtn.addEventListener('click', function() {
+            // Usa 'getComputedStyle' para pegar o estilo computado, que reflete o CSS aplicado
+            const currentDisplay = window.getComputedStyle(hiddenSynopsis).display;
 
-                if (currentDisplay === 'none') {
-                    hiddenSynopsis.style.display = 'inline'; // Ou 'block' se preferir nova linha
-                    readMoreBtn.textContent = 'Mostrar Menos';
-                } else {
-                    hiddenSynopsis.style.display = 'none';
-                    readMoreBtn.textContent = 'Leia Mais';
-                }
-            });
-        }
+            if (currentDisplay === 'none') {
+                hiddenSynopsis.style.display = 'block'; // Usamos 'block' pois são parágrafos
+                readMoreBtn.textContent = 'Mostrar Menos';
+            } else {
+                hiddenSynopsis.style.display = 'none';
+                readMoreBtn.textContent = 'Leia Mais';
+            }
+        });
     }
+}
+
+// Chame a função quando o DOM estiver completamente carregado
+document.addEventListener('DOMContentLoaded', initializeReadMore);
 
 
     // --- Inicialização ao carregar a página ---
