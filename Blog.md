@@ -41,7 +41,7 @@ TEXT 2
 * [Vampiros e a Sociedade](#vampiros-e-a-sociedade)
 * [Vampiros e Imortais Completos](#vampiros-e-imortais-completos)
   
-### Descubra "Imortais Completos: O Recomeço", uma obra que redefine a mitologia vampírica.
+# Descubra "Imortais Completos: O Recomeço", uma obra que redefine a mitologia vampírica.
   
 * **O Melhor Livro sobre Vampiros**: Mergulhe em uma narrativa que vai além das lendas, desvende os mistérios da noite eterna e explore a complexidade de dilemas morais profundos.  Uma obra que desafia as fronteiras entre o bem e o mal, e apresenta criaturas da noite com um desejo por justiça contrastando com uma sede implacável por poder.
   
