@@ -1,45 +1,21 @@
 https://g.co/gemini/share/4fdec0b6c3b9
-# Links to the example headings above
-
-Link to the sample section: [Example headings](#example-çheadíngs).
-
-Link to the helpful section: [Link Text](#thisll-be-a-helpful-section-about-the-greek-letter-Θ).
-
-Link to the first non-unique section: [Link Text](#this-heading-is-not-unique-in-the-file).
-
-Link to the second non-unique section: [Link Text](#this-heading-is-not-unique-in-the-file-1).
-
-# Example, çheadíngs",
-
-## Sample Section
-
-## This'll be a _Helpful_ Section About the Greek Letter Θ!
-A heading containing characters not allowed in fragments, UTF-8 characters, two consecutive spaces between the first and second words, and formatting.
-
-## This heading is not unique in the file
-
-TEXT 1
-
-## This heading is not unique in the file
-
-TEXT 2
 
 **Palavras-chave:**
-* [Imortais Completos O Recomeço](#descubra-imortais-completos-o-recomeço-uma-obra-que-redefine-a-mitologia-vampírica)
-* [O Melhor Livro sobre Vampiros](#o-melhor-livro-sobre-vampiros)
-* [Lutas entre Vampiros e Lobisomens](#lutas-entre-vampiros-e-lobisomens)
-* [Vampiros na Europa](#vampiros-na-europa)
-* [Conflitos entre Famílias e Irmãos Vampiros](#conflitos-entre-famílias-e-irmãos-vampiros)
-* [Guerras de Clãs Vampiros](#guerras-de-clãs-vampiros)
-* [Vampiros em Paris](#vampiros-em-paris)
-* [Bruxos e Mestres Vampiros](#bruxos-e-mestres-vampiros)
-* [Reis, Guerras e Vampiros](#reis,-guerras-e-vampiros)
-* [Vampiros e Batalhas Épicas](#vampiros-e-batalhas-épicas)
-* [Nova Raça de Vampiros](#nova-raça-de-vampiros)
-* [Vampiros e Dilemas Morais](#vampiros-e-dilemas-morais)
-* [Humanos e Vampiros](#humanos-e-vampiros)
-* [Vampiros e a Sociedade](#vampiros-e-a-sociedade)
-* [Vampiros e Imortais Completos](#vampiros-e-imortais-completos)
+* [Imortais Completos O Recomeço](#descubra-imortais-completos-o-recomeço-uma-obra-que-redefine-a-mitologia-vampírica)  
+* O Melhor Livro sobre Vampiros  
+* Lutas entre Vampiros e Lobisomens  
+* Vampiros na Europa  
+* Conflitos entre Famílias e Irmãos Vampiros  
+* Guerras de Clãs Vampiros  
+* Vampiros em Paris  
+* Bruxos e Mestres Vampiros  
+* Reis, Guerras e Vampiros  
+* Vampiros e Batalhas Épicas  
+* Nova Raça de Vampiros  
+* Vampiros e Dilemas Morais  
+* Humanos e Vampiros  
+* Vampiros e a Sociedade  
+* Vampiros e Imortais Completos  
   
 # Descubra "Imortais Completos: O Recomeço", uma obra que redefine a mitologia vampírica.
   
@@ -71,38 +47,28 @@ TEXT 2
   
 * **Vampiros e Imortais Completos**: Prepare-se para uma jornada sombria e envolvente, onde seres com poderes sem precedentes, descobrem que a eternidade é uma bênção e a escolha é uma maldição.
 
-# Links to the example headings above
-
-Link to the sample section: [Example headings](#example-headings).
-
-Link to the helpful section: [Link Text](#thisll-be-a-helpful-section-about-the-greek-letter-Θ).
-
-Link to the first non-unique section: [Link Text](#this-heading-is-not-unique-in-the-file).
-
-Link to the second non-unique section: [Link Text](#this-heading-is-not-unique-in-the-file-1).
-
-# Example, headings
-
-## Sample Section
-
-## This'll be a _Helpful_ Section About the Greek Letter Θ!
-A heading containing characters not allowed in fragments, UTF-8 characters, two consecutive spaces between the first and second words, and formatting.
-
-## This heading is not unique in the file
-
-TEXT 1
-
-## This heading is not unique in the file
-
-TEXT 2
 
 
 
 
 
+Rivalidade sobrenatural
+
+  Logo após um momento de grande tensão, surge um novo e perigoso confronto. Esse evento provoca uma crescente rivalidade entre duas antigas raças, motivando uma empreitada sombria e perigosa, por meio de uma missão de alto risco mas necessaria para proteger um recurso crucial.
+
+
+A missão do rei 
+
+  Em uma sombria jornada, surgira um confronto inesperado contra uma ameaça sobrenatural que assola uma comunidade isolada. Com a descoberta desse mal terrível, sera desvendado um passado obscuro, forjado em uma era de revolução, e que ainda perpetua seus efeitos através de métodos cruéis e sanguinários.
 
 
 
+
+
+item mt valioso
+ bem de poder inigualável.
+ elemento vital
+ um clã de vampiros a se lançar em
 
 
 
