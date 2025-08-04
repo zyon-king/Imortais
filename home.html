@@ -225,16 +225,21 @@
         /* Embeds e Mídia */
         /* ========================================= */
         .instagram-media {
-            max-width: 35% !important; /* Sobrescreve largura máxima */
+            max-height: 85% !important; /* Sobrescreve largura máxima */
             padding: 50px 50px;
             margin: 0 auto !important; /* Centraliza o embed */
         }
 
         /* Container de vídeo */
         #container-video {
-            background-image:  linear-gradient(135deg, #1e5799 0%,#000000 30%,#000000 30%,#1e5799 50%,#000000 70%,#1e5799 100%);
-            overflow: hidden; /* Corta qualquer conteúdo que exceda a altura */
-            display: flex; /* Ajuda a centralizar o conteúdo verticalmente, se necessário */
+            background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSEukL44ye3RL26v-xLxtlbqz1j-n-ljW8KdUnCFPjD5iQyh_4ZYEFdlAVrUPIT5lJwYUU&usqp=CAU');
+            background-size: cover;          /* Estica a imagem para cobrir todo o espaço */
+            background-position: center;     /* Centraliza a imagem */
+            background-repeat: no-repeat;    /* Evita repetição */
+            height: 85vh;                   /* Define a altura para 100% da viewport */
+            width: 100vw;                    /* Define a largura para 100% da viewport */
+            overflow: hidden;
+            display: flex;
             justify-content: center;
             align-items: center;
         }
@@ -254,20 +259,8 @@
         }
 
         /* ========================================= */
-        /* Estilos de Tabela */
+        /* Estilo específico para o botão Ler Resenha */
         /* ========================================= */
-        table {
-          text-align: center;
-          margin: 0 auto; /* Centraliza a tabela horizontalmente */
-        }
-
-        td {
-            padding: 1vw 0;
-            text-align: center;
-            vertical-align: middle;
-        }
-
-        /* Estilo específico para o botão sinopse (com borda animada) */
         .btn-sinopse {
             margin-top: 1rem;
             background-color: #000035; /* Fundo #000035 */
