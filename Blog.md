@@ -52,15 +52,15 @@ https://g.co/gemini/share/4fdec0b6c3b9
 
 
 
-Rivalidade sobrenatural
-
+### Rivalidade sobrenatural
   Logo após um momento de grande tensão, surge um novo e perigoso confronto. Esse evento provoca uma crescente rivalidade entre duas antigas raças, motivando uma empreitada sombria e perigosa, por meio de uma missão de alto risco mas necessaria para proteger um recurso crucial.
 
-
-A missão do rei 
-
+### A missão do rei 
   Em uma sombria jornada, surgira um confronto inesperado contra uma ameaça sobrenatural que assola uma comunidade isolada. Com a descoberta desse mal terrível, sera desvendado um passado obscuro, forjado em uma era de revolução, e que ainda perpetua seus efeitos através de métodos cruéis e sanguinários.
 
+### Uma proposta irrecusável
+A escolha não é apenas entre a queda e a ascensão, mas uma decisão que forjará a própria essência de seu ser. De um lado, a melancólica luz da compaixão, que promete esperanças silenciosas; do outro, a sombra voraz, que anseia por poder e domínio.
+  Ao despertar poderes desconhecidos, sua sombra se estenderá por mundos que poucos ousam explorar. Qualquer que seja o caminho, a profecia será cumprida, e a condenação será eterna por desafiar a ordem da vida e da morte. 
 
 
 
