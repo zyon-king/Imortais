@@ -1,21 +1,21 @@
 https://g.co/gemini/share/4fdec0b6c3b9
 
 **Palavras-chave:**
-* [Imortais Completos O Recomeço](#Descubra_"Imortais_Completos:_O_Recomeço",_uma_obra_que_redefine_a_mitologia_vampírica.)  
-* O Melhor Livro sobre Vampiros  
-* Lutas entre Vampiros e Lobisomens  
-* Vampiros na Europa  
-* Conflitos entre Famílias e Irmãos Vampiros  
-* Guerras de Clãs Vampiros  
-* Vampiros em Paris  
-* Bruxos e Mestres Vampiros  
-* Reis, Guerras e Vampiros  
-* Vampiros e Batalhas Épicas  
-* Nova Raça de Vampiros  
-* Vampiros e Dilemas Morais  
-* Humanos e Vampiros  
-* Vampiros e a Sociedade  
-* Vampiros e Imortais Completos
+* [Imortais Completos O Recomeço](#descubra-"imortais-completos:-o-recomeço",-uma-obra-que-redefine-a-mitologia-vampírica.)
+* [O Melhor Livro sobre Vampiros](#o-melhor-livro-sobre-vampiros)
+* [Lutas entre Vampiros e Lobisomens](#lutas-entre-vampiros-e-lobisomens)
+* [Vampiros na Europa](#vampiros-na-europa)
+* [Conflitos entre Famílias e Irmãos Vampiros](#conflitos-entre-famílias-e-irmãos-vampiros)
+* [Guerras de Clãs Vampiros](#guerras-de-clãs-vampiros)
+* [Vampiros em Paris](#vampiros-em-paris)
+* [Bruxos e Mestres Vampiros](#bruxos-e-mestres-vampiros)
+* [Reis, Guerras e Vampiros](#reis,-guerras-e-vampiros)
+* [Vampiros e Batalhas Épicas](#vampiros-e-batalhas-épicas)
+* [Nova Raça de Vampiros](#nova-raça-de-vampiros)
+* [Vampiros e Dilemas Morais](#vampiros-e-dilemas-morais)
+* [Humanos e Vampiros](#humanos-e-vampiros)
+* [Vampiros e a Sociedade](#vampiros-e-a-sociedade)
+* [Vampiros e Imortais Completos](#vampiros-e-imortais-completos)
   
 ### Descubra "Imortais Completos: O Recomeço", uma obra que redefine a mitologia vampírica.
   
