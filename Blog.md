@@ -27,3 +27,25 @@ https://g.co/gemini/share/4fdec0b6c3b9
 * **Vampiros e a Sociedade**: Descubra o impacto da existência dos seres das trevas na política, finanças e na vida social.
   
 * **Vampiros e Imortais Completos**: Prepare-se para uma jornada sombria e envolvente, onde seres com poderes sem precedentes, descobrem que a eternidade é uma bênção e a escolha é uma maldição.
+
+Vagas de Ocupaes shared a link.
+
+04 Aug 2025 at 13:55 PM
+Headline	instagram.com
+Primary Text	🚨 VAGA HOME OFFICE! 🚨
+Estamos contratando:
+💼 Agente de Atendimento (Receptivo)
+📍 100% Home Office
+📄 CLT Efetivo
+💰 Salário: R$ 3.800,00
+
+✨ Você vai atuar no atendimento receptivo de uma empresa de internet.
+
+📌 Pré-requisitos:
+✔️ Ter habilidades para trabalhar em home office
+
+🎧 Benefícios:
+✅ Fornecemos notebook, mouse e headset!
+
+📲 Interessados, entrem em contato pelo WhatsApp:
+📞 (27) 98121-3125
