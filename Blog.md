@@ -25,7 +25,7 @@ TEXT 1
 TEXT 2
 
 **Palavras-chave:**
-* [Imortais Completos O Recomeço](#descubra-imortais-completos-o-recomeco-uma-obra-que-redefine-a-mitologia-vampirica.)
+* [Imortais Completos O Recomeço](#descubra-imortais-completos-o-recomeço-uma-obra-que-redefine-a-mitologia-vampírica.)
 * [O Melhor Livro sobre Vampiros](#o-melhor-livro-sobre-vampiros)
 * [Lutas entre Vampiros e Lobisomens](#lutas-entre-vampiros-e-lobisomens)
 * [Vampiros na Europa](#vampiros-na-europa)
