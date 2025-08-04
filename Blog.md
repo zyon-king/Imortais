@@ -49,7 +49,7 @@ https://g.co/gemini/share/4fdec0b6c3b9
 
 # Links to the example headings above
 
-Link to the sample section: [Sample Section](##sample-section).
+Link to the sample section: [Example headings](#example-headings).
 
 Link to the helpful section: [Link Text](#thisll-be-a-helpful-section-about-the-greek-letter-Θ).
 
