@@ -1,7 +1,7 @@
 https://g.co/gemini/share/4fdec0b6c3b9
 
 **Palavras-chave:**
-* Imortais Completos O Recomeço  
+* [Imortais Completos O Recomeço](#Descubra_"Imortais_Completos:_O_Recomeço",_uma_obra_que_redefine_a_mitologia_vampírica.)  
 * O Melhor Livro sobre Vampiros  
 * Lutas entre Vampiros e Lobisomens  
 * Vampiros na Europa  
