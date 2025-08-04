@@ -1442,6 +1442,12 @@
                 <p>Brasil | Julho, 2025.</p>
               	
             </div>
+            <div id="about-authors">
+    <h2>Sobre os Autores</h2>
+    <p>...primeiros parágrafos visíveis sobre os autores...</p>
+    <span class="more-text" id="hidden-authors-content"> <p>...parágrafos escondidos sobre os autores...</p>
+    </span>
+    <button class="read-more-btn" id="read-more-authors-btn">Leia Mais sobre os Autores</button> </div>
             
          	<div class="footer-bar" id="footerBar">
             	<span>Siga nossas redes sociais:</span>
@@ -2397,24 +2403,26 @@
         policyAgreeButton.disabled = !policyAgreeCheckbox.checked;
     }
 
+    // ============================================
+    // ======== Reusable ReadMore Functionality ========
+    // ============================================
+    function initializeReadMore(buttonId, contentId) {
+        const readMoreBtn = document.getElementById(buttonId);
+        const hiddenContent = document.getElementById(contentId);
 
-    // ==================
-    // ---- ReadMore ----
-    // ==================
-    function initializeReadMore() {
-        const readMoreBtn = document.getElementById('read-more-btn');
-        const hiddenSynopsis = document.getElementById('hidden-synopsis'); // This needs the ID in HTML
+        if (readMoreBtn && hiddenContent) {
+            // Inicializa o estado: esconde o conteúdo e ajusta o texto do botão, se necessário
+            hiddenContent.style.display = 'none';
+            readMoreBtn.textContent = 'Leia Mais';
 
-        if (readMoreBtn && hiddenSynopsis) { // Ensures elements exist
             readMoreBtn.addEventListener('click', function() {
-                // Uses 'getComputedStyle' to get the computed style, which reflects the applied CSS
-                const currentDisplay = window.getComputedStyle(hiddenSynopsis).display;
+                const currentDisplay = window.getComputedStyle(hiddenContent).display;
 
                 if (currentDisplay === 'none') {
-                    hiddenSynopsis.style.display = 'block'; // Using 'block' for paragraphs
+                    hiddenContent.style.display = 'block';
                     readMoreBtn.textContent = 'Mostrar Menos';
                 } else {
-                    hiddenSynopsis.style.display = 'none';
+                    hiddenContent.style.display = 'none';
                     readMoreBtn.textContent = 'Leia Mais';
                 }
             });
@@ -2423,7 +2431,8 @@
 
     // --- Inicialização ao carregar a página ---
     document.addEventListener('DOMContentLoaded', () => {
-        initializeReadMore(); // Chamada da função Read More
+        initializeReadMore('read-more-btn', 'hidden-synopsis'); // Chamada da função Read More
+    	initializeReadMore('read-more-authors-btn', 'hidden-authors-content'); // Para a seção de autores
         setupStoreCheckboxesListeners();
         setupProductCheckboxesListeners();
         updateTotal();
