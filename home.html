@@ -1644,66 +1644,73 @@
     </div>
     
     <script>
-    // --- ========================================== ---
-    // --- -------- Bloco de Funções do Menu -------- ---
-    // --- ========================================== ---
-    
+    // ============================================
+    // ======== Adjusted Menu Functionality ========
+    // ============================================
+
     (function() {
-      // --- References to elements ---
-      const dropdownBtn = document.querySelector('.dropbtn');
-      const dropdownParent = document.querySelector('.dropdown');
-      const navLinks = document.querySelectorAll('.header-nav a[data-target]');
-      const allDropdownLinks = document.querySelectorAll('.dropdown-content a');
+        // Select the "Mais" menu item by its specific class
+        const dropdownMenuItem = document.querySelector('.dropdown-menu-item');
 
-      // --- Function to scroll to section ---
-      function scrollToSection(sectionId) {
-        const targetElement = document.getElementById(sectionId);
-        if (targetElement) {
-          targetElement.scrollIntoView({ behavior: 'smooth' });
-          // Close dropdown after clicking a link (optional, but good UX)
-          if (dropdownParent) {
-            dropdownParent.classList.remove('active');
-          }
+        // Select the dropdown button inside it
+        const dropdownBtn = dropdownMenuItem ? dropdownMenuItem.querySelector('.dropdown-btn') : null;
+
+        // Select the dropdown list
+        const dropdownList = dropdownMenuItem ? dropdownMenuItem.querySelector('.dropdown-list') : null;
+
+        // Select all links in the main menu and the dropdown
+        const allMenuLinks = document.querySelectorAll('.header-nav a[data-target]');
+        const allDropdownLinks = document.querySelectorAll('.dropdown-list a');
+
+        // Function to scroll to a specific section on the page
+        function scrollToSection(sectionId) {
+            const targetElement = document.getElementById(sectionId);
+            if (targetElement) {
+                targetElement.scrollIntoView({ behavior: 'smooth' });
+                // Close the dropdown after scrolling
+                if (dropdownMenuItem) {
+                    dropdownMenuItem.classList.remove('active');
+                }
+            }
         }
-      }
 
-      // --- Setup click listeners for main navigation links ---
-      navLinks.forEach(link => {
-        link.addEventListener('click', (event) => {
-          event.preventDefault();
-          const targetId = link.dataset.target;
-          if (targetId) {
-            scrollToSection(targetId);
-          }
-        });
-      });
-
-      // --- Setup click listeners for dropdown links ---
-      allDropdownLinks.forEach(link => {
-        link.addEventListener('click', (event) => {
-          event.preventDefault();
-          const targetId = link.dataset.target;
-          if (targetId) {
-            scrollToSection(targetId);
-          }
-        });
-      });
-
-      // --- Dropdown functionality for "Mais" button ---
-      if (dropdownBtn) {
-        dropdownBtn.addEventListener('click', function(event) {
-          event.preventDefault(); // Prevent default link behavior
-          // Toggle the 'active' class on the parent li to show/hide dropdown
-          dropdownParent.classList.toggle('active');
+        // Add click listeners to all menu links to handle smooth scrolling
+        allMenuLinks.forEach(link => {
+            link.addEventListener('click', (event) => {
+                event.preventDefault();
+                const targetId = link.dataset.target;
+                if (targetId) {
+                    scrollToSection(targetId);
+                }
+            });
         });
 
-        // Close dropdown if clicked outside
-        document.addEventListener('click', function(event) {
-          if (dropdownParent && !dropdownParent.contains(event.target)) {
-            dropdownParent.classList.remove('active');
-          }
+        // Add click listeners to all dropdown links
+        allDropdownLinks.forEach(link => {
+            link.addEventListener('click', (event) => {
+                event.preventDefault();
+                const targetId = link.dataset.target;
+                if (targetId) {
+                    scrollToSection(targetId);
+                }
+            });
         });
-      }
+
+        // Handle click on the "Mais" button to toggle the dropdown
+        if (dropdownBtn && dropdownMenuItem) {
+            dropdownBtn.addEventListener('click', function(event) {
+                event.preventDefault();
+                event.stopPropagation(); // Prevents the click from bubbling up and closing the menu
+                dropdownMenuItem.classList.toggle('active');
+            });
+
+            // Close the dropdown if the user clicks anywhere else on the page
+            document.addEventListener('click', function(event) {
+                if (!dropdownMenuItem.contains(event.target)) {
+                    dropdownMenuItem.classList.remove('active');
+                }
+            });
+        }
 
     })();
     
