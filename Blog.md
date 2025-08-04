@@ -62,6 +62,10 @@ https://g.co/gemini/share/4fdec0b6c3b9
 A escolha não é apenas entre a queda e a ascensão, mas uma decisão que forjará a própria essência de seu ser. De um lado, a melancólica luz da compaixão, que promete esperanças silenciosas; do outro, a sombra voraz, que anseia por poder e domínio.
   Ao despertar poderes desconhecidos, sua sombra se estenderá por mundos que poucos ousam explorar. Qualquer que seja o caminho, a profecia será cumprida, e a condenação será eterna por desafiar a ordem da vida e da morte. 
 
+### Quando os laços se romperam, o poder mudou de mãos 
+  Após realizar um ataque devastador, ele e seus aliados convertem novos seguidores em meros instrumentos de sua ambição. Aquele que foi consumido por uma sede de poder insaciável selará o destino de seus companheiros e desprezará até mesmo seus laços de sangue, propagando um destino sangrento e tenebroso.
+  E, ao vencer o que parecia impossível, não apenas sobreviverá — ele irá se transformar em algo que ninguém jamais ousou antever.
+  Mas, do outro lado, aquele que foi devastado por um mal implacável e impiedoso se unirá a novos e antigos aliados. Adotando uma postura que, à primeira vista, parece covarde, ele transforma sua dor no trunfo de uma estratégia vingativa. Agora, o terreno será preparado para um contra-ataque fulminante contra o avassalador inimigo, usando uma herança do passado como a arma final.
 
 
 
