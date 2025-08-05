@@ -44,8 +44,8 @@ Descubra a influência de bruxos e a sabedoria de mestres que moldam o destino d
 ### Reis, Guerras e Vampiros
 Desça às profundezas do declínio de um rei vampiro tirânico e a ascensão de novos líderes em meio a batalhas de clãs.
 
-### Vampiros e Batalha Épica
-Prepare-se para cenas de ação com enfrentamentos grandiosos e presencie o inico de uma batalha epica jamais vista pela humanidade, onde a honra e a vingança são os únicos motivadores.
+### Vampiros e Batalhas Épicas
+Prepare-se para cenas de ação com enfrentamentos grandiosos e presencie o iníco de uma batalha épica jamais vista pela humanidade, onde a honra e a vingança são os únicos motivadores.
 
 ### Nova Raça de Vampiros
 Uma linhagem condenada a caminhar entre o impossível e o eterno, desafiando a própria ordem da vida e da morte, enquanto sua sombra se estende por mundos que poucos ousam explorar.
