@@ -1,0 +1,2436 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Layout Responsivo com Neblina em Toda a Tela</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lora:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/scrollreveal"></script>
+        <style>
+        /* ========================================= */
+        /* Variáveis CSS Personalizadas (Root) */
+        /* ========================================= */
+        :root {
+            --color-background: linear-gradient(45deg, rgba(0, 19, 89, 1) 0%, rgba(2, 10, 41, 1) 17%, rgba(0, 19, 89, 1) 40%, rgba(2, 10, 41, 1) 60%, rgba(0, 19, 89, 1) 80%, rgba(2, 10, 41, 1) 100%);
+            --color-text: #000000; /* Muted silver */
+            --color-primary-accent: linear-gradient(
+                45deg,
+                hsl(0deg 0% 0%) 0%,
+                hsl(240deg 10% 8%) 8%,
+                hsl(240deg 21% 14%) 17%,
+                hsl(240deg 35% 18%) 25%,
+                hsl(240deg 21% 41%) 33%,
+                hsl(240deg 21% 68%) 42%,
+                hsl(0deg 0% 100%) 50%,
+                hsl(240deg 21% 68%) 58%,
+                hsl(240deg 21% 41%) 67%,
+                hsl(240deg 35% 18%) 75%,
+                hsl(240deg 21% 14%) 83%,
+                hsl(240deg 10% 8%) 92%,
+                hsl(0deg 0% 0%) 100%
+              );
+            --color-secondary-accent: #7f8c8d;
+            --color-border: #1a1a1a;
+            --color-link: #00004d;
+            --color-link-hover: #D2DEFF;
+        }
+
+        /* ========================================= */
+        /* Estilos Globais e Reset */
+        /* ========================================= */
+        /* Resetando alguns estilos padrões para consistência */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box; /* Garante que padding e border são incluídos na largura/altura total */
+        }
+
+        body {
+            position: relative; /* Necessário para o posicionamento de elementos filhos com position: absolute/fixed */
+            min-height: 100vh; /* Garante que o body ocupa a altura total da viewport */
+            overflow-x: hidden; /* Evita scroll horizontal indesejado */
+            font-family: "Open Sans", sans-serif;
+        }
+        
+		html {
+          scroll-behavior: smooth;
+        }
+        
+        /* Barra de Menu Fixa */
+        .header-nav {
+          position: fixed;
+          top: 0;
+          left: 0;
+          min-width: 100%;
+          max-height: 8vh; /* Altura fixa para os itens */
+          background-color: #000035; /* Cor de fundo do menu */
+          color: #fff;
+          display: flex;
+          justify-content: center; /* Centraliza os itens principais de navegação */
+          align-items: center;
+          box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+          z-index: 1000;
+        }
+
+        .header-nav ul {
+          list-style: none;
+          padding: 0;
+          margin: 0;
+          display: flex; /* Exibe os itens da lista em linha */
+        }
+
+        .header-nav ul li {
+          border-left: 1px solid grey;
+          border-right: 1px solid grey;
+          max-height: 8vh; /* Altura fixa para os itens */
+          position: relative; /* Necessário para o posicionamento do dropdown */
+          padding: 0 15px; /* Espaçamento entre os itens */
+          display: flex; /* Layout flexível */
+          align-items: center; /* Centraliza o texto verticalmente */
+          justify-content: center; /* Centraliza o texto horizontalmente */
+        }
+
+        /* Estilos para os links do menu */
+        .header-nav ul li a {
+          text-decoration: none;
+          color: #fff;
+          font-size: 18px;
+          padding: 10px 5px; /* Ajuste do padding para links dentro da barra */
+          display: block;
+          white-space: nowrap; /* Impede a quebra de linha do texto */
+          transition: color 0.3s ease;
+        }
+
+        /* Estilos para o Dropdown "Mais" */
+        .dropdown-list {
+          display: none; /* Oculto por padrão */
+          position: absolute;
+          background-color: #000035; /* Cor de fundo do dropdown */
+          min-width: 200px;
+          box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+          z-index: 1;
+          top: 100%; /* Posiciona abaixo do link "Mais" */
+          right: 0; /* Alinha o dropdown à direita do link "Mais" */
+          left: auto; /* Garante que o 'right' tenha precedência */
+          border-radius: 4px;
+          overflow: hidden; /* Garante bordas arredondadas nos itens internos */
+        }
+
+        .dropdown-list a {
+          color: #333; /* Cor mais escura para os itens do dropdown */
+          padding: 12px 16px;
+          text-decoration: none;
+          display: block;
+          text-align: left; /* Alinha o texto à esquerda */
+          font-size: 16px; /* Fonte ligeiramente menor para o dropdown */
+        }
+
+        .dropdown-list a:hover {
+          background-color: #ddd; /* Efeito hover para os itens do dropdown */
+        }
+
+        .header-nav ul li a:hover {
+          color: #000035; /* Cor escura para o texto no hover */
+        }
+
+        .header-nav ul li:hover {
+          background-color: #ddd; /* Efeito hover para os itens */
+          color: #000035; /* Cor escura para o texto */
+        }
+
+        /* Mostrar o dropdown ao passar o mouse ou quando "Mais" for clicado */
+        .header-nav ul li.dropdown-menu-item:hover .dropdown-list,
+        .header-nav ul li.dropdown-menu-item.active .dropdown-list {
+          display: block;
+        }
+
+        /* ========================================= */
+        /* Layout Principal e Container de Conteúdo */
+        /* ========================================= */
+        .container {
+            background-image: white; /* Nota: 'white' não é uma imagem, mas uma cor. Considere usar 'background-color' se for uma cor sólida. */
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        /* Container para o conteúdo (imagem e texto) */
+        .content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap; /* Permite que os itens quebrem para a próxima linha em telas menores */
+            gap: 1.5rem; /* Espaçamento entre os itens flex */
+            width: 100vw; /* Ocupa 100% da largura da viewport */
+            max-width: 1200px; /* Largura máxima para o conteúdo */
+           
+            padding: 20px;
+            z-index: 2; /* Garante que o conteúdo esteja acima de outros elementos, como sobreposições */
+        }
+        
+        .image {
+			width: 35%; /* Em telas menores, imagem e texto ocupam a largura total */
+			max-width: none; /* Remove max-width para permitir que ocupem 100% */
+			min-width: unset; /* Remove min-width */
+			box-shadow: 0 0 8px rgba(0, 0, 0, 5);
+        }        
+        
+        /* Bloco de texto principal */
+        .text {
+            color: var(--color-link);
+            width: 48%;
+            text-align: center; /* Justifica o texto */
+            padding: 1.5rem;
+        }
+
+        /* ========================================= */
+        /* Tipografia e Elementos de Texto */
+        /* ========================================= */
+        #readers-opinion h1,
+        #readers-opinion h2,
+        #readers-opinion h3,
+        #readers-opinion h4 {
+            color: black;
+            text-align: center;
+        }
+
+        /* Título principal (h1) */
+        h1, h2, h3, h4 {
+            font-family: 'Cinzel', serif;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        /* Parágrafo */
+        p {
+            font-family: 'Oldenburg', serif;
+            font-size: 1.2rem;
+            text-align: justify; /* Justifica o texto */
+            text-indent: 2em; /* Recuo da primeira linha */
+            margin-bottom: .75em;
+        }
+
+        /* Linha horizontal (hr) */
+        hr {
+          width: 20%; /* Define a largura da linha */
+          border: none; /* Remove a borda padrão do hr para maior controle */
+          height: 3px; /* Define a altura da linha */
+          background-color: black; /* Define a cor da linha */
+          margin: 20px auto; /* Centraliza a linha horizontalmente e adiciona margem */
+        }
+
+        /* ========================================= */
+        /* Embeds e Mídia */
+        /* ========================================= */
+        .instagram-media {
+            max-height: 85% !important; /* Sobrescreve largura máxima */
+            padding: 50px 50px;
+            margin: 0 auto !important; /* Centraliza o embed */
+        }
+
+        /* Container de vídeo */
+        #container-video {
+            background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSEukL44ye3RL26v-xLxtlbqz1j-n-ljW8KdUnCFPjD5iQyh_4ZYEFdlAVrUPIT5lJwYUU&usqp=CAU');
+            background-size: cover;          /* Estica a imagem para cobrir todo o espaço */
+            background-position: center;     /* Centraliza a imagem */
+            background-repeat: no-repeat;    /* Evita repetição */
+            height: 85vh;                   /* Define a altura para 100% da viewport */
+            width: 100vw;                    /* Define a largura para 100% da viewport */
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Container de sinopse */
+        #container-sinopse {
+            /*background-image:  linear-gradient(135deg, #1e5799 0%,#000000 30%,#000000 30%,#1e5799 50%,#000000 70%,#1e5799 100%);*/
+			background-image: url('https://cdn.statically.io/gh/zyon-king/Imortais/main/blue-dark-castle-room.png');
+        }
+
+        /* Estilos de texto dentro do container de sinopse */
+        #container-sinopse h1,
+        #container-sinopse h2,
+        #container-sinopse h3,
+        #container-sinopse h5,
+        #container-sinopse p {
+            color: var(--color-link-hover);
+        }
+
+        /* ========================================= */
+        /* Estilo específico para o botão Ler Resenha */
+        /* ========================================= */
+        .btn-sinopse {
+            margin-top: 1rem;
+            background-color: #000035; /* Fundo #000035 */
+            color: #FFFFFF; /* Texto branco */
+            padding: 10px 20px;
+            border: 2px solid #000035; /* <--- Defina uma borda inicial, geralmente na mesma cor do fundo para "aparecer" no hover, ou transparente */
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease; /* <--- Adicione border-color na transição */
+        }
+
+        .btn-sinopse:hover {
+            background-color: #FFFFFF; /* Fundo branco no hover */
+            color: #000035; /* Texto #000035 no hover */
+            border-color: #000035; /* <--- Borda #000035 no hover */
+        }
+
+        .btn-sinopse:active {
+            background-color: #CCCCCC;
+            transform: translateY(1px);
+        }
+
+        /* ========================================= */
+        /* Recurso "Leia Mais" */
+        /* ========================================= */
+        #hidden-synopsis {
+    		display: none; /* Isso esconde o conteúdo inicialmente */
+        }
+
+        /* Opcional: Estilo para o botão */
+        .read-more-btn {
+            margin-top: 10px;
+            padding: 8px 15px;
+            background-color: #000035;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        .read-more-btn:hover {
+            color: #000035;
+            background-color: white;
+            border-color: 1px solid #000035;
+        }
+
+        /* ========================================= */
+        /* Estilos de Overlay (Modal/Sidebar) */
+        /* ========================================= */
+        .overlay {
+            position: fixed; /* Fixa o overlay na viewport */
+            overflow-y: auto; /* Permite rolagem vertical se o conteúdo exceder */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Fundo transparente escuro para o overlay */
+            display: flex;
+            justify-content: flex-end; /* Alinha o conteúdo à direita */
+            align-items: center;
+            z-index: 1000; /* Garante que o overlay esteja acima de tudo */
+            opacity: 0; /* Começa invisível */
+            visibility: hidden; /* Esconde o overlay */
+            transition: opacity 0.3s ease, visibility 0.3s ease; /* Transição suave para aparecer/desaparecer */
+        }
+
+        /* Estado ativo do overlay */
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Conteúdo do overlay */
+        .overlay .overlay-content {
+            display: grid;
+            align-self: flex-start; /* Alinha o conteúdo ao topo dentro do overlay */
+            grid-template-columns: 1fr; /* Uma coluna, cada campo ocupa 100% da largura */
+            width: 100%;
+            position: relative;
+            overflow-y: auto;
+            max-width: 450px;
+            max-height: 800px;
+            background-color: #f0f2f5;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            box-sizing: border-box;
+            transform: translateX(100%); /* Começa fora da tela à direita */
+            transition: transform 0.4s ease-out; /* Transição para deslizar para dentro */
+        }
+
+        /* Desliza o conteúdo do overlay para a posição normal quando ativo */
+        .overlay.active .overlay-content {
+            transform: translateX(0);
+        }
+
+        /* Estilos para títulos e parágrafos dentro do conteúdo do overlay */
+        .overlay-content h2 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        .overlay-content p {
+            color: #555;
+            line-height: 1.6;
+        }
+
+        /* ========================================= */
+        /* Cabeçalho do Overlay */
+        /* ========================================= */
+        .header {
+            display: flex;
+            align-items: center;
+            padding: .2em .4em;
+            width: 100%;
+            background-color: #fff;
+            border-bottom: 1px solid #eee;
+            position: sticky; /* Torna o cabeçalho pegajoso ao rolar */
+            top: 0; /* Fixa no topo do overlay-content */
+            z-index: 10;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Botão de voltar no cabeçalho */
+        .header .back-btn {
+            background: none;
+            border: none;
+            font-size: 1.2em;
+            margin-right: 15px;
+            cursor: pointer;
+            color: #007bff;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        /* Efeitos hover e active para o botão de voltar */
+        .back-btn:hover {
+            scale: 1.1;
+        }
+
+        .back-btn:active {
+            scale: 1.0;
+        }
+
+        /* Título do cabeçalho */
+        .header .header-title {
+            text-align: center;
+            font-size: 1em;
+            font-weight: bold;
+            flex-grow: 1; /* Permite que o título ocupe o espaço restante */
+            color: #333;
+        }
+
+        /* ========================================= */
+        /* Seção da Loja (dentro do Overlay) */
+        /* ========================================= */
+        .store-section {
+            background-color: white;
+            margin-top: .8em;
+            padding: 1em;
+            border-radius: 0; /* Remove border-radius para um visual mais limpo */
+            box-shadow: 0 0 5px rgba(0,0,0,0.1); /* Sombra suave para destacar */
+        }
+
+        /* Cabeçalho da loja e seção de envio */
+        .store-header, .shipping {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.2em;
+            padding-bottom: 1em;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .shipping {
+            margin-top: .2em;
+            margin-bottom: 0;
+            padding-bottom: .9em;
+        }
+
+        /* Checkbox da loja */
+        .store-checkbox {
+            margin-right: 10px;
+            transform: scale(1.2); /* Aumenta o tamanho do checkbox */
+        }
+
+        /* Ícone da loja */
+        .store-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%; /* Torna o ícone circular */
+            margin-right: 8px;
+        }
+
+        /* Nome da loja */
+        .store-name {
+            font-weight: bold;
+            flex-grow: 1;
+            color: #333;
+        }
+
+        /* ========================================= */
+        /* Item do Produto (dentro do Overlay) */
+        /* ========================================= */
+        .product-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #f9f9f9;
+        }
+
+        /* Remove a borda inferior do último item do produto */
+        .product-item:last-of-type {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        /* Checkbox do produto */
+        .product-checkbox {
+            margin-top: 25px; /* Alinha com a imagem/conteúdo */
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+
+        /* Placeholder da imagem do produto */
+        .product-image-placeholder {
+            flex-shrink: 0; /* Impede que a imagem encolha */
+            width: 80px;
+            height: 80px;
+            margin-right: 15px;
+        }
+
+        .product-image-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Garante que a imagem cubra o espaço mantendo a proporção */
+            border-radius: 4px;
+        }
+
+        /* Informações do produto */
+        .product-info {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column; /* Organiza os elementos em coluna */
+            justify-content: space-between;
+        }
+
+        /* Grupo de título e quantidade */
+        .title-and-quantity {
+            display: flex;
+            align-items: center; /* Alinha os itens verticalmente */
+            justify-content: space-between; /* Empurra a quantidade para a direita */
+            margin-bottom: 5px; /* Espaço entre título/qty e preços */
+            flex-wrap: wrap; /* Permite quebrar em telas pequenas */
+        }
+
+        /* Título do produto */
+        .product-title {
+            font-size: 0.95em;
+            color: #333;
+            font-weight: bold;
+            margin-bottom: 0;
+            flex-grow: 1;
+            margin-right: 10px; /* Espaço entre o título e a quantidade */
+        }
+
+        /* Grupo de preços */
+        .price-group {
+            display: flex; /* Permite que o preço atual e o antigo fiquem lado a lado */
+            align-items: baseline; /* Alinha os preços pela linha de base */
+            margin-top: 5px; /* Espaço acima dos preços */
+        }
+
+        /* Preço atual do produto */
+        .product-price {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #2da9ee;
+            margin-right: 8px; /* Espaço entre o preço atual e o antigo */
+        }
+
+        /* Preço antigo do produto (tachado) */
+        .product-old-price {
+            font-size: 0.95em;
+            font-weight: bold;
+            color: #999;
+            text-decoration: line-through;
+            margin-left: 4px;
+        }
+
+        /* Controles de quantidade */
+        .quantity-controls {
+            display: flex;
+            border: 1px solid #ddd;
+            align-items: center;
+            border-radius: 3px;
+            flex-shrink: 0; /* Impede que os controles de quantidade encolham */
+        }
+
+        /* Botões de quantidade (+/-) */
+        .quantity-btn {
+            background-color: #f5f5f5;
+            border: none;
+            padding: 6px 10px;
+            cursor: pointer;
+            font-size: 1em;
+            color: #555;
+            transition: background-color 0.2s;
+        }
+
+        .quantity-btn:hover {
+            background-color: #eee;
+        }
+
+        /* Campo de input da quantidade */
+        .quantity-input {
+            width: 30px;
+            text-align: center;
+            border: none;
+            outline: none;
+            font-size: 0.9em;
+            color: #333;
+            background-color: white;
+            padding: 6px 0;
+        }
+
+        /* ========================================= */
+        /* Bloco de Mensagem ao Vendedor */
+        /* ========================================= */
+        .checkout-item-block {
+            margin-top: 15px;
+            padding: 10px;
+            border: 1px dashed #ccc;
+            border-radius: 5px;
+            background-color: #fff;
+            width: 100%; /* Garante largura total */
+            box-sizing: border-box;
+        }
+
+        .checkout-item-block > div {
+            margin-bottom: 5px;
+        }
+
+        /* Exibição de endereço */
+        .show-adress {
+            margin-top: 0;
+            padding: 1em .4em;
+            white-space: pre-wrap; /* Preserva espaços em branco e quebras de linha */
+            font-family: monospace; /* Para uma exibição mais "codificada" */
+            font-size: 1.2em;
+            display: none; /* Esconde inicialmente */
+            box-sizing: border-box;
+        }
+
+        /* ========================================= */
+        /* Seção Inferior (Rodapé Fixo) */
+        /* ========================================= */
+        .bottom-section {
+            position: sticky; /* Torna a seção pegajosa */
+            bottom: 0; /* Fixa na parte inferior */
+            background-color: white;
+            border-top: 1px solid #eee;
+            padding: 15px;
+            display: flex; /* Alterado para flex para alinhar itens horizontalmente */
+            flex-direction: column; /* Empilha os itens verticalmente */
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.05);
+            margin-top: .6em;
+            flex-shrink: 0;
+        }
+
+        /* Mensagem de "nenhuma seleção" */
+        .no-selection {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            font-size: 1em;
+            color: #ee4d2d;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        /* Checkbox "selecionar tudo" */
+        .select-all-checkbox {
+            margin-right: 8px;
+            transform: scale(1.2);
+        }
+
+        /* Texto "selecionar tudo" */
+        .select-all-text {
+            font-size: 0.95em;
+            color: #333;
+        }
+
+        /* Seção total (preços e botão) */
+        .total-section {
+            display: flex; /* Torna os filhos diretos (grupos) flexíveis */
+            align-items: center; /* Centraliza verticalmente os blocos (checkbox/tudo, preços, botão) */
+            justify-content: space-between; /* Distribui os blocos: esquerda, centro, direita */
+            width: 100%;
+            gap: .5em;
+            background-color: #fff;
+            box-sizing: border-box;
+        }
+
+        /* Bloco esquerdo: Checkbox e "Tudo" */
+        .select-all-group {
+            display: flex;
+            align-items: center;
+        }
+
+        /* Checkbox "selecionar tudo" (repetido, mas mantém para especificidade) */
+        .select-all-checkbox {
+            margin-right: 8px;
+        }
+
+        /* Texto "selecionar tudo" (repetido, mas mantém para especificidade) */
+        .select-all-text {
+            font-size: 1em;
+            color: #333;
+        }
+
+        /* Bloco central: Valor Total e Desconto */
+        .price-summary-group {
+            display: flex;
+            flex-direction: column; /* Empilha o total e o desconto verticalmente */
+            align-items: flex-end; /* Alinha o conteúdo (texto) à direita dentro deste grupo */
+        }
+
+        /* Preço total */
+        .total-price {
+            font-size: 1.25em;
+            font-weight: bold;
+            color: #2da9ee;
+            margin-bottom: 3px;
+            white-space: nowrap; /* Evita que o valor quebre linha */
+        }
+
+        /* Informações de desconto */
+        .discount-info {
+            display: flex;
+            align-items: center;
+            font-size: 1em;
+            color: #666;
+            white-space: nowrap;
+        }
+
+        /* Rótulo de desconto */
+        #discount-label {
+            margin-right: 5px;
+        }
+
+        /* Preço de desconto */
+        #discount-price {
+            font-weight: bold;
+            color: grey;
+        }
+
+        /* Bloco direito: Botão Continuar */
+        .continue-btn {
+            padding: 12px 20px;
+            font-size: 1.1em;
+            font-weight: bold;
+            border-radius: 2px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            min-width: 150px;
+            text-align: center;
+        }
+
+        /* Estilo para botão continuar desabilitado */
+        .continue-btn:disabled {
+            background-color: #2da9ee;
+            cursor: not-allowed;
+        }
+
+        /* ========================================= */
+        /* Ajustes Responsivos (Media Queries) */
+        /* ========================================= */
+        /* Estilos para telas médias */
+        @media (max-width: 768px) {
+            /* Adicione estilos específicos para tablets e dispositivos menores aqui */
+            .content .text, .image {
+                width: 100%; /* Em telas menores, imagem e texto ocupam a largura total */
+                max-width: none; /* Remove max-width para permitir que ocupem 100% */
+                min-width: unset; /* Remove min-width */
+            }
+            .image {
+                width: 60%; /* Em telas menores, imagem e texto ocupam a largura total */
+                max-width: none; /* Remove max-width para permitir que ocupem 100% */
+                min-width: unset; /* Remove min-width */
+            }
+            .instagram-media {
+                max-width: 60% !important; /* Em telas menores, o embed ocupa a largura total */
+                padding: 20px; /* Ajusta o padding para telas menores */
+            }
+        }
+
+        /* Estilos para telas pequenas (mobile) */
+        @media (max-width: 600px) {
+            /* Adicione estilos específicos para smartphones aqui */
+            h1 {
+                font-size: 2rem; /* Reduz o tamanho da fonte para h1 em mobile */
+            }
+            h2 {
+                font-size: 1.2rem; /* Reduz o tamanho da fonte para h2 em mobile */
+            }
+            p {
+                font-size: 1rem; /* Reduz o tamanho da fonte para parágrafos em mobile */
+            }
+            .header-nav {
+                max-height: 6vh; /* Altura fixa para os itens */
+              }
+
+              .header-nav ul {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+                display: flex; /* Exibe os itens da lista em linha */
+              }
+
+              .header-nav ul li {
+                max-height: 6vh; /* Altura fixa para os itens */
+                padding: 0 7px; /* Espaçamento entre os itens */
+              }
+
+            .btn, .button-89 {
+                padding: 10px 15px; /* Ajusta o padding dos botões */
+                font-size: 0.9rem; /* Reduz o tamanho da fonte dos botões */
+            }
+            .overlay .overlay-content {
+                max-width: 100%; /* Ocupa a largura total em mobile */
+            }
+            .footer-bar {
+                min-width: unset; /* Remove min-width para ser totalmente responsivo */
+                max-width: 100%; /* Ocupa a largura total em mobile */
+                padding: 0.2em; /* Ajusta o padding */
+                gap: 0.2em; /* Ajusta o espaçamento */
+            }
+            .footer-bar button {
+                width: 70px; /* Ajusta a largura dos botões do rodapé */
+                height: 70px; /* Ajusta a altura dos botões do rodapé */
+                font-size: 1.5em; /* Ajusta o tamanho do ícone */
+            }
+            .footer-bar button img {
+                width: 30px; /* Ajusta o tamanho da imagem do ícone */
+                height: 30px;
+            }
+        }
+
+        /* ========================================= */
+        /* Estilos do Formulário de Overlay */
+        /* ========================================= */
+        .form-header {
+            /* Estilos existentes */
+        }
+
+        .form-header .back-btn-form {
+            /* Estilos existentes */
+        }
+
+        .form-header h1 {
+            /* Estilos existentes */
+        }
+
+        .form-section {
+            /* Estilos existentes */
+        }
+
+        .form-group {
+            /* Estilos existentes */
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 1em;
+            color: #555;
+            margin-bottom: 5px;
+        }
+
+        /* Estilos para campos de input e textarea */
+        .form-group input[type="text"],
+        .form-group input[type="cpf"],
+        .form-group input[type="tel"],
+        .form-group input[type="email"],
+        .form-group textarea {
+            width: 100%;
+            padding: .5em 1.2em;
+            border: 1px solid #ddd;
+            font-size: 1em; /* Tamanho base da fonte para todos */
+            color: #333;
+            box-sizing: border-box;
+        }
+
+        /* Tamanho de fonte específico para textarea */
+        .form-group textarea {
+            font-size: 1.2em; /* Tamanho da fonte maior apenas para textarea */
+        }
+
+        /* Grupo de formulário com campos inline */
+        .form-group.inline {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Largura para o input "logradouro" */
+        .form-group.inline .input-half {
+            flex: 0 1 auto; /* Permite encolher, mas não crescer além do conteúdo */
+            width: 85%; /* Dá mais largura para o logradouro */
+        }
+
+        /* Largura para o input "numero" */
+        .form-group.inline .input-half:last-child {
+            width: 15%; /* Dá menos largura para o número */
+        }
+
+        /* Título da seção do formulário */
+        .section-title {
+            font-size: 0.8em;
+            color: #888;
+            padding: 1.6em .4em .4em 1em;
+            text-transform: uppercase;
+        }
+
+        /* ========================================= */
+        /* Grupos de Configuração e Toggle */
+        /* ========================================= */
+        .setup-group, .toggle-group {
+            background-color: white;
+            display: flex;
+            align-items: center; /* Alinha os itens verticalmente ao centro */
+            padding: .4em .8em;
+            margin-bottom: 15px;
+            justify-content: space-between;
+        }
+
+        .setup-group span {
+            font-size: 15px;
+            color: #333;
+            white-space: nowrap; /* Evita que o texto quebre linha */
+        }
+
+        /* Grupo de botões de rádio */
+        .radio-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 0;
+            margin-right: 0;
+        }
+
+        /* Botão de rádio individual */
+        .radio-group .radio-button {
+            flex: 1;
+            background-color: #e0e0e0;
+            padding: 5px 10px;
+            text-align: center;
+            border-radius: 4px;
+            cursor: pointer;
+            color: #555;
+            font-size: 15px;
+        }
+
+        /* Estilo para o botão de rádio selecionado */
+        .radio-group .radio-button.selected {
+            border: 1px solid grey;
+            color: grey;
+            font-weight: bold;
+        }
+
+        /* Grupo de toggle (chave) */
+        .toggle-groupe { /* Nota: typo 'groupe' */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .toggle-group span {
+            font-size: 15px;
+            color: #333;
+        }
+
+        /* Componente Switch (toggle) */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        /* Slider do switch */
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            -webkit-transition: .4s;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        /* Círculo do slider */
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        /* Estilos quando o switch está marcado */
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+
+        input:focus + .slider {
+            box-shadow: 0 0 1px #2196F3;
+        }
+
+        input:checked + .slider:before {
+            -webkit-transform: translateX(16px);
+            -ms-transform: translateX(16px);
+            transform: translateX(16px);
+        }
+
+        /* ========================================= */
+        /* Botão Salvar */
+        /* ========================================= */
+        .save-button-container {
+            padding: .4em;
+            text-align: center;
+            /* background-color: ; */ /* Esta propriedade está vazia */
+            border-top: 1px solid #eee;
+        }
+
+        .save-button {
+            width: 100%;
+            padding: 15px;
+            background-color: #e0e0e0; /* Aparência desabilitada */
+            color: #a0a0a0; /* Cor do texto desabilitado */
+            border: none;
+            border-radius: 2px;
+            font-size: 17px;
+            cursor: not-allowed; /* Indica que não está ativo */
+            font-weight: bold;
+        }
+
+        /* Estilo para o botão salvar ativo */
+        .save-button.active {
+            background-color: #FF5722;
+            color: #fff;
+            cursor: pointer;
+        }        
+        
+        /* ========================================= */
+        /* Shop Bar */
+        /* ========================================= */
+        .shop-bar {
+            display: flex;
+            justify-content: center; /* Centers items horizontally */
+            align-items: center; /* Centers items vertically */
+            gap: 20px; /* Space between the buttons */
+            margin-top: 30px; /* Space above the buttons */
+        }
+        .shop-bar p {
+            color: #4B0082;
+            fonta-size: 120px;
+        }
+        .shop-bar a {
+            display: flex; /* Make the link a flex container for image and text */
+            align-items: center; /* Vertically align image and text within the button */
+            text-align: center;
+            padding: 6px 15px; /* Slightly larger padding for buttons */
+            text-decoration: none;
+            border-radius: 0; /* Slightly more rounded corners */
+            transition: background-color 0.3s ease; /* Smooth hover effect */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: white;
+            color: #4B0082;
+            border: 1px solid #4B0082;
+            text-shadow: 0.5px 0.5px 0.5px rgba(0, 0, 0, 0.3); /* Sombra no texto do botão */
+        }
+
+        .shop-bar a:hover {
+        	transform: translateY(-1px);
+            background-color: #00004d;
+            border: 1px solid white;
+            color: #fff;
+        }
+
+        .shop-bar a:active {
+            transform: translateY(1px); /* Moves button down slightly, simulating a click/press */
+            box-shadow: 0 1px 2px rgba(0,0,0,0.2); /* Optional: adds a subtle shadow to enhance the "pressed" look */
+        }
+
+        .shop-bar a img {
+            height: 3rem; /* Fixed height for icons */
+            width: 3rem; /* Fixed width for icons */
+            margin-right: 10px; /* Space between icon and text */
+            vertical-align: middle; /* Ensures proper alignment, though flexbox handles most */
+        }
+
+        /* ========================================= */
+        /* Barra de Rodapé Fixa */
+        /* ========================================= */
+        
+        .footer-bar {
+            background-color: transparent;
+            padding: 30px;
+            border-radius: 8px;
+            text-align: center;
+            display: flex;
+            justify-content: space-around;
+            max-width: 500px;
+            gap: .4vw; /* Espaço entre os botões */
+            flex-wrap: wrap; /* Permite que os botões quebrem a linha em telas menores */
+        }
+        .footer-bar span {
+        	font-size: 1.2rem;
+            width: 100vw;
+            color: #333;
+            margin-bottom: 1vw;
+        }
+        .footer-bar a {
+            background-color: transparent;
+            color: white;
+            padding: 5px 10px;
+            width: 4rem;
+            height: 4rem;
+            margin: 0 1.4vw;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            flex: 1; /* Faz os botões ocuparem espaço igual */
+            transition: all 0.1s ease; /* Transição suave para o efeito */
+        }
+        .footer-bar a:hover {
+        	transform: scale(1.01);
+            transform: translateY(-3px); /* Leve levantamento no hover */
+        }
+
+        .footer-bar a:active {
+            transform: translateY(1px); /* Moves button down slightly, simulating a click/press */
+            box-shadow: 0 1px 2px rgba(0,0,0,0.2); /* Optional: adds a subtle shadow to enhance the "pressed" look */
+        }
+        
+        #instagram-icon {
+          background-image: url('https://cdn.statically.io/gh/CrisClei2022/imortais/main/black-instagram-icon.png');
+          background-size: contain;       /* Ajusta o tamanho da imagem */
+          background-repeat: no-repeat;   /* Evita repetição */
+          background-position: center;    /* Centraliza a imagem */
+        }
+        #whatsapp-icon {
+          background-image: url('https://cdn.statically.io/gh/CrisClei2022/imortais/main/black-whatsapp-icon.png');
+          background-size: contain;       /* Ajusta o tamanho da imagem */
+          background-repeat: no-repeat;   /* Evita repetição */
+          background-position: center;    /* Centraliza a imagem */
+        }
+        #tiktok-icon {
+          background-image: url('https://cdn.statically.io/gh/CrisClei2022/imortais/main/black-tiktok-icon.png');
+          background-size: contain;       /* Ajusta o tamanho da imagem */
+          background-repeat: no-repeat;   /* Evita repetição */
+          background-position: center;    /* Centraliza a imagem */
+        }
+        #facebook-icon {
+          background-image: url('https://cdn.statically.io/gh/CrisClei2022/imortais/main/black-facebook-icon.png');
+          background-size: contain;       /* Ajusta o tamanho da imagem */
+          background-repeat: no-repeat;   /* Evita repetição */
+          background-position: center;    /* Centraliza a imagem */
+        }
+
+        /* ========================================= */
+        /* Ajustes Responsivos (Media Queries) */
+        /* ========================================= */
+        /* Estilos para telas médias */
+        @media (max-width: 768px) {
+            /* Adicione estilos específicos para tablets e dispositivos menores aqui */
+            .content .text, .image {
+                width: 100%; /* Em telas menores, imagem e texto ocupam a largura total */
+                max-width: none; /* Remove max-width para permitir que ocupem 100% */
+                min-width: unset; /* Remove min-width */
+            }
+            
+            .content p {
+        		font-size: 1.2rem;
+            }
+            .image {
+                width: 60%; /* Em telas menores, imagem e texto ocupam a largura total */
+                max-width: none; /* Remove max-width para permitir que ocupem 100% */
+                min-width: unset; /* Remove min-width */
+            }
+            .instagram-media {
+                max-width: 60% !important; /* Em telas menores, o embed ocupa a largura total */
+                padding: 20px; /* Ajusta o padding para telas menores */
+            }
+            .footer-bar {
+                width: 100vw;
+            }
+            .shop-bar {
+            	flex-direction: column;
+                gap: 15px;
+            }
+            .shop-bar a {
+                width: 100%;
+                max-width: 450px; /* Make buttons take more width on small screens */
+                justify-content: center; /* Center content within stacked buttons */
+            }
+            .float-button {
+                width: 50px;     /* Reduz o tamanho do botão em telas menores */
+                height: 50px;
+                font-size: 20px;
+                right: 20px;     /* Ajusta a posição direita */
+            }
+        }
+
+		/* ========================================= */
+        /* Botão Flutuante */
+        /* ========================================= */
+        .float-button {
+            position: fixed; /* Fixa o botão na tela */
+            bottom: 60px;    /* 30px da parte inferior */
+            right: 20px;     /* 50px da direita */
+            background-color: #000035; /* Cor de fundo do botão */
+            color: white;    /* Cor do texto/ícone */
+            border: none;    /* Sem borda */
+            border-radius: 50%; /* Torna o botão redondo */
+            width: 60px;     /* Largura do botão */
+            height: 60px;    /* Altura do botão */
+            font-size: 24px; /* Tamanho do ícone/texto */
+            display: flex;   /* Centraliza o conteúdo */
+            justify-content: center;
+            align-items: center;
+            cursor: pointer; /* Indica que é clicável */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra para destaque */
+            z-index: 1000;   /* Garante que o botão fique acima de outros elementos */
+            transition: background-color 0.3s ease, transform 0.2s ease; /* Transição suave */
+        }
+
+        .float-button:hover {
+            background-color: #0056b3; /* Cor de fundo no hover */
+            transform: translateY(-3px); /* Leve levantamento no hover */
+        }
+
+        .float-button:active {
+            transform: translateY(1px); /* Efeito de clique */
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2); /* Sombra menor ao clicar */
+        }
+    </style>
+</head>
+<body>
+	<button class="float-button" onclick="window.scrollTo({ top: 0, behavior: 'smooth' });">⬆</button>
+    
+    <header class="header-nav">
+    <nav>
+      <ul>
+        <li><a href="#container-start" data-target="container-start">Início</a></li>
+        <li><a href="#container-video" data-target="container-video">Sinopse</a></li>
+        <li><a href="#text-sinopse" data-target="text-sinopse">Resenha</a></li>
+		<li class="dropdown-menu-item">
+          <a href="#" class="dropdown-btn">Mais &#9662;</a>
+          <div class="dropdown-list">
+            <a href="#footerBar" data-target="footerBar">Contato</a>
+            <a href="#about-authors" data-target="about-authors">Sobre os Autores</a>
+            <a href="#readers-opinion" data-target="readers-opinion">Opinião dos Leitores</a>
+            <a href="#upcoming-releases" data-target="upcoming-releases">Próximos Lançamentos</a>
+          </div>
+        </li>
+      </ul>
+    </nav>
+  </header>
+
+    
+    <div class="container" id="container-start">
+        <div class="content">           
+            <img src="https://cdn.statically.io/gh/CrisClei2022/imortais/main/capa.png" alt="Imagem" class="image">
+            <div class="text" id="text-start">
+                <h1>Imortais Completos</h1>
+                <h2>O Recomeço</h2>
+                <p>O ano era 1889, e a atmosfera hipnotizante de Paris, a cidade das luzes, torna-se pano de fundo para a trama desenrolar-se em meio a um contexto de dualidade, onde a luta entre a luz e as trevas se torna iminente.</p>
+                <p>Não se tratava apenas de escolhas imprevisíveis, mas de profecias seladas com consequências inimagináveis. Venha mergulhar de cabeça nesta jornada, onde dois irmãos, cujo anseio por poder e respeito os conduz por um caminho sombrio sem volta, repleto de dilemas morais.</p>
+                <p>Tudo isso entrelaçado por uma narrativa cativante e repleta de reviravoltas. Então prepare-se, porque batalhas épicas estão prestes a começar.</p>
+                <a data-target="text-sinopse" class="btn-sinopse" role="button">Ler a Resenha</a>
+                <div class="shop-bar" id="shopBar">
+                  <a href="https://wa.me//5511989993251">
+                      <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp Icon">
+                      <span>Fazer pedido via WhatsApp?</span>
+                  </a>
+                  <a href="https://sites.google.com/view/imortais-completos/loja" target="_blank" id="mercadolivre">
+                      <!-https://cdn.statically.io/gh/CrisClei2022/imortais/main/mercadoLivre-icon.png--><img src="https://http2.mlstatic.com/static/org-img/homesnw/mercado-libre.png" alt="Mercado Livre Icon">
+                      <span>Fazer pedido via Mercado Livre? </span>
+                  </a>
+              </div>
+              <br>
+              <h5>Fazendo seu pedido via WhatsApp você contribui diretamente com o trabalho do autor.</h5>
+              
+          </div>
+              <div class="footer-bar" id="footerBar">
+                  <span>Siga nossas redes sociais:</span>
+                  <a href="https://www.instagram.com/imortaiscompletosoficial/" target="_blank" id="instagram-icon"></a>
+                  <a href="https://wa.me//5511989993251" target="_blank" id="whatsapp-icon"></a>
+                  <a href="https://www.tiktok.com/@imortais.completo" target="_blank" id="tiktok-icon"></a>
+                  <a href="https://www.facebook.com/imortaiscompletosoficial" target="_blank" id="facebook-icon"></a>
+              </div>  
+        
+		</div>
+	</div>
+    <div class="container" id="container-video">    
+        <blockquote class="instagram-media" data-instgrm-captioned data-instgrm-permalink="https://www.instagram.com/reel/C1-C_ojJ_qz/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style=" background:#FFF; border:0; border-radius:3px; box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15); margin: 1px; max-width:540px; min-width:326px; padding:0; width:70%; width:-webkit-calc(70% - 2px); width:calc(100% - 2px);">
+        <div style="padding:16px;">
+        <a href="https://www.instagram.com/reel/C1-C_ojJ_qz/?utm_source=ig_embed&amp;utm_campaign=loading" style=" background:#FFFFFF; line-height:0; padding:0 0; text-align:center; text-decoration:none; width:100%;" target="_blank">
+        <div style=" display: flex; flex-direction: row; align-items: center;">
+        <div style="background-color: #F4F4F4; border-radius: 50%; flex-grow: 0; height: 40px; margin-right: 14px; width: 40px;"></div>
+        <div style="display: flex; flex-direction: column; flex-grow: 1; justify-content: center;"> <div style=" background-color: #F4F4F4; border-radius: 4px; flex-grow: 0; height: 14px; margin-bottom: 6px; width: 100px;"></div>
+        <div style=" background-color: #F4F4F4; border-radius: 4px; flex-grow: 0; height: 14px; width: 60px;"></div></div></div>
+        <div style="padding: 19% 0;"></div>
+        <div style="display:block; height:50px; margin:0 auto 12px; width:50px;"></div>
+        <div style="padding-top: 8px;">
+        <div style=" color:#3897f0; font-family:Arial,sans-serif; font-size:14px; font-style:normal; font-weight:550; line-height:18px;">View this post on Instagram</div></div>
+        <div style="padding: 12.5% 0;"></div>
+        <div style="display: flex; flex-direction: row; margin-bottom: 14px; align-items: center;"><div> <div style="background-color: #F4F4F4; border-radius: 50%; height: 12.5px; width: 12.5px; transform: translateX(0px) translateY(7px);"></div> 
+        <div style="background-color: #F4F4F4; height: 12.5px; transform: rotate(-45deg) translateX(3px) translateY(1px); width: 12.5px; flex-grow: 0; margin-right: 14px; margin-left: 2px;"></div> <div style="background-color: #F4F4F4; border-radius: 50%; height: 12.5px; width: 12.5px; transform: translateX(9px) translateY(-18px);"></div></div>
+        <div style="margin-left: 8px;"> 
+        <div style=" background-color: #F4F4F4; border-radius: 50%; flex-grow: 0; height: 20px; width: 20px;"></div> 
+        <div style=" width: 0; height: 0; border-top: 2px solid transparent; border-left: 6px solid #f4f4f4; border-bottom: 2px solid transparent; transform: translateX(16px) translateY(-4px) rotate(30deg)"></div></div>
+        <div style="margin-left: auto;"> <div style=" width: 0px; border-top: 8px solid #F4F4F4; border-right: 8px solid transparent; transform: translateY(16px);"></div> 
+        <div style=" background-color: #F4F4F4; flex-grow: 0; height: 12px; width: 16px; transform: translateY(-4px);"></div> 
+        <div style=" width: 0; height: 0; border-top: 8px solid #F4F4F4; border-left: 8px solid transparent; transform: translateY(-4px) translateX(8px);"></div></div></div> 
+        <div style="display: flex; flex-direction: column; flex-grow: 1; justify-content: center; margin-bottom: 24px;"> 
+        <div style=" background-color: #F4F4F4; border-radius: 4px; flex-grow: 0; height: 14px; margin-bottom: 6px; width: 224px;"></div> 
+        <div style=" background-color: #F4F4F4; border-radius: 4px; flex-grow: 0; height: 14px; width: 144px;"></div></div></a>
+        <p style=" color:#c9c8cd; font-family:Arial,sans-serif; font-size:14px; line-height:17px; margin-bottom:0; margin-top:8px; overflow:hidden; padding:8px 0 7px; text-align:center; text-overflow:ellipsis; white-space:nowrap;"><a href="https://www.instagram.com/reel/C1-C_ojJ_qz/?utm_source=ig_embed&amp;utm_campaign=loading" style=" color:#c9c8cd; font-family:Arial,sans-serif; font-size:14px; font-style:normal; font-weight:normal; line-height:17px; text-decoration:none;" target="_blank">A post shared by imortaiscompletosoficial (@imortaiscompletosoficial)</a></p></div></blockquote>
+        <script async src="//www.instagram.com/embed.js"></script>        
+    </div>
+    
+    <div class="container" id="readers-opinion">
+    
+    	<div class="content">
+            
+            <div class="text" style="background-color: #ecf1f9">
+                <h2>꧁Legado e Maldição꧂</h2>
+                <h4>"Você não precisa me ver para me sentir. Eu estive com você o tempo todo."</h4><br>
+                <p>Essa frase ressoa de um jeito bem particular pra mim. Ela me transporta imediatamente para uma fase da vida onde eu buscava uma conexão mais profunda e autêntica, sabe? Quando percebi que as presenças mais verdadeiras nem sempre são as mais visíveis, mas sim as que se fazem sentir constantemente, como uma força silenciosa me guiando ou uma memória que nunca se apaga. É a certeza de que alguém essencial sempre esteve lá, mesmo que eu não percebesse na época.</p>
+                <hr>
+                <p>Amorim, Ray T.</p>
+                <p>Brasil | Julho, 2025.</p>
+              	
+            </div>
+            
+            <div class="text" style="background-color: #ecf1f9">
+                <h2>꧁Dualidade e Conflito꧂</h2>
+                <h4>Eles são gêmeos é verdade e se amam como tal. Até que o poder os consuma no final.</h4><br>
+                <p>Mesmo quando estive do outro lado do mundo, essa frase já me fazia pensar em como as maiores paixões, até mesmo o amor fraternal, podem se tornar destrutivas quando a busca por algo maior (como o poder), entra em cena. É um lembrete vívido da fragilidade humana, independentemente de onde estamos.</p>
+                <hr>
+                <p>Pinheiro, Ariane S.</p>
+                <p>United States | Fevereiro, 2024.</p>
+            </div>
+            
+            <div class="text" style="background-color: #ecf1f9">
+                <h2>꧁Profecias e Reviravoltas꧂</h2>
+                <h4>Para cumprir a profecia eles renascerão mais poderosos. E com uma sede... que somente o poder pode saciar.</h4><br>
+                <p>Sempre que eu chego nessa parte do livro sou atingida em cheio, fico até arrepiada. Sabe quando a gente falha, mas encontra uma força interior para se reerguer? A "sede de poder" aqui não é só por controle, mas por superação. É sobre a fome de provar a si mesmo que, mesmo depois de uma queda feia, a gente pode voltar mais forte e conquistar algo ainda maior. É a essência da resiliência e da vitória sobre as próprias limitações.</p>
+                <hr>
+                <p>Leitor misterioso.</p>
+                <p>Brasil | Julho, 2024.</p>
+            </div>
+            
+            <div class="text" style="background-color: #ecf1f9">
+                <h2>꧁Batalhas Épicas꧂</h2>
+                <h4>Dois jovens irmãos que lutam para ascender ao poder e se tornarem os imortais mais poderosos de todos os tempos.</h4><br>
+                <p>É tipo a gente, que é jovem, e todo mundo já nos olha torto, acha que não temos experiência ou capacidade. A gente tem que provar o tempo todo que merece um espaço, que tem ideias, que é capaz de conquistar coisas grandes. Essa "ascensão ao poder" e o desejo de ser "o mais poderoso" não é só sobre dominar, é sobre ser reconhecido, sobre mostrar que a idade ou as aparências não definem o seu potencial. É a nossa própria batalha contra julgamentos de quem nos subestima só por sermos jovens.</p>
+                <hr>
+                <p>Leitor misterioso.</p>
+                <p>Japão | Abril, 2025.</p>
+            </div>
+            
+         	<div class="footer-bar" id="footerBar">
+            	<span>Siga nossas redes sociais:</span>
+                <a href="https://www.instagram.com/imortaiscompletosoficial/" target="_blank" id="instagram-icon"></a>
+                <a href="https://wa.me//5511989993251" target="_blank" id="whatsapp-icon"></a>
+                <a href="https://www.tiktok.com/@imortais.completo" target="_blank" id="tiktok-icon"></a>
+                <a href="https://www.facebook.com/imortaiscompletosoficial" target="_blank" id="facebook-icon"></a>
+          	</div>
+            
+        </div>
+    </div>
+
+    <div class="container" id="container-sinopse">
+        <div class="content">
+        
+            <div class="text" id="text-sinopse">
+                <h1>Resenha</h1>
+                <h2>Imortais Completos</h2>
+                <h3>O Recomeço</h3>
+                <div id="synopsis-container">
+    <p>
+        "Imortais Completos – O Recomeço", escrito por Alexandre Lamim em parceria com Celonice A. Lamim, é uma envolvente obra de fantasia que mergulha o leitor em um universo sombrio, elegante e absolutamente viciante, onde vampiros, lobisomens e profecias entrelaçam-se numa trama cheia de reviravoltas, ação e emoção.
+    </p>
+
+    <p>
+        A narrativa inicia com uma cena dramática e arrebatadora, que já entrega o tom intenso da história: um guerreiro ferido, ajoelhado, testemunha a perda irreparável de alguém amado. A dor e o sentimento de vingança que o dominam reverberam ao longo de toda a obra. A partir daí, o leitor é conduzido ao século XIX, em meio às vielas escuras de uma Paris em
+    </p>
+
+    <span class="more-text" id="hidden-synopsis">
+        <p>
+            transformação, para acompanhar a jornada dos irmãos Vincent e Victor Fourier — jovens da aristocracia francesa, desajustados com as normas sociais e desejosos de algo maior: respeito, poder e liberdade.
+        </p>
+
+        <p>
+            A escrita de Lamim é vívida, cinematográfica. Cada cenário é meticulosamente descrito, transportando o leitor para mansões suntuosas, tavernas misteriosas e becos perigosos. Os personagens, especialmente os irmãos gêmeos, são complexos, com motivações profundas e muitas vezes conflitantes. A transformação em vampiros marca não apenas uma mudança física, mas uma verdadeira quebra de paradigmas em suas personalidades e destinos.
+        </p>
+
+        <p>
+            Um dos grandes trunfos da obra é a construção do universo mitológico. As regras entre os clãs, os rituais de batismo, o papel dos padrinhos, o conselho de anciões, a presença ameaçadora dos lobisomens e a figura lendária do Conde Drácula — tudo é costurado com habilidade e coerência. Além disso, o livro insere profecias enigmáticas e jornadas de autoconhecimento que dão à trama um caráter épico e ao mesmo tempo intimista.
+        </p>
+
+        <p>
+            Outro ponto que merece destaque é a relação entre os irmãos. Embora unidos pelo sangue, Vincent e Victor seguem caminhos distintos dentro do novo mundo em que são inseridos. A oposição entre os dois, com um buscando poder absoluto e o outro ansiando por respeito e equilíbrio, instiga o leitor e cria um dinamismo narrativo cativante.
+        </p>
+
+        <p>
+            "Imortais Completos – O Recomeço" não é apenas uma história de vampiros — é uma saga sobre identidade, escolhas e transformação. A mistura entre fantasia, drama, ação e uma pitada de crítica social garante à obra um lugar de destaque dentro da literatura fantástica nacional. Com capítulos bem estruturados, ritmo envolvente e personagens marcantes, o livro conquista tanto fãs do gênero quanto leitores em busca de uma aventura arrebatadora e inesquecível.
+        </p>
+    </span>
+
+    <button class="read-more-btn" id="read-more-btn">Leia Mais</button>
+</div>
+
+                
+                <div class="shop-bar" id="shopBar">
+                  <a href="https://wa.me/SEUNUMERODOTELEFONE" target="_blank" id="whatsapp">
+                      <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp Icon">
+                      <span>Fazer pedido via WhatsApp?</span>
+                  </a>
+                  <a href="https://sites.google.com/view/imortais-completos/loja" target="_blank" id="mercadolivre">
+                      <!-https://cdn.statically.io/gh/CrisClei2022/imortais/main/mercadoLivre-icon.png--><img src="https://http2.mlstatic.com/static/org-img/homesnw/mercado-libre.png" alt="Mercado Livre Icon">
+                      <span>Fazer pedido via Mercado Livre? </span>
+                  </a>
+              </div>
+              <br>
+              <h5>Fazendo seu pedido via WhatsApp você contribui diretamente com o trabalho do autor.</h5>
+            
+        	</div>
+        
+    	</div>
+    </div>
+    
+    <!-Temas-->
+    <div class="container" id="">
+        <div class="content">        
+            <div class="text" id="about-authors">
+              <h2>Sobre os Autores</h2>
+              <p>Estamos trabalhando nisso</p>
+              <span class="more-text" id="hidden-authors-content">
+                  <p>...</p>
+              </span>
+              <button class="read-more-btn" id="read-more-authors-btn">Leia Mais sobre os Autores</button>
+            </div>
+            
+         	<div class="footer-bar" id="footerBar">
+            	<span>Siga nossas redes sociais:</span>
+                <a href="https://www.instagram.com/imortaiscompletosoficial/" target="_blank" id="instagram-icon"></a>
+                <a href="https://wa.me//5511989993251" target="_blank" id="whatsapp-icon"></a>
+                <a href="https://www.tiktok.com/@imortais.completo" target="_blank" id="tiktok-icon"></a>
+                <a href="https://www.facebook.com/imortaiscompletosoficial" target="_blank" id="facebook-icon"></a>
+          	</div>
+    	</div>
+	</div>
+    
+    <!-Overlays-->
+    <button onclick="document.getElementById('checkout').classList.add('active');">Policy</button>
+    <div class="overlay" id="myOverlay">
+        <div class="overlay-content">
+
+            <div class="header">
+                <button class="back-btn" id="back-btn-cart">🢦</button>
+                <span class="header-title">🛒 Carrinho</span>
+            </div>
+
+            <div class="store-section">
+                <div class="store-header">
+                    <input type="checkbox" class="store-checkbox">
+                    <div class="store-icon">🧛</div>
+                    <span class="store-name">LOJA IMORTAIS COMPLETOS</span>
+                    <button class="edit-btn" id="adr-btn">Endereço</button>
+                </div>
+                <div class="product-item">
+                    <input type="checkbox" class="product-checkbox">
+                    <div class="product-image-placeholder">
+                        <img src="https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcQBS3CQXupdyvstNW6e3CuDJp-McDfUxVYBIsMT2kH5VYomuGubsiWbLC1S24gujTO8lkzRFUggGLKU5Ze1F0BHo61foXKJv71UPWXUB6irgDk7yrVv7PnHhw" alt="Livro: Imortais Completos" class="image">
+                    </div>
+                    <div class="product-info">
+                        <div class="title-and-quantity">
+                            <div class="product-title">
+                                Livro: Imortais Completos - O Recomeco
+                            </div>
+                            <div class="price-group">
+                                <div class="product-price">
+                                    R$89,90
+                                </div>
+                                <span class="product-old-price">
+                                    R$109,90
+                                </span>
+                            </div>
+                            <div class="quantity-controls">
+                                <button class="quantity-btn">−</button>
+                                <input type="text" class="quantity-input" value="0">
+                                <button class="quantity-btn">+</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="checkout-item-block">
+                    <div style="font-size: 0.9em; color: #777;">Mensagem para o vendedor:</div>
+                    <div style="font-size: 0.95em; color: #333; margin-top: 5px;">
+                        Digite aqui -->
+                    </div>
+                </div>
+                
+            </div>
+			
+            <!-Frete->
+            <div class="store-section">
+                <div class="shipping">
+                    <div class="store-icon">📬</div>
+                    <span class="store-name">Frete</span>
+                    <span class="product-price" id="shipping-price">R$19,90</span>
+                </div>         
+            </div>
+			
+            <!-Adress->
+            <div class="store-section">
+                <div class="store-header">
+                    <div class="store-icon">🦇</div>
+                    <span class="store-name">Opção de Envio</span>
+                    <button class="edit-btn" id="edit-btn">Editar</button>
+                </div>
+                <div id="shipping-label" style="font-size: 0.9em; color: #ee4d2d;">
+                	ℹ️ Clique em editar para preencher seus <strong>Dados Pessoais e Endereço de Entrega.</strong>
+                </div>
+                <div class="show-adress" id="showAddress">
+                </div>                
+            </div>
+            
+            <div class="bottom-section">
+              <div class="no-selection">
+                  ℹ️ Nenhum item selecionado
+              </div>
+
+              <div class="total-section">
+                  <div class="select-all-group">
+                      <input type="checkbox" class="select-all-checkbox">
+                      <span class="select-all-text">Tudo</span>
+                  </div>
+
+                  <div class="price-summary-group">
+                      <div class="total-price" id="cart-total-price">R$0,00</div>
+                      <div class="discount-info">
+                          <span id="discount-label">Você economizou</span>
+                          <span id="discount-price">R$0,00</span>
+                      </div>
+                  </div>
+
+                  <button class="continue-btn" disabled>
+                      Continuar (0)
+                  </button>
+              </div>
+          </div>
+            
+        </div><!-Content-->
+    </div>
+
+	<!-============-->
+	<!-FORM OVERLAY-->
+	<!-============-->
+    <div class="overlay" id="form-overlay">
+        <div class="overlay-content">
+          <div class="header">
+              <button class="back-btn" id="back-btn-form">🢦</button>
+              <span class="header-title">📍 Opção de Envio</span>
+          </div>
+          <div class="form-section">
+			<div class="section-title">Contato</div>
+            <div class="form-group">
+                <input type="cpf" id="cpf" placeholder="CPF"> </div>
+            <div class="form-group">
+                <input type="text" id="nomeCompleto" placeholder="Nome Completo"> </div>
+            <div class="form-group">
+                <input type="tel" id="telefone" placeholder="Número de telefone"> </div>
+            <div class="form-group">
+                  <input type="email" id="email" placeholder="E-mail"> </div>
+              
+            <div class="section-title">Endereço</div>
+            <div class="form-group">
+                <input type="text" id="cep" placeholder="CEP" maxlength="9"> </div>
+            <div class="form-group inline">
+                <div class="input-half">
+                    <input type="text" id="cidade" placeholder="Cidade" readonly> </div>
+                <div class="input-half">
+                    <input type="text" id="estado" placeholder="UF" readonly> </div>
+            </div>
+            <div class="form-group">
+                <input type="text" id="bairro" placeholder="Bairro" readonly> </div>
+            <div class="form-group inline">
+                <div class="input-half">
+                    <input type="text" id="logradouro" placeholder="Nome da rua" readonly> </div>
+                <div class="input-half">
+                    <input type="text" id="numero" placeholder="Nº"> </div>
+          	</div>
+            <div class="form-group">
+                <textarea id="complemento" placeholder="Complemento/Referências Próx./Descrição do Prédio"></textarea>            
+            </div>
+
+              <div class="section-title">Configurações</div>
+              <div class="setup-group">
+                  <span>Salvar como:</span>
+                  <div class="radio-group">
+                      <div class="radio-button selected" id="saveWork">Trabalho</div> <div class="radio-button" id="saveHome">Casa</div>
+                  </div>
+              </div>
+              <div class="toggle-group">
+                  <span>Definir como endereço padrão</span>
+                  <label class="switch">
+                      <input type="checkbox" id="enderecoPadrao">
+                      <span class="slider"></span>
+                  </label>
+              </div>
+          </div>
+          <div class="save-button-container">
+              <button class="save-button" id="save-button">Salvar</button>
+          </div>
+            
+        </div><!-Content-->
+    </div>
+
+    <div class="overlay" id="checkout">
+        <div class="overlay-content">
+
+            <div class="header">
+                <button class="back-btn" id="back-btn-checkout">🢦</button>
+                <span class="header-title">Termos e Condições</span>
+            </div>
+            <div class="policy">
+			</div>
+            <div class="store-section">
+                <div class="checkout-item-block">
+                    <div style="font-size: 0.9em; color: #777;">
+            <p>Você será direcionado para pagar através do link de pagamento do <strong>Mercado Pago</strong>. Estando logado na sua conta Mercado Pago, você tem a  segurança da <strong>Compra Garantida</strong>.</p>
+            <h4>Como funciona a Compra Garantida do Mercado Pago?</h4>
+            <p>A Compra Garantida do Mercado Pago é um benefício gratuito que visa proteger o comprador em transações realizadas dentro da plataforma. Para ter direito a ela, você precisa seguir alguns requisitos:</p>
+            <p><strong>• Pagar logado:</strong> É fundamental que você esteja com sua conta Mercado Pago logada ao realizar o pagamento pelo link. Pagamentos feitos como "convidado" ou "guest" não têm essa cobertura.</p>
+            <p><strong>• Não receber o produto:</strong> A garantia se aplica se você não receber o produto que comprou.</p>
+            <p><strong>• Abrir uma reclamação no prazo:</strong> Você precisa iniciar uma reclamação em até 14 dias corridos após a data do pagamento.</p>
+            <h4>O que acontece se eu precisar usar a Compra Garantida?</h4>
+            <p><strong>• Abra uma reclamação:</strong> Se você não receber o produto, deve iniciar uma reclamação através da sua conta Mercado Pago.
+            <p><strong>• Mercado Pago entra em contato com o vendedor:</strong> A plataforma tentará mediar a situação com o vendedor para encontrar uma solução.
+            <p><strong>• Devolução do dinheiro:</strong> Se a reclamação não for resolvida e for <strong>constatado</strong> que você não recebeu o produto, o Mercado Pago fará a devolução do valor da compra.
+            <h4>Casos em que a Compra Garantida não oferece cobertura:</h4>
+            <p>▫︎ Pagamentos realizados sem estar logado na conta Mercado Pago.
+            <p>▫︎ Compra de serviços, assinaturas ou produtos digitais (como streaming de vídeo, e-books, etc.).
+            <p>Em resumo, sempre que for pagar um link do Mercado Pago, certifique-se de estar logado na sua conta para ter a segurança da Compra Garantida.
+            <h4>Ficou alguma dúvida sobre o processo ou sobre a cobertura da Compra Garantida?</h4>
+            <p>Clique aqui e fale com a gente no whatsapp.</p>
+            		</div>
+                </div>
+            </div>
+            
+            <div class="bottom-section"> 
+            	        
+				<div class="total-section">
+                
+                  <div class="select-all-group">
+                      <input type="checkbox" class="select-all-checkbox" id="policy-agree-checkbox">
+                      <span class="select-all-text">Aceitar</span>
+                  </div>
+                  <button class="continue-btn" id="policy-agree-btn" disabled>
+                      Continuar
+                  </button>
+                 
+				</div>
+            	
+            </div>
+            
+        </div><!-Content-->
+    </div>
+    
+    <script>
+    // ============================================
+    // ======== Adjusted Menu Functionality ========
+    // ============================================
+
+    (function() {
+        // Select the "Mais" menu item by its specific class
+        const dropdownMenuItem = document.querySelector('.dropdown-menu-item');
+
+        // Select the dropdown button inside it
+        const dropdownBtn = dropdownMenuItem ? dropdownMenuItem.querySelector('.dropdown-btn') : null;
+
+        // Select the dropdown list
+        const dropdownList = dropdownMenuItem ? dropdownMenuItem.querySelector('.dropdown-list') : null;
+
+        // Select all links in the main menu and the dropdown
+        const allMenuLinks = document.querySelectorAll('.header-nav a[data-target]');
+        const allDropdownLinks = document.querySelectorAll('.dropdown-list a');
+
+        // Function to scroll to a specific section on the page
+        function scrollToSection(sectionId) {
+            const targetElement = document.getElementById(sectionId);
+            if (targetElement) {
+                targetElement.scrollIntoView({ behavior: 'smooth' });
+                // Close the dropdown after scrolling
+                if (dropdownMenuItem) {
+                    dropdownMenuItem.classList.remove('active');
+                }
+            }
+        }
+
+        // Add click listeners to all menu links to handle smooth scrolling
+        allMenuLinks.forEach(link => {
+            link.addEventListener('click', (event) => {
+                event.preventDefault();
+                const targetId = link.dataset.target;
+                if (targetId) {
+                    scrollToSection(targetId);
+                }
+            });
+        });
+
+        // Add click listeners to all dropdown links
+        allDropdownLinks.forEach(link => {
+            link.addEventListener('click', (event) => {
+                event.preventDefault();
+                const targetId = link.dataset.target;
+                if (targetId) {
+                    scrollToSection(targetId);
+                }
+            });
+        });
+
+        // Handle click on the "Mais" button to toggle the dropdown
+        if (dropdownBtn && dropdownMenuItem) {
+            dropdownBtn.addEventListener('click', function(event) {
+                event.preventDefault();
+                event.stopPropagation(); // Prevents the click from bubbling up and closing the menu
+                dropdownMenuItem.classList.toggle('active');
+            });
+
+            // Close the dropdown if the user clicks anywhere else on the page
+            document.addEventListener('click', function(event) {
+                if (!dropdownMenuItem.contains(event.target)) {
+                    dropdownMenuItem.classList.remove('active');
+                }
+            });
+        }
+
+    })();
+    
+    /// --- Overlays da Store ---
+    const openOverlayBtns = document.querySelectorAll('.openOverlay');
+    const myOverlay = document.getElementById('myOverlay');
+    const backBtnCart = document.getElementById('back-btn-cart');
+    const checkoutOverlay = document.getElementById('checkout');
+    const backBtnCheckout = document.getElementById('back-btn-checkout');
+    const continueBtn = document.querySelector('.continue-btn');
+    const formOverlay = document.getElementById('form-overlay'); // Adicionado
+    const backBtnForm = document.getElementById('back-btn-form'); // Adicionado
+    const openFormBtns = document.querySelectorAll('.edit-btn'); // Adicionado
+
+    // --- Funcionalidade do Footer Bar ---
+    const footerBar = document.getElementById("footerBar");
+    let timeoutId;
+
+    // Verifica se footerBar existe antes de tentar acessá-lo
+    if (footerBar) {
+        footerBar.style.top = '2vh'; // Define a posição inicial
+
+        function handleScrollActivity() {
+            footerBar.classList.add("active");
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => {
+                footerBar.classList.remove("active");
+            }, 500);
+        }
+        window.addEventListener("scroll", handleScrollActivity);
+    }
+
+    // --- Abrir Overlay de Carrinho ---
+    openOverlayBtns.forEach(button => {
+        button.addEventListener('click', () => {
+            if (myOverlay) { // Verifica se myOverlay existe
+                myOverlay.classList.add('active');
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+
+    // --- Fechar Overlay de Carrinho (backBtnCart click) ---
+    if (backBtnCart) {
+        backBtnCart.addEventListener('click', () => {
+            if (myOverlay) {
+                myOverlay.classList.remove('active'); // Simplesmente fecha o carrinho
+            }
+        });
+    }
+
+    // --- Fechar Overlay de Carrinho clicando fora ---
+    if (myOverlay) { // Verifica se myOverlay existe
+        myOverlay.addEventListener('click', (event) => {
+            if (event.target === myOverlay) {
+                myOverlay.classList.remove('active');
+            }
+        });
+    }
+
+    // --- Fechar Overlay de Checkout (backBtnCheckout click) ---
+    if (backBtnCheckout) {
+        backBtnCheckout.addEventListener('click', () => {
+            if (checkoutOverlay) {
+                checkoutOverlay.classList.remove('active'); // Fecha checkout
+            }
+            if (myOverlay) {
+                myOverlay.classList.add('active'); // Abre carrinho novamente
+            }
+        });
+    }
+
+    // --- Fechar Overlay de Checkout clicando fora ---
+    if (checkoutOverlay) { // Verifica se checkoutOverlay existe
+        checkoutOverlay.addEventListener('click', (event) => {
+            if (event.target === checkoutOverlay) {
+                checkoutOverlay.classList.remove('active');
+            }
+        });
+    }
+
+
+    // --- Funcionalidade do Botão 'Continuar' (Abrir Checkout) ---
+    if (continueBtn) {
+        continueBtn.addEventListener('click', () => {
+            if (myOverlay) {
+                myOverlay.classList.remove('active'); // Esconde o overlay do carrinho
+            }
+            if (checkoutOverlay) {
+                checkoutOverlay.classList.add('active'); // Mostra o overlay de checkout
+            }
+        });
+    }
+
+    // --- Abrir Form (edit-btn click) ---
+    openFormBtns.forEach(button => {
+        button.addEventListener('click', () => {
+            if (myOverlay) {
+                myOverlay.classList.remove('active'); // Esconde o overlay do carrinho
+            }
+            if (formOverlay) {
+                formOverlay.classList.add('active'); // Mostra o overlay do formulário
+            }
+        });
+    });
+
+    // --- Fechar Form (backBtnForm click) ---
+    if (backBtnForm) {
+        backBtnForm.addEventListener('click', () => {
+            if (formOverlay) {
+                formOverlay.classList.remove('active'); // Fecha o overlay do formulário
+            }
+            if (myOverlay) {
+                myOverlay.classList.add('active'); // Abre o carrinho novamente
+            }
+        });
+    }
+
+    // --- Fechar Form clicando fora ---
+    if (formOverlay) {
+        formOverlay.addEventListener('click', (event) => {
+            if (event.target === formOverlay) {
+                formOverlay.classList.remove('active');
+                // myOverlay.classList.add('active'); // Opcional: voltar para o carrinho
+            }
+        });
+    }
+
+    // --- Fechar Overlays com a Tecla ESC ---
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+            if (myOverlay && myOverlay.classList.contains('active')) {
+                myOverlay.classList.remove('active');
+            }
+            if (checkoutOverlay && checkoutOverlay.classList.contains('active')) {
+                checkoutOverlay.classList.remove('active');
+            }
+            if (formOverlay && formOverlay.classList.contains('active')) {
+                formOverlay.classList.remove('active');
+            }
+        }
+    });
+
+    // --- Funcionalidades do Carrinho ---
+    const productCheckboxes = document.querySelectorAll('.product-checkbox');
+    const storeCheckboxes = document.querySelectorAll('.store-checkbox');
+    const selectAllCheckbox = document.querySelector('.select-all-checkbox');
+    const noSelectionElement = document.querySelector('.no-selection');
+
+    // Obtenha referências aos elementos de desconto e frete
+    const discountLabel = document.getElementById('discount-label');
+    const discountPrice = document.getElementById('discount-price');
+    const shippingPriceElement = document.getElementById('shipping-price');
+    const shippingLabel = document.getElementById('shipping-label'); // Referência ao shipping-label
+
+    // Esconda-os por padrão ao carregar a página
+    if (discountLabel) discountLabel.style.display = 'none';
+    if (discountPrice) discountPrice.style.display = 'none';
+    if (shippingLabel) shippingLabel.style.display = 'none'; // Esconde o shipping-label no início
+
+    // Desmarcar todos os checkboxes ao carregar a página
+    productCheckboxes.forEach(checkbox => {
+        checkbox.checked = false;
+    });
+    storeCheckboxes.forEach(checkbox => {
+        checkbox.checked = false;
+    });
+    if (selectAllCheckbox) {
+        selectAllCheckbox.checked = false;
+    }
+
+    // Função para calcular e atualizar o total e a contagem de itens selecionados
+    function updateTotal() {
+        let total = 0;
+        let count = 0;
+        let totalDiscount = 0;
+
+        productCheckboxes.forEach(checkbox => {
+            if (checkbox.checked) {
+                const productItem = checkbox.closest('.product-item');
+                if (productItem) {
+                    const priceElement = productItem.querySelector('.product-price');
+                    const oldPriceElement = productItem.querySelector('.product-old-price');
+                    const quantityInputElement = productItem.querySelector('.quantity-input');
+
+                    if (priceElement && quantityInputElement) {
+                        const priceText = priceElement.textContent;
+                        const price = parseFloat(priceText.replace('R$', '').replace(',', '.').trim());
+                        const quantity = parseInt(quantityInputElement.value);
+
+                        if (!isNaN(price) && !isNaN(quantity)) {
+                            total += price * quantity;
+                            count += quantity;
+
+                            if (oldPriceElement) {
+                                const oldPriceText = oldPriceElement.textContent;
+                                const oldPrice = parseFloat(oldPriceText.replace('R$', '').replace(',', '.').trim());
+                                if (!isNaN(oldPrice)) {
+                                    totalDiscount += (oldPrice - price) * quantity;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // --- Lógica do FRETE ---
+        if (count > 0 && shippingPriceElement) {
+            const shippingText = shippingPriceElement.textContent;
+            const shippingValue = parseFloat(shippingText.replace('R$', '').replace(',', '.').trim());
+            if (!isNaN(shippingValue)) {
+                total += shippingValue;
+            }
+            if (shippingLabel) shippingLabel.style.display = 'block'; // Mostra o label do frete
+            shippingPriceElement.closest('.shipping').style.display = 'flex'; // ou 'block'
+        } else {
+            // Se nenhum item estiver selecionado, esconde o frete
+            if (shippingLabel) shippingLabel.style.display = 'none';
+            if (shippingPriceElement) {
+                const shippingContainer = shippingPriceElement.closest('.shipping');
+                if (shippingContainer) {
+                    shippingContainer.style.display = 'none';
+                }
+            }
+        }
+        // --- Fim da lógica do frete ---
+
+        document.querySelector('.total-price').textContent = `R$${total.toFixed(2).replace('.', ',')}`;
+        document.querySelector('.continue-btn').textContent = `Continuar (${count})`;
+
+        const continueButton = document.querySelector('.continue-btn');
+        if (continueButton) {
+            // O botão 'Continuar' só deve ser ativado se houver itens selecionados E o formulário for válido (se houver um formulário envolvido)
+            if (count > 0 && validateForm()) { // Assumindo que validateForm() pode ser relevante para o estado do botão
+                continueButton.disabled = false;
+                continueButton.classList.add('active'); // Adiciona estilo ativo
+            } else {
+                continueButton.disabled = true;
+                continueButton.classList.remove('active'); // Remove estilo ativo
+            }
+        }
+
+        // --- LÓGICA DO VALOR ECONOMIZADO ---
+        if (count > 0 && totalDiscount > 0) {
+            if (discountLabel) discountLabel.style.display = 'inline-block';
+            if (discountPrice) {
+                discountPrice.textContent = `R$${totalDiscount.toFixed(2).replace('.', ',')}`;
+                discountPrice.style.display = 'inline-block';
+            }
+        } else {
+            if (discountLabel) discountLabel.style.display = 'none';
+            if (discountPrice) discountPrice.style.display = 'none';
+        }
+        // --- FIM DA LÓGICA DO VALOR ECONOMIZADO ---
+
+        if (selectAllCheckbox) {
+            const allProductsChecked = Array.from(productCheckboxes).every(cb => cb.checked);
+            selectAllCheckbox.checked = allProductsChecked;
+        }
+    }
+
+    // Função para verificar e atualizar o estado do noSelectionElement
+    function updateNoSelectionDisplay() {
+        const anyProductChecked = Array.from(productCheckboxes).some(cb => cb.checked);
+        if (noSelectionElement) {
+            if (anyProductChecked) {
+                noSelectionElement.style.display = 'none';
+            } else {
+                noSelectionElement.style.display = 'flex'; // ou 'block'
+            }
+        }
+    }
+
+    // Adiciona event listeners para os botões de quantidade
+    document.querySelectorAll('.quantity-controls .quantity-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const productItem = this.closest('.product-item');
+            const quantityInput = productItem.querySelector('.quantity-input');
+            const productCheckbox = productItem.querySelector('.product-checkbox');
+            let currentQuantity = parseInt(quantityInput.value);
+
+            if (this.textContent === '+') {
+                currentQuantity++;
+                if (productCheckbox) {
+                    productCheckbox.checked = true; // Marca o checkbox ao aumentar a quantidade
+                }
+            } else if (this.textContent === '−') {
+                if (currentQuantity > 1) {
+                    currentQuantity--;
+                } else {
+                    // Se a quantidade for 1 e tentar diminuir, desmarca o checkbox
+                    if (productCheckbox) {
+                        productCheckbox.checked = false;
+                    }
+                }
+            }
+            quantityInput.value = currentQuantity;
+
+            updateTotal();
+            updateNoSelectionDisplay();
+        });
+    });
+
+    // Configura listeners para os checkboxes de loja
+    function setupStoreCheckboxesListeners() {
+        storeCheckboxes.forEach(storeCheckbox => {
+            storeCheckbox.addEventListener('change', function() {
+                const isStoreChecked = this.checked;
+                const storeSection = this.closest('.store-section');
+                if (storeSection) {
+                    storeSection.querySelectorAll('.product-checkbox').forEach(productCb => {
+                        productCb.checked = isStoreChecked;
+                    });
+                }
+                updateTotal();
+                updateNoSelectionDisplay();
+            });
+        });
+    }
+
+    // Configura listeners para os checkboxes de produto
+    function setupProductCheckboxesListeners() {
+        productCheckboxes.forEach(productCheckbox => {
+            productCheckbox.addEventListener('change', function() {
+                updateTotal();
+                updateNoSelectionDisplay();
+                const storeSection = this.closest('.store-section');
+                if (storeSection) {
+                    const allProductsInStore = storeSection.querySelectorAll('.product-checkbox');
+                    const allCheckedInStore = Array.from(allProductsInStore).every(cb => cb.checked);
+                    const storeCb = storeSection.querySelector('.store-checkbox');
+                    if (storeCb) {
+                        storeCb.checked = allCheckedInStore;
+                    }
+                }
+            });
+        });
+    }
+
+    // Funcionalidade do checkbox "Tudo"
+    if (selectAllCheckbox) {
+        selectAllCheckbox.addEventListener('change', function() {
+            const isChecked = this.checked;
+            productCheckboxes.forEach(checkbox => {
+                checkbox.checked = isChecked;
+            });
+            storeCheckboxes.forEach(checkbox => {
+                checkbox.checked = isChecked;
+            });
+            updateTotal();
+            updateNoSelectionDisplay();
+        });
+    }
+
+    // --- ============ ---
+    // --- FORM OVERLAY ---
+    // --- ============ ---
+
+    const radioButtons = document.querySelectorAll('.radio-group .radio-button');
+    if (radioButtons.length > 0) { // Verifica se há botões de rádio antes de adicionar listeners
+        radioButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                radioButtons.forEach(btn => btn.classList.remove('selected'));
+                this.classList.add('selected');
+            });
+        });
+    }
+
+    // CEP fields
+    const cepInput = document.getElementById('cep');
+    const cidadeInput = document.getElementById('cidade');
+    const estadoInput = document.getElementById('estado');
+    const bairroInput = document.getElementById('bairro');
+    const logradouroInput = document.getElementById('logradouro');
+    const numeroInput = document.getElementById('numero');
+    const complementoInput = document.getElementById('complemento');
+
+    // Get references to form elements
+    const cpfInput = document.getElementById('cpf');
+    const nomeCompletoInput = document.getElementById('nomeCompleto');
+    const telefoneInput = document.getElementById('telefone');
+    const emailInput = document.getElementById('email');
+
+    const saveButton = document.getElementById('save-button');
+    const showAddressDiv = document.getElementById('showAddress');
+    const saveWorkRadio = document.getElementById('saveWork');
+    const saveHomeRadio = document.getElementById('saveHome');
+    const enderecoPadraoCheckbox = document.getElementById('enderecoPadrao');
+
+
+    // Function to validate if all required fields are filled
+    function validateForm() {
+        // List of required input fields (adjust as needed)
+        const requiredFields = [
+            cpfInput,
+            nomeCompletoInput,
+            telefoneInput,
+            emailInput,
+            cepInput,
+            cidadeInput,
+            estadoInput,
+            bairroInput,
+            logradouroInput,
+            numeroInput
+        ].filter(field => field !== null); // Filtra campos nulos para evitar erros
+
+        let allFilled = true;
+        requiredFields.forEach(field => {
+            if (!field.value.trim()) {
+                allFilled = false;
+            }
+        });
+
+        // Enable/disable the save button based on validation
+        if (saveButton) {
+            if (allFilled) {
+                saveButton.classList.add('active'); // Apply active style
+                saveButton.disabled = false;
+            } else {
+                saveButton.classList.remove('active'); // Remove active style
+                saveButton.disabled = true;
+            }
+        }
+
+        return allFilled;
+    }
+
+    // Add event listeners to all relevant input fields to re-validate on change
+    // Verifica se os inputs existem antes de adicionar event listeners
+    document.querySelectorAll('.form-section input, .form-section textarea').forEach(input => {
+        input.addEventListener('input', () => {
+            validateForm(); // Re-validate the form itself
+            updateTotal(); // Re-avalia o estado do botão "Continuar"
+        });
+    });
+
+    // Function to capture and display address
+    if (saveButton) {
+        saveButton.addEventListener('click', (event) => {
+            event.preventDefault(); // Prevent default form submission if it were a <form>
+
+            if (validateForm()) { // Only proceed if the form is valid
+                // shippingLabel.style.display = 'none'; // REMOVIDO: Linha que causava conflito
+
+                const cpf = cpfInput ? cpfInput.value.trim() : '';
+                const nomeCompleto = nomeCompletoInput ? nomeCompletoInput.value.trim() : '';
+                const telefone = telefoneInput ? telefoneInput.value.trim() : '';
+                const email = emailInput ? emailInput.value.trim() : '';
+                const cep = cepInput ? cepInput.value.trim() : '';
+                const cidade = cidadeInput ? cidadeInput.value.trim() : '';
+                const estado = estadoInput ? estadoInput.value.trim() : '';
+                const bairro = bairroInput ? bairroInput.value.trim() : '';
+                const logradouro = logradouroInput ? logradouroInput.value.trim() : '';
+                const numero = numeroInput ? numeroInput.value.trim() : '';
+                const complemento = complementoInput ? complementoInput.value.trim() : '';
+
+                let tipoEndereco = '';
+                if (saveWorkRadio && saveWorkRadio.classList.contains('selected')) {
+                    tipoEndereco = 'Trabalho';
+                } else if (saveHomeRadio && saveHomeRadio.classList.contains('selected')) {
+                    tipoEndereco = 'Casa';
+                }
+
+                const isDefaultAddress = enderecoPadraoCheckbox ? enderecoPadraoCheckbox.checked : false;
+
+                // Construct the display string
+                let addressDisplay = `${cpf}<br>`;
+                addressDisplay += `<strong>${nomeCompleto}</strong><br>`;
+                addressDisplay += `${email}<br>`;
+                addressDisplay += `${telefone}<br><br>`;
+                addressDisplay += `${logradouro}, ${numero}<br>`;
+                addressDisplay += `${bairro}<br>`;
+                addressDisplay += `${cidade} - ${estado}<br>`;
+                addressDisplay += `${cep}<br>`;
+                addressDisplay += `Complemento: ${complemento}<br><br>`;
+                addressDisplay += `Tipo: ${tipoEndereco}<br>`;
+                addressDisplay += `Endereço Padrão: ${isDefaultAddress ? 'Sim' : 'Não'}`;
+
+                if (showAddressDiv) {
+                    showAddressDiv.innerHTML = addressDisplay;
+                    showAddressDiv.style.display = 'block'; // Make the div visible
+
+                    if (formOverlay) {
+                        formOverlay.classList.remove('active'); // Hide the form overlay
+                    }
+
+                    if (myOverlay) {
+                        myOverlay.classList.add('active'); // Show the cart overlay
+                    }
+                }
+
+                alert('Endereço salvo com sucesso! Veja os detalhes abaixo.'); // Feedback to user
+
+            } else {
+                alert('Por favor, preencha todos os campos obrigatórios.');
+            }
+        });
+    }
+
+    // Function to clear address fields
+    function clearAddressFields() {
+        if (cidadeInput) cidadeInput.value = '';
+        if (estadoInput) estadoInput.value = '';
+        if (bairroInput) bairroInput.value = '';
+        if (logradouroInput) logradouroInput.value = '';
+    }
+
+    // Function to fetch address from ViaCEP
+    async function fetchAddressByCEP(cep) {
+        clearAddressFields(); // Clear fields before fetching
+
+        if (cidadeInput) cidadeInput.readOnly = true;
+        if (estadoInput) estadoInput.readOnly = true;
+        if (bairroInput) bairroInput.readOnly = true;
+        if (logradouroInput) logradouroInput.readOnly = true;
+
+        const cleanedCep = cep.replace(/\D/g, ''); // Remove non-digits
+
+        if (cleanedCep.length !== 8) {
+            // Not a valid CEP length, clear and reset placeholders
+            if (cidadeInput) cidadeInput.placeholder = 'Cidade';
+            if (estadoInput) estadoInput.placeholder = 'UF';
+            if (bairroInput) bairroInput.placeholder = 'Bairro';
+            if (logradouroInput) logradouroInput.placeholder = 'Nome da rua';
+            return;
+        }
+
+        try {
+            const response = await fetch(`https://viacep.com.br/ws/${cleanedCep}/json/`);
+            const data = await response.json();
+
+            if (data.erro) {
+                alert('CEP não encontrado.');
+                clearAddressFields();
+                if (cidadeInput) cidadeInput.placeholder = 'CEP não encontrado';
+                if (estadoInput) estadoInput.placeholder = 'CEP não encontrado';
+                if (bairroInput) bairroInput.placeholder = 'CEP não encontrado';
+                if (logradouroInput) logradouroInput.placeholder = 'CEP não encontrado';
+            } else {
+                if (cidadeInput) cidadeInput.value = data.localidade;
+                if (estadoInput) estadoInput.value = data.uf;
+                if (bairroInput) bairroInput.value = data.bairro;
+                if (logradouroInput) logradouroInput.value = data.logradouro;
+                if (numeroInput) numeroInput.focus(); // Focus on the number field
+            }
+        } catch (error) {
+            console.error('Erro ao buscar CEP:', error);
+            alert('Erro ao buscar o CEP. Tente novamente.');
+            clearAddressFields();
+            if (cidadeInput) cidadeInput.placeholder = 'Erro na busca';
+            if (estadoInput) estadoInput.placeholder = 'Erro na busca';
+            if (bairroInput) bairroInput.placeholder = 'Erro na busca';
+            if (logradouroInput) logradouroInput.placeholder = 'Erro na busca';
+        } finally {
+            // Reset placeholders to original after fetching
+            if (cidadeInput && cidadeInput.value === '') cidadeInput.placeholder = 'Cidade';
+            if (estadoInput && estadoInput.value === '') estadoInput.placeholder = 'UF';
+            if (bairroInput && bairroInput.value === '') bairroInput.placeholder = 'Bairro';
+            if (logradouroInput && logradouroInput.value === '') logradouroInput.placeholder = 'Nome da rua';
+
+            if (cidadeInput) cidadeInput.readOnly = false;
+            if (bairroInput) bairroInput.readOnly = false;
+            if (logradouroInput) logradouroInput.readOnly = false;
+        }
+    }
+
+    // Add an event listener for CPF input
+    if (cpfInput) {
+        cpfInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, ''); // Remove all non-digit characters
+
+            // Apply CPF mask: 000.000.000-00
+            if (value.length > 9) {
+                value = value.substring(0, 3) + '.' + value.substring(3, 6) + '.' + value.substring(6, 9) + '-' + value.substring(9, 11);
+            } else if (value.length > 6) {
+                value = value.substring(0, 3) + '.' + value.substring(3, 6) + '.' + value.substring(6, 9);
+            } else if (value.length > 3) {
+                value = value.substring(0, 3) + '.' + value.substring(3, 6);
+            }
+            e.target.value = value;
+            validateForm(); // Re-validate the form after input
+        });
+    }
+
+    // Add an event listener for nomeCompletoInput
+    if (nomeCompletoInput) {
+        nomeCompletoInput.addEventListener('input', function(e) {
+            let value = e.target.value;
+            // Capitalize the first letter of each word and remove extra spaces
+            value = value.replace(/\s\s+/g, ' ') // Replace multiple spaces with a single space
+                .split(' ') // Split the string into an array of words
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()) // Capitalize first letter
+                .join(' '); // Join the words back into a string
+            e.target.value = value.trim(); // Remove leading/trailing whitespace
+            validateForm(); // Re-validate the form after input
+        });
+    }
+
+    // Add an event listener for telefoneInput
+    if (telefoneInput) {
+        telefoneInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, ''); // Remove all non-digit characters
+
+            if (value.length > 10) { // (XX) XXXXX-XXXX (mobile with DDD)
+                value = '(' + value.substring(0, 2) + ') ' + value.substring(2, 7) + '-' + value.substring(7, 11);
+            } else if (value.length > 9) { // (XX) XXXX-XXXX (landline with DDD)
+                value = '(' + value.substring(0, 2) + ') ' + value.substring(2, 6) + '-' + value.substring(6, 10);
+            } else if (value.length > 5) { // XXXX-XXXX (landline without DDD)
+                value = value.substring(0, 5) + '-' + value.substring(5, 9);
+            } else if (value.length > 4) { // XXXX-X (incomplete landline)
+                value = value.substring(0, 4) + '-' + value.substring(4);
+            }
+            e.target.value = value;
+            validateForm(); // Re-validate the form after input
+        });
+    }
+
+    // Event listener for CEP input (fires on every change)
+    if (cepInput) {
+        // Add a mask to the CEP input
+        cepInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+            if (value.length > 5) {
+                value = value.substring(0, 5) + '-' + value.substring(5, 8);
+            }
+            e.target.value = value;
+
+            // Trigger search immediately if 8 digits are typed
+            const cleanedCep = value.replace(/\D/g, ''); // Clean CEP again for the check
+            if (cleanedCep.length === 8) {
+                fetchAddressByCEP(cleanedCep);
+            } else {
+                // Optionally clear fields if CEP becomes invalid (e.g., user backspaces)
+                clearAddressFields();
+            }
+        });
+    }
+
+    // Policy code-block
+    const policyAgreeCheckbox = document.getElementById('policy-agree-checkbox');
+    const policyAgreeButton = document.getElementById('policy-agree-btn');
+
+    if (policyAgreeCheckbox && policyAgreeButton) {
+        // Add an event listener to the checkbox
+        policyAgreeCheckbox.addEventListener('change', function() {
+            // Set the disabled property of the button based on the checkbox's checked state
+            policyAgreeButton.disabled = !this.checked;
+        });
+
+        // Optionally, call it once on page load to set initial state
+        // This ensures the button is disabled if the checkbox isn't checked by default
+        policyAgreeButton.disabled = !policyAgreeCheckbox.checked;
+    }
+
+    // ============================================
+    // ======== Reusable ReadMore Functionality ========
+    // ============================================
+    function initializeReadMore(buttonId, contentId) {
+        const readMoreBtn = document.getElementById(buttonId);
+        const hiddenContent = document.getElementById(contentId);
+
+        if (readMoreBtn && hiddenContent) {
+            // Inicializa o estado: esconde o conteúdo e ajusta o texto do botão, se necessário
+            hiddenContent.style.display = 'none';
+            readMoreBtn.textContent = 'Leia Mais';
+
+            readMoreBtn.addEventListener('click', function() {
+                const currentDisplay = window.getComputedStyle(hiddenContent).display;
+
+                if (currentDisplay === 'none') {
+                    hiddenContent.style.display = 'block';
+                    readMoreBtn.textContent = 'Mostrar Menos';
+                } else {
+                    hiddenContent.style.display = 'none';
+                    readMoreBtn.textContent = 'Leia Mais';
+                }
+            });
+        }
+    }
+
+    // --- Inicialização ao carregar a página ---
+    document.addEventListener('DOMContentLoaded', () => {
+        initializeReadMore('read-more-btn', 'hidden-synopsis'); // Chamada da função Read More
+    	initializeReadMore('read-more-authors-btn', 'hidden-authors-content'); // Para a seção de autores
+        setupStoreCheckboxesListeners();
+        setupProductCheckboxesListeners();
+        updateTotal();
+        updateNoSelectionDisplay();
+        setupMenuScroll();
+    });
+    </script>
+</body>
+</html>
