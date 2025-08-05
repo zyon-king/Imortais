@@ -188,10 +188,10 @@
         /* ========================================= */
         /* Tipografia e Elementos de Texto */
         /* ========================================= */
-        /* Estilos para títulos dentro de #readers-opinion */
         #readers-opinion h1,
-        #readers-opinionh2,
-        #readers-opinion h3 {
+        #readers-opinion h2,
+        #readers-opinion h3,
+        #readers-opinion h4 {
             color: black;
             text-align: center;
         }
@@ -254,6 +254,7 @@
         #container-sinopse h1,
         #container-sinopse h2,
         #container-sinopse h3,
+        #container-sinopse h5,
         #container-sinopse p {
             color: var(--color-link-hover);
         }
@@ -1046,6 +1047,10 @@
             gap: 20px; /* Space between the buttons */
             margin-top: 30px; /* Space above the buttons */
         }
+        .shop-bar p {
+            color: #4B0082;
+            fonta-size: 120px;
+        }
         .shop-bar a {
             display: flex; /* Make the link a flex container for image and text */
             align-items: center; /* Vertically align image and text within the button */
@@ -1271,6 +1276,8 @@
                       <span>Fazer pedido via Mercado Livre? </span>
                   </a>
               </div>
+              <br>
+              <h5>Fazendo seu pedido via WhatsApp você contribui diretamente com o trabalho do autor.</h5>
               
           </div>
               <div class="footer-bar" id="footerBar">
@@ -1415,6 +1422,8 @@
                       <span>Fazer pedido via Mercado Livre? </span>
                   </a>
               </div>
+              <br>
+              <h5>Fazendo seu pedido via WhatsApp você contribui diretamente com o trabalho do autor.</h5>
             
         	</div>
         
@@ -1422,25 +1431,16 @@
     </div>
     
     <!-Temas-->
-    <div class="container" id="readers-opinion">
-    
-    	<div class="content">
-            
-            <div class="text" style="background-color: #ecf1f9">
-                <h2>꧁Legado e Maldição꧂</h2>
-                <h4>"Você não precisa me ver para me sentir. Eu estive com você o tempo todo."</h4><br>
-                <p>Essa frase ressoa de um jeito bem particular pra mim. Ela me transporta imediatamente para uma fase da vida onde eu buscava uma conexão mais profunda e autêntica, sabe? Quando percebi que as presenças mais verdadeiras nem sempre são as mais visíveis, mas sim as que se fazem sentir constantemente, como uma força silenciosa me guiando ou uma memória que nunca se apaga. É a certeza de que alguém essencial sempre esteve lá, mesmo que eu não percebesse na época.</p>
-                <hr>
-                <p>Amorim, Ray T.</p>
-                <p>Brasil | Julho, 2025.</p>
-              	
+    <div class="container" id="">
+        <div class="content">        
+            <div class="text" id="about-authors">
+              <h2>Sobre os Autores</h2>
+              <p>Estamos trabalhando nisso</p>
+              <span class="more-text" id="hidden-authors-content">
+                  <p>...</p>
+              </span>
+              <button class="read-more-btn" id="read-more-authors-btn">Leia Mais sobre os Autores</button>
             </div>
-            <div id="about-authors">
-    <h2>Sobre os Autores</h2>
-    <p>...primeiros parágrafos visíveis sobre os autores...</p>
-    <span class="more-text" id="hidden-authors-content"> <p>...parágrafos escondidos sobre os autores...</p>
-    </span>
-    <button class="read-more-btn" id="read-more-authors-btn">Leia Mais sobre os Autores</button> </div>
             
          	<div class="footer-bar" id="footerBar">
             	<span>Siga nossas redes sociais:</span>
@@ -1449,9 +1449,8 @@
                 <a href="https://www.tiktok.com/@imortais.completo" target="_blank" id="tiktok-icon"></a>
                 <a href="https://www.facebook.com/imortaiscompletosoficial" target="_blank" id="facebook-icon"></a>
           	</div>
-            
-        </div>
-    </div>
+    	</div>
+	</div>
     
     <!-Overlays-->
     <button onclick="document.getElementById('checkout').classList.add('active');">Policy</button>
