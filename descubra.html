@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Descubra - Imortais Completos</title>
+    
+    <meta name="description" content="O livro Imortais Completos - O Recomeço, nos faz mergulhar nos dilemas de dois irmãos gêmeos que têm suas vidas transformadas após um evento misterioso. Leia a sinopse completa e compre seu exemplar.">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #1a0a0a 0%, #2d1b1b 50%, #1a0a0a 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(120, 0, 0, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(80, 0, 40, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .discover-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 20px;
+            position: relative;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+            position: relative;
+        }
+
+        .section-title {
+            font-size: 3.5rem;
+            font-weight: bold;
+            color: #d4af37;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .section-subtitle {
+            font-size: 1.3rem;
+            color: #c9c9c9;
+            font-style: italic;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .main-description {
+            background: linear-gradient(135deg, rgba(40, 20, 20, 0.9), rgba(60, 30, 30, 0.9));
+            border: 2px solid #8b0000;
+            border-radius: 15px;
+            padding: 40px;
+            margin-bottom: 50px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            position: relative;
+            max-width: 600px;
+            margin: 0 auto;
+            backdrop-filter: blur(10px);
+            text-align: center;
+        }
+
+        .main-description h3 {
+            color: #d4af37;
+            margin-bottom: 15px;
+            font-weight: bold;
+            text-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .main-description h4 {
+            color: #c9c9c9;
+        }
+
+        .main-description::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #d4af37, #8b0000, #d4af37);
+            border-radius: 15px;
+            z-index: -1;
+            opacity: 0.7;
+        }
+
+        .main-title {
+            font-size: 2rem;
+            color: #d4af37;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .main-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #e8e8e8;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, rgba(30, 15, 15, 0.95), rgba(50, 25, 25, 0.95));
+            border: 1px solid #660000;
+            border-radius: 12px;
+            padding: 25px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(139, 0, 0, 0.3);
+            border-color: #d4af37;
+        }
+
+        .feature-card:hover::before {
+            left: 100%;
+        }
+
+        .feature-title {
+            font-size: 1.3rem;
+            color: #d4af37;
+            margin-bottom: 15px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+
+        .feature-title::before {
+            content: '🩸';
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+
+        .feature-text {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: #d0d0d0;
+        }
+
+        .decorative-line {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #d4af37, transparent);
+            margin: 40px 0;
+            border-radius: 1px;
+        }
+
+        @media (max-width: 768px) {
+            .section-title {
+                font-size: 2.5rem;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .main-description {
+                padding: 25px;
+            }
+            
+            .discover-section {
+                padding: 40px 15px;
+            }
+        }
+
+        .blood-drop {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: #8b0000;
+            border-radius: 50%;
+            animation: bloodFall 3s infinite linear;
+        }
+
+        @keyframes bloodFall {
+            0% {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(100vh);
+            }
+        }
+    </style>
+</head>
+<body>
+    <section class="discover-section">
+        <div class="section-header">
+            <h1 class="section-title">Descubra</h1>
+            <p class="section-subtitle">Uma jornada épica através das sombras da eternidade</p>
+        </div>
+
+        <div class="main-description">
+            <h2 class="main-title">Imortais Completos</h2>
+            <h3>O Recomeço</h3>
+            <h4>Uma obra que redefine a mitologia vampírica.</h4>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <h3 class="feature-title">O Melhor Livro sobre Vampiros</h3>
+                <p class="feature-text">Mergulhe em uma narrativa que vai além das lendas, desvende os mistérios da noite eterna e explore a complexidade de dilemas morais profundos. Uma obra que desafia as fronteiras entre o bem e o mal, e apresenta criaturas da noite com um desejo por justiça contrastando com uma sede implacável por poder.</p>
+            </div>
+
+            <div class="feature-card">
+                <h3 class="feature-title">Lutas entre Vampiros e Lobisomens</h3>
+                <p class="feature-text">Seja uma testemunha dos combates sangrentos entre inimigos ancestrais em confrontos estratégicos por território e sobrevivência.</p>
+            </div>
+
+            <div class="feature-card">
+                <h3 class="feature-title">Vampiros na Europa</h3>
+                <p class="feature-text">Conheça o império vampírico através das complexas relações com a sociedade humana além de outras criaturas sobrenaturais.</p>
+            </div>
+
+            <div class="feature-card">
+                <h3 class="feature-title">Conflitos entre Famílias e Irmãos Vampiros</h3>
+                <p class="feature-text">Testemunhe a amarga rivalidade entre dois irmãos, onde o amor fraternal se esvai diante da ambição.</p>
+            </div>
+
+            <div class="feature-card">
+                <h3 class="feature-title">Guerras de Clãs Vampiros</h3>
+                <p class="feature-text">Acompanhe a ascensão de um novo clã em Paris, que se envolve em batalhas épicas contra os ecos de uma força das trevas.</p>
+            </div>
+
+            <div class="feature-card">
+                <h3 class="feature-title">Vampiros em Paris</h3>
+                <p class="feature-text">Explore as ruas e o submundo da alta sociedade parisiense, onde sombras antigas despertam à vista de todos.</p>
+            </div>
+
+            <div class="feature-card">
+                <h3 class="feature-title">Bruxos e Mestres Vampiros</h3>
+                <p class="feature-text">Descubra a influência de bruxos e a sabedoria de mestres que moldam o destino dos protagonistas.</p>
+            </div>
+
+            <div class="feature-card">
+                <h3 class="feature-title">Reis, Guerras e Vampiros</h3>
+                <p class="feature-text">Desça às profundezas do declínio de um rei vampiro tirânico e a ascensão de novos líderes em meio a batalhas de clãs.</p>
+            </div>
+
+            <div class="feature-card">
+                <h3 class="feature-title">Vampiros e Batalhas Épicas</h3>
+                <p class="feature-text">Prepare-se para cenas de ação com enfrentamentos grandiosos, onde a honra e a vingança são os únicos motivadores.</p>
+            </div>
+
+            <div class="feature-card">
+                <h3 class="feature-title">Nova Raça de Vampiros</h3>
+                <p class="feature-text">Uma linhagem condenada a caminhar entre o impossível e o eterno, desafiando a própria ordem da vida e da morte, enquanto sua sombra se estende por mundos que poucos ousam explorar.</p>
+            </div>
+
+            <div class="feature-card">
+                <h3 class="feature-title">Vampiros e Dilemas Morais</h3>
+                <p class="feature-text">Sinta a luta interna de uma criatura das sombras, que questiona a crueldade de sua nova natureza e busca um caminho de resignação.</p>
+            </div>
+
+            <div class="feature-card">
+                <h3 class="feature-title">Humanos e Vampiros</h3>
+                <p class="feature-text">Veja como a sociedade mortal e a sobrenatural se entrelaçam e colidem em uma teia de poder, segredos e sangue.</p>
+            </div>
+
+            <div class="feature-card">
+                <h3 class="feature-title">Vampiros e a Sociedade</h3>
+                <p class="feature-text">Descubra o impacto da existência dos seres da escuridão na política, finanças e na vida social.</p>
+            </div>
+
+            <div class="feature-card">
+                <h3 class="feature-title">Vampiros e Imortais Completos</h3>
+                <p class="feature-text">Prepare-se para uma jornada sombria e envolvente, onde seres com poderes sem precedentes, descobrem que a eternidade é uma bênção e a escolha é uma maldição.</p>
+            </div>
+        </div>
+
+        <div class="decorative-line"></div>
+    </section>
+
+    <script>
+        // Create falling blood drops animation
+        function createBloodDrop() {
+            const drop = document.createElement('div');
+            drop.className = 'blood-drop';
+            drop.style.left = Math.random() * 100 + 'vw';
+            drop.style.animationDuration = (Math.random() * 3 + 2) + 's';
+            document.body.appendChild(drop);
+
+            drop.addEventListener('animationend', () => {
+                drop.remove();
+            });
+        }
+
+        // Create blood drops periodically
+        setInterval(createBloodDrop, 2000);
+
+        // Add hover effects to cards
+        document.querySelectorAll('.feature-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.background = 'linear-gradient(135deg, rgba(40, 20, 20, 0.98), rgba(60, 30, 30, 0.98))';
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.background = 'linear-gradient(135deg, rgba(30, 15, 15, 0.95), rgba(50, 25, 25, 0.95))';
+            });
+        });
+    </script>
+</body>
+</html>
