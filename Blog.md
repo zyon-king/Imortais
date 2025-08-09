@@ -3,7 +3,7 @@ https://g.co/gemini/share/4fdec0b6c3b9
 Paris, 1889, dois irmãos buscam poder. Profecias e escolhas morais os levam a uma jornada sombria, onde batalhas épicas os aguardam.
 
 **Palavras-chave:**
-* [Imortais Completos O Recomeço](#descubra-imortais-completos-o-recomeço-uma-obra-que-redefine-a-mitologia-vampírica)  
+* [Imortais Completos O Recomeço](#descubra)  
 * O Melhor Livro sobre Vampiros  
 * Lutas entre Vampiros e Lobisomens  
 * Vampiros na Europa  
