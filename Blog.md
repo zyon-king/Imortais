@@ -1,6 +1,11 @@
 https://g.co/gemini/share/4fdec0b6c3b9
 
 Paris, 1889, dois irmãos buscam poder. Profecias e escolhas morais os levam a uma jornada sombria, onde batalhas épicas os aguardam.
+  
+Uma jornada épica através das sombras da eternidade que se inicia no ano de 1889, onde a atmosfera hipnotizante de Paris, a cidade das luzes, torna-se pano de fundo para a trama desenrolar-se em meio a um contexto de dualidade, onde a luta entre a luz e as trevas se torna iminente.  
+Não se tratava apenas de escolhas imprevisíveis, mas de profecias seladas com consequências inimagináveis.  
+Esse livro nos faz mergulhar de cabeça nessa jornada, onde dois irmãos, cujo anseio por poder e respeito são conduzidos por um caminho sombrio e sem volta, repleto de dilemas morais.  
+Tudo isso entrelaçado por uma narrativa cativante e repleta de reviravoltas, dando iníco a uma batalha épica jamais vista pela humanidade.  
 
 **Palavras-chave:**
 * [Imortais Completos O Recomeço](#descubra)  
