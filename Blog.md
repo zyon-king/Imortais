@@ -1,20 +1,17 @@
 https://g.co/gemini/share/4fdec0b6c3b9
 
-⚔︎ Uma obra que redefine a mitologia vampírica, revelando uma travessia através das sombras da eternidade. ⚔︎
+⚔︎ Uma obra que redefine a mitologia vampírica, revelando uma travessia através das sombras da eternidade. ⚔︎  
   
-Em 1889, dois irmãos lutam por poder em Paris. Suas escolhas morais dão início a uma jornada sombria, definindo a iminente batalha entre a luz e as trevas.  
+Em 1889, dois irmãos lutam por poder em Paris. Suas escolhas morais dão início a uma jornada sombria que definirá a iminente batalha entre a luz e as trevas.
+
+Este livro, repleto de dilemas morais, nos faz mergulhar de cabeça nessa jornada, onde o anseio por poder e respeito conduz a um caminho obscuro e sem volta. 
   
-Não se tratava apenas de escolhas imprevisíveis, mas de profecias seladas com consequências inimagináveis.  
+Além disso, a atmosfera hipnotizante da Cidade das Luzes serve de pano de fundo para uma trama que se desenrola em meio a um contexto de dualidade.  
   
-Trazendo a atmosfera hipnotizante da cidade das luzes como pano de fundo, a trama desenrola-se em meio a um contexto de dualidade. 
-  
-Repleto de dilemas morais, esse livro nos faz mergulhar de cabeça nessa jornada, onde o anseio por poder e respeito conduz a um caminho obscuro e sem volta.  
-  
-Tudo isso entrelacado em uma narrativa cativante e repleta de reviravoltas, dando iníco a uma batalha épica jamais vista pela humanidade.  
+Não se trata apenas de escolhas imprevisíveis, mas de profecias seladas com consequências inimagináveis. 
+
+Tudo isso, entrelaçado em uma narrativa cativante e repleta de reviravoltas, dando início a uma batalha épica jamais vista pela humanidade.
    
-
-
-
 
 **Palavras-chave:**
 * [Imortais Completos O Recomeço](#descubra)  
