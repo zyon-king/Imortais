@@ -1,6 +1,6 @@
 https://g.co/gemini/share/4fdec0b6c3b9
 
-Paris, 1889, dois irmãos buscam poder. Profecias e escolhas morais os levam a uma jornada sombria, onde batalhas épicas os aguardam.
+Em 1889, dois irmãos lutam por poder em Paris, e suas escolhas morais dão início a uma jornada sombria, definindo a iminente batalha entre a luz e as trevas.
   
 Uma jornada épica através das sombras da eternidade que se inicia no ano de 1889, onde a atmosfera hipnotizante de Paris, a cidade das luzes, torna-se pano de fundo para a trama desenrolar-se em meio a um contexto de dualidade, onde a luta entre a luz e as trevas se torna iminente.  
 Não se tratava apenas de escolhas imprevisíveis, mas de profecias seladas com consequências inimagináveis.  
